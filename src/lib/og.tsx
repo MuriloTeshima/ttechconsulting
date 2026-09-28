@@ -1,10 +1,25 @@
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { ImageResponse } from 'next/og';
 
 export const ogSize = { width: 1200, height: 630 };
 export const ogContentType = 'image/png';
 
-/** Imagem Open Graph na identidade da marca (navy, cyan e padrão angular). */
-export function brandOgImage({ eyebrow, title }: { eyebrow: string; title: string }) {
+const root = process.cwd();
+
+// Lidos uma vez por build; as imagens são geradas estaticamente.
+const assets = Promise.all([
+  readFile(join(root, 'src/assets/fonts/SpaceGrotesk-Medium.woff')),
+  readFile(join(root, 'src/assets/fonts/SpaceGrotesk-SemiBold.woff')),
+  readFile(join(root, 'public/TTechConsultingLogoWhite.svg')),
+]);
+
+/** Imagem Open Graph na identidade da marca: navy, logo oficial, Space Grotesk e padrão angular. */
+export async function brandOgImage({ eyebrow, title }: { eyebrow: string; title: string }) {
+  const [medium, semiBold, logo] = await assets;
+  const logoSrc = `data:image/svg+xml;base64,${logo.toString('base64')}`;
+  const titleSize = title.length > 70 ? 56 : title.length > 45 ? 64 : 72;
+
   return new ImageResponse(
     <div
       style={{
@@ -13,66 +28,84 @@ export function brandOgImage({ eyebrow, title }: { eyebrow: string; title: strin
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '72px 80px',
-        background: '#071B33',
+        padding: '64px 80px 60px',
+        background: 'linear-gradient(135deg, #0b2747 0%, #071b33 60%)',
         color: '#FFFFFF',
+        fontFamily: 'Space Grotesk',
         position: 'relative',
-        fontFamily: 'sans-serif',
       }}
     >
       <div
         style={{
           position: 'absolute',
-          top: -220,
-          right: -140,
-          width: 560,
-          height: 560,
-          border: '2px solid rgba(17,156,255,0.35)',
+          top: -260,
+          right: -160,
+          width: 600,
+          height: 600,
+          border: '2px solid rgba(17,156,255,0.32)',
+          borderRadius: 72,
           transform: 'rotate(45deg)',
           display: 'flex',
         }}
       />
-      <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-        <svg width="64" height="64" viewBox="0 0 64 64">
-          <rect width="64" height="64" rx="13" fill="#0B2747" />
-          <path d="M13 17h38v8H37v23h-9V25H13z" fill="#36D7FF" />
-          <path d="M37 31h14v8H37" fill="#119CFF" />
-        </svg>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: 34, fontWeight: 800, letterSpacing: -2 }}>TTech</span>
-          <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 6 }}>CONSULTING</span>
-        </div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 980 }}>
+      <div
+        style={{
+          position: 'absolute',
+          bottom: -320,
+          right: 120,
+          width: 460,
+          height: 460,
+          border: '2px solid rgba(54,215,255,0.14)',
+          borderRadius: 56,
+          transform: 'rotate(45deg)',
+          display: 'flex',
+        }}
+      />
+
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={logoSrc} width={238} height={74} alt="" />
+
+      <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 960 }}>
         <span
           style={{
             color: '#36D7FF',
             fontSize: 22,
-            fontWeight: 700,
+            fontWeight: 600,
             letterSpacing: 4,
-            marginBottom: 24,
+            textTransform: 'uppercase',
+            marginBottom: 22,
           }}
         >
-          {eyebrow.toUpperCase()}
+          {eyebrow}
         </span>
-        <span style={{ fontSize: 64, fontWeight: 700, lineHeight: 1.1, letterSpacing: -2.5 }}>
+        <span
+          style={{ fontSize: titleSize, fontWeight: 500, lineHeight: 1.08, letterSpacing: -2.5 }}
+        >
           {title}
         </span>
       </div>
+
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          borderTop: '1px solid rgba(255,255,255,0.2)',
+          borderTop: '1px solid rgba(255,255,255,0.18)',
           paddingTop: 24,
           color: '#A7C1D8',
           fontSize: 22,
+          fontWeight: 500,
         }}
       >
         <span>Tecnologia estratégica. Impacto real.</span>
         <span>Ribeirão Preto · atendimento remoto</span>
       </div>
     </div>,
-    ogSize,
+    {
+      ...ogSize,
+      fonts: [
+        { name: 'Space Grotesk', data: medium, weight: 500, style: 'normal' },
+        { name: 'Space Grotesk', data: semiBold, weight: 600, style: 'normal' },
+      ],
+    },
   );
 }

@@ -21,6 +21,8 @@ export function pageMetadata({
     title,
     description,
     alternates: { canonical: path },
+    // Sem `images` aqui: definir imagens nos metadados sobrescreve o opengraph-image.tsx da rota,
+    // então cada rota tem o seu arquivo.
     openGraph: {
       title,
       description,

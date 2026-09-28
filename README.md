@@ -99,6 +99,8 @@ Os parâmetros de campanha são capturados no primeiro acesso da sessão e segue
 
 **No GTM:** crie acionadores de evento personalizado para `form_submit` e `whatsapp_click` e ligue a eles as tags de GA4 (`generate_lead`), conversão do Google Ads e Meta Pixel (`Contact` ou `Lead`).
 
+**Vercel Web Analytics:** conta visitas e páginas vistas sem cookies. Ative em *Vercel → projeto → Analytics*; os dados aparecem após o próximo deploy.
+
 **Consentimento (LGPD):** o Google Consent Mode v2 começa com tudo negado. O banner de cookies atualiza o consentimento e grava a escolha em `localStorage`.
 
 **SEO:** metadata e canonical por página, JSON-LD (`ProfessionalService`, `Service`, `FAQPage`, `BreadcrumbList`), sitemap, robots e imagens OG na identidade da marca.

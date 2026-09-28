@@ -36,6 +36,11 @@ export default function Privacidade() {
         consentimento, essas ferramentas funcionam de forma restrita, sem armazenar cookies de
         análise ou publicidade. Você pode rever a escolha limpando os dados do site no navegador.
       </p>
+      <h2>Estatísticas de visitas</h2>
+      <p>
+        Usamos o Vercel Web Analytics para contar visitas e páginas acessadas. Ele funciona sem
+        cookies, não identifica visitantes individualmente e não cruza dados com outros sites.
+      </p>
       <h2>Dados de navegação</h2>
       <p>
         A infraestrutura de hospedagem pode registrar dados técnicos necessários ao funcionamento e
