@@ -1,4 +1,4 @@
-import { Blocks, Check, Code2, Database, Gauge, GitBranch, MapPin, RefreshCw } from 'lucide-react';
+import { Check, Code2, MapPin, RefreshCw } from 'lucide-react';
 import { projects, type Project } from '@/content/projects';
 
 export function CheckList({ items }: { items: string[] }) {
@@ -30,55 +30,6 @@ export function TrustStrip() {
       <div>
         <RefreshCw size={19} />
         <span>Evolução após o lançamento</span>
-      </div>
-    </div>
-  );
-}
-
-export function ProductVisual() {
-  return (
-    <div
-      className="system-visual"
-      role="img"
-      aria-label="Processos transformados em sistemas, automações e produtos digitais"
-    >
-      <div className="sv-grid" />
-      <div className="sv-header">
-        <span>PROJETO DIGITAL</span>
-        <span className="sv-plus">+</span>
-      </div>
-      <div className="sv-center">
-        <span className="sv-center-mark">
-          <Code2 size={33} strokeWidth={1.45} />
-        </span>
-        <div>
-          <span>DA OPERAÇÃO AO SOFTWARE</span>
-          <strong>Construir o que importa.</strong>
-        </div>
-      </div>
-      <div className="sv-items">
-        <div>
-          <GitBranch size={19} />
-          <span>Processos</span>
-        </div>
-        <div>
-          <Blocks size={19} />
-          <span>Sistemas</span>
-        </div>
-        <div>
-          <Database size={19} />
-          <span>Integrações</span>
-        </div>
-        <div>
-          <Gauge size={19} />
-          <span>Indicadores</span>
-        </div>
-      </div>
-      <div className="sv-footer">
-        <span>ENTREGAS EM ETAPAS</span>
-        <span>
-          <RefreshCw size={14} /> Construir · validar · evoluir
-        </span>
       </div>
     </div>
   );

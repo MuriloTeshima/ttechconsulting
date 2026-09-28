@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { JsonLd } from '@/components/analytics/JsonLd';
 import { ContactLink } from '@/components/ContactLink';
-import { ProductVisual, ProjectCards, TrustStrip } from '@/components/sections/Blocks';
+import { ProjectCards, TrustStrip } from '@/components/sections/Blocks';
 import { CTA } from '@/components/sections/CTA';
 import { FAQ } from '@/components/sections/FAQ';
+import { MethodCard } from '@/components/sections/MethodCard';
 import { Process } from '@/components/sections/Process';
 import { SectionIntro } from '@/components/sections/SectionIntro';
 import { ServiceCards } from '@/components/sections/ServiceCards';
@@ -70,7 +71,7 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <ProductVisual />
+          <MethodCard />
         </div>
         <div className="container hero-trust">
           <span>TECNOLOGIA COM DIREÇÃO</span>
