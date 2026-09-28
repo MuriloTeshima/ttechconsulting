@@ -5,7 +5,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { trackWhatsAppClick } from '@/lib/analytics';
 import { whatsappHref, type WhatsAppTopic } from '@/lib/whatsapp';
 
-type ContactLinkProps = Omit<ComponentProps<'a'>, 'href' | 'children'> & {
+type WhatsAppLinkProps = Omit<ComponentProps<'a'>, 'href' | 'children'> & {
   children?: ReactNode;
   topic?: WhatsAppTopic;
   /** Onde o botão está na página; enviado ao dataLayer como cta_location. */
@@ -13,7 +13,7 @@ type ContactLinkProps = Omit<ComponentProps<'a'>, 'href' | 'children'> & {
   icon?: boolean;
 };
 
-export function ContactLink({
+export function WhatsAppLink({
   children = 'Conversar no WhatsApp',
   topic = 'geral',
   location = 'section',
@@ -21,7 +21,7 @@ export function ContactLink({
   icon = true,
   onClick,
   ...props
-}: ContactLinkProps) {
+}: WhatsAppLinkProps) {
   return (
     <a
       href={whatsappHref(topic)}

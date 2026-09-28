@@ -1,6 +1,6 @@
 # TTech Consulting — site
 
-Site institucional e de campanhas da TTech Consulting. A conversão acontece por conversas no WhatsApp.
+Site institucional e de campanhas da TTech Consulting. A conversão acontece pelo formulário de contato, com o WhatsApp como alternativa direta.
 
 ## Stack
 
@@ -30,6 +30,30 @@ Copie `.env.example` para `.env.local`.
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Número comercial (55 + DDD + número). Sem ele, os links abrem o WhatsApp sem destinatário. |
 | `NEXT_PUBLIC_GTM_ID` | Container do Google Tag Manager. Sem ele, nenhuma tag nem banner de cookies é carregado. |
 
+| `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID`, `EMAILJS_PUBLIC_KEY`, `EMAILJS_PRIVATE_KEY` | Envio do formulário de contato pelo servidor. Sem elas, o envio é simulado no modo dev e falha em produção. |
+| `CONTACT_TO` | Destinatário dos contatos. Padrão: e-mail em `src/config/site.ts`. |
+
+## Formulário de contato
+
+Fica no fim da home, na página `/contato` e nas landing pages (antes do CTA final).
+
+Os botões de chamada (header, hero, CTA final, rodapé, landing pages) usam `FormLink`: na página que tem o formulário, rolam até ele; nas demais, abrem `/contato?tipo=<tipo>#formulario` com o tipo de projeto pré-selecionado. O WhatsApp continua no atalho ao lado do formulário e no botão flutuante (`WhatsAppLink`).
+
+- Envio por Server Action (`src/app/actions/contact.ts`), com validação em `src/lib/contact-schema.ts`.
+- O e-mail sai pela API REST do EmailJS chamada do servidor (`src/lib/emailjs.ts`), com a chave privada; nada de chave no navegador.
+- Anti-spam: campo invisível, tempo mínimo de preenchimento (3 s) e limite de 5 envios válidos a cada 10 minutos por IP.
+- Evento `form_submit` no `dataLayer`, com os mesmos parâmetros de atribuição do `whatsapp_click`.
+
+**Configuração no EmailJS:**
+
+1. Em *Email Services*, conecte o Gmail (ou outro provedor).
+2. Em *Account > Security*, ative *Allow EmailJS API for non-browser applications*.
+3. Em *Email Templates*, crie um template com:
+   - **To Email:** `{{to_email}}`
+   - **Reply To:** `{{email}}`
+   - **Subject:** `Novo contato: {{project_type}} — {{name}}`
+   - **Conteúdo:** use as variáveis `{{name}}`, `{{email}}`, `{{phone}}`, `{{whatsapp_link}}`, `{{company}}`, `{{project_type}}`, `{{message}}`, `{{page}}` e `{{attribution}}`.
+
 ## Estrutura
 
 ```
@@ -58,7 +82,7 @@ Os textos ficam em `src/content/`. Para mudar uma copy, edite o conteúdo, não 
 
 Para criar uma LP, adicione um item em `src/content/landing-pages.ts` e a mensagem correspondente em `src/lib/whatsapp.ts`. A página, a imagem OG, o JSON-LD e a entrada no sitemap são gerados automaticamente. Use `index: false` para páginas que não devem aparecer no Google.
 
-**Evento de conversão:** todo clique em WhatsApp envia ao `dataLayer`:
+**Eventos de conversão:** o envio do formulário dispara `form_submit`, o clique em WhatsApp dispara `whatsapp_click` e o clique em um botão que leva ao formulário dispara `cta_click`. Todos enviam ao `dataLayer` os mesmos parâmetros:
 
 ```js
 {
@@ -73,7 +97,7 @@ Para criar uma LP, adicione um item em `src/content/landing-pages.ts` e a mensag
 
 Os parâmetros de campanha são capturados no primeiro acesso da sessão e seguem com o evento mesmo depois de o visitante navegar para outras páginas.
 
-**No GTM:** crie um acionador de evento personalizado `whatsapp_click` e ligue a ele as tags de GA4 (`generate_lead`), conversão do Google Ads e Meta Pixel (`Contact` ou `Lead`).
+**No GTM:** crie acionadores de evento personalizado para `form_submit` e `whatsapp_click` e ligue a eles as tags de GA4 (`generate_lead`), conversão do Google Ads e Meta Pixel (`Contact` ou `Lead`).
 
 **Consentimento (LGPD):** o Google Consent Mode v2 começa com tudo negado. O banner de cookies atualiza o consentimento e grava a escolha em `localStorage`.
 

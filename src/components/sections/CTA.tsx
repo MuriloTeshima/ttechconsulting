@@ -1,5 +1,5 @@
 import type { WhatsAppTopic } from '@/lib/whatsapp';
-import { ContactLink } from '../ContactLink';
+import { FormLink } from '../FormLink';
 
 export function CTA({
   title = 'Existe um processo na sua empresa que pode funcionar melhor?',
@@ -21,9 +21,9 @@ export function CTA({
           <h2>{title}</h2>
           <p>{description}</p>
         </div>
-        <ContactLink topic={topic} location="final" className="button button-blue">
+        <FormLink topic={topic} location="final" className="button button-blue">
           {label}
-        </ContactLink>
+        </FormLink>
       </div>
     </section>
   );

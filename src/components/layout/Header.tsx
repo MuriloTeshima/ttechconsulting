@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { nav } from '@/config/site';
-import { ContactLink } from '../ContactLink';
+import { FormLink } from '../FormLink';
 import { Logo } from '../Logo';
 import { MobileMenu } from './MobileMenu';
 
@@ -17,9 +17,9 @@ export function Header() {
           ))}
         </nav>
         <div className="header-actions">
-          <ContactLink className="button button-dark header-cta" location="header">
+          <FormLink className="button button-dark header-cta" location="header">
             Conversar sobre um projeto
-          </ContactLink>
+          </FormLink>
           <MobileMenu />
         </div>
       </div>

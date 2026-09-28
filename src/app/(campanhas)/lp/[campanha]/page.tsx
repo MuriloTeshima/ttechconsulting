@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ArrowRight, CircleAlert } from 'lucide-react';
 import { JsonLd } from '@/components/analytics/JsonLd';
-import { ContactLink } from '@/components/ContactLink';
+import { ContactSection } from '@/components/contact/ContactSection';
+import { FormLink } from '@/components/FormLink';
 import { CampaignFooter, CampaignHeader } from '@/components/layout/CampaignShell';
 import { TrustStrip } from '@/components/sections/Blocks';
 import { CTA } from '@/components/sections/CTA';
@@ -49,9 +50,9 @@ export default async function LandingPage({ params }: Props) {
               </h1>
               <p className="hero-description">{page.description}</p>
               <div className="hero-actions">
-                <ContactLink topic={page.topic} location="hero">
+                <FormLink topic={page.topic} location="hero">
                   {page.ctaLabel}
-                </ContactLink>
+                </FormLink>
                 <a className="link-underline light" href="#como-funciona">
                   Ver como funciona <ArrowRight size={17} />
                 </a>
@@ -144,6 +145,8 @@ export default async function LandingPage({ params }: Props) {
           </div>
         </section>
 
+        <ContactSection topic={page.topic} location="lp-form" />
+
         <CTA
           title={page.finalTitle}
           description={page.finalText}
@@ -151,13 +154,9 @@ export default async function LandingPage({ params }: Props) {
           label={page.ctaLabel}
         />
 
-        <ContactLink
-          topic={page.topic}
-          location="sticky"
-          className="button button-blue lp-sticky-cta"
-        >
+        <FormLink topic={page.topic} location="sticky" className="button button-blue lp-sticky-cta">
           {page.ctaLabel}
-        </ContactLink>
+        </FormLink>
       </main>
       <CampaignFooter />
       <JsonLd

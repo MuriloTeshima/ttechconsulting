@@ -19,6 +19,14 @@ export default function Privacidade() {
         à solicitação e conduzir a conversa comercial. Não envie senhas, credenciais ou dados
         sensíveis no primeiro contato.
       </p>
+      <h2>Formulário de contato</h2>
+      <p>
+        Ao enviar o formulário, coletamos nome, e-mail, WhatsApp, empresa, tipo de projeto e a
+        mensagem escrita, além da página e dos parâmetros de campanha da visita. Esses dados são
+        usados apenas para responder ao contato e conduzir a conversa comercial, com base no seu
+        consentimento. O envio é processado pelo serviço EmailJS, que entrega a mensagem ao e-mail
+        da TTech. Os dados não são vendidos nem compartilhados para outras finalidades.
+      </p>
       <h2>Cookies e mensuração</h2>
       <p>
         Com o seu consentimento, o site utiliza ferramentas de análise e de publicidade (como Google
@@ -31,8 +39,7 @@ export default function Privacidade() {
       <h2>Dados de navegação</h2>
       <p>
         A infraestrutura de hospedagem pode registrar dados técnicos necessários ao funcionamento e
-        à segurança do site, como endereço IP e requisições. O site não possui formulário próprio
-        nesta versão.
+        à segurança do site, como endereço IP e requisições.
       </p>
       <h2>Direitos e contato</h2>
       <p>

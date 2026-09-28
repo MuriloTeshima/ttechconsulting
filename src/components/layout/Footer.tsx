@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { site } from '@/config/site';
 import { services } from '@/content/services';
-import { ContactLink } from '../ContactLink';
+import { FormLink } from '../FormLink';
 import { Logo } from '../Logo';
 
 const footerServices = services.filter((service) => service.slug !== 'evolucao-sustentacao');
@@ -38,9 +38,9 @@ export function Footer() {
               <span>Converse com a TTech</span>
               <p>Ribeirão Preto · atendimento remoto</p>
               <a href={`mailto:${site.email}`}>{site.email}</a>
-              <ContactLink location="footer" className="footer-contact">
+              <FormLink location="footer" className="footer-contact">
                 Conversar sobre um projeto
-              </ContactLink>
+              </FormLink>
             </div>
           </div>
         </div>

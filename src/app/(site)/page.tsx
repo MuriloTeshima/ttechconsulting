@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { JsonLd } from '@/components/analytics/JsonLd';
-import { ContactLink } from '@/components/ContactLink';
+import { ContactSection } from '@/components/contact/ContactSection';
+import { FormLink } from '@/components/FormLink';
 import { ProjectCards, TrustStrip } from '@/components/sections/Blocks';
 import { CTA } from '@/components/sections/CTA';
 import { FAQ } from '@/components/sections/FAQ';
@@ -66,7 +67,7 @@ export default function Home() {
               que reduzem trabalho manual e ajudam empresas a crescer com mais controle.
             </p>
             <div className="hero-actions">
-              <ContactLink location="hero">Conversar sobre meu projeto</ContactLink>
+              <FormLink location="hero">Conversar sobre meu projeto</FormLink>
               <Link className="link-underline light" href="/solucoes">
                 Conhecer as soluções <ArrowRight size={18} />
               </Link>
@@ -185,6 +186,7 @@ export default function Home() {
         </div>
       </section>
       <CTA />
+      <ContactSection location="home-form" />
       <JsonLd data={faqSchema(faq)} />
     </main>
   );

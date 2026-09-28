@@ -1,5 +1,5 @@
 import type { WhatsAppTopic } from '@/lib/whatsapp';
-import { ContactLink } from '../ContactLink';
+import { FormLink } from '../FormLink';
 import { Logo } from '../Logo';
 import { LegalBar } from './Footer';
 
@@ -9,13 +9,13 @@ export function CampaignHeader({ topic, label }: { topic: WhatsAppTopic; label: 
     <header className="site-header">
       <div className="container header-inner">
         <Logo priority />
-        <ContactLink
+        <FormLink
           topic={topic}
           className="button button-dark campaign-header-cta"
           location="header"
         >
           {label}
-        </ContactLink>
+        </FormLink>
       </div>
     </header>
   );

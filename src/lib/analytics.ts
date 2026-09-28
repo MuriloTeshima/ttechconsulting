@@ -25,3 +25,37 @@ export function trackWhatsAppClick({ location, topic }: { location: string; topi
     ...readAttribution(),
   });
 }
+
+/** Conversão do formulário de contato. */
+export function trackFormSubmit({
+  location,
+  projectType,
+}: {
+  location: string;
+  projectType: string;
+}) {
+  pushEvent({
+    event: 'form_submit',
+    cta_location: location,
+    service: projectType,
+    page_path: window.location.pathname,
+    ...readAttribution(),
+  });
+}
+
+/** Clique em um botão que leva ao formulário de contato. */
+export function trackCtaClick({
+  location,
+  projectType,
+}: {
+  location: string;
+  projectType: string;
+}) {
+  pushEvent({
+    event: 'cta_click',
+    cta_location: location,
+    service: projectType,
+    page_path: window.location.pathname,
+    ...readAttribution(),
+  });
+}

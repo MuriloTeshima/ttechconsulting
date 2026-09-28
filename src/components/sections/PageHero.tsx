@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { ArrowRight } from 'lucide-react';
 import type { WhatsAppTopic } from '@/lib/whatsapp';
-import { ContactLink } from '../ContactLink';
+import { FormLink } from '../FormLink';
 
 export function PageHero({
   eyebrow,
@@ -29,9 +29,9 @@ export function PageHero({
           <h1>{title}</h1>
           <p className="hero-description">{description}</p>
           <div className="hero-actions">
-            <ContactLink topic={topic} location="hero">
+            <FormLink topic={topic} location="hero">
               {label}
-            </ContactLink>
+            </FormLink>
             {secondary && (
               <Link className="link-underline light" href={secondary.href}>
                 {secondary.label}

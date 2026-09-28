@@ -13,3 +13,7 @@ build
 next-env.d.ts
 .DS_Store
 .vercel
+
+# Arquivos gerados automaticamente pelo next dev
+AGENTS.md
+CLAUDE.md

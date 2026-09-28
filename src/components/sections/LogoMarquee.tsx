@@ -16,6 +16,7 @@ function LogoSet({ hidden = false }: { hidden?: boolean }) {
               alt={hidden ? '' : logo.name}
               width={Math.round(height * logo.ratio)}
               height={height}
+              style={{ width: 'auto', height }}
               unoptimized
             />
           </li>

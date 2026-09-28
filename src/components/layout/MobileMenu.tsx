@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Dialog } from 'radix-ui';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { nav } from '@/config/site';
-import { ContactLink } from '../ContactLink';
+import { FormLink } from '../FormLink';
 import { Logo } from '../Logo';
 
 const links = [{ label: 'Início', href: '/' }, ...nav, { label: 'Contato', href: '/contato' }];
@@ -37,9 +37,9 @@ export function MobileMenu() {
               </Link>
             ))}
           </nav>
-          <ContactLink location="menu" className="button button-blue" onClick={close}>
+          <FormLink location="menu" className="button button-blue" onClick={close}>
             Conversar sobre um projeto
-          </ContactLink>
+          </FormLink>
           <p>Ribeirão Preto · atendimento remoto</p>
         </Dialog.Content>
       </Dialog.Portal>
