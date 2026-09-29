@@ -1064,6 +1064,8 @@ button:focus-visible {
   gap: 1rem;
 }
 .audience-card {
+  display: flex;
+  flex-direction: column;
   min-height: 250px;
   padding: 2rem;
   position: relative;
@@ -1078,22 +1080,48 @@ button:focus-visible {
   background: var(--off);
   transform: translateY(-2px);
 }
-.audience-card > span {
-  display: inline-flex;
+.audience-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.8rem;
+}
+.audience-number {
   color: #0074bf;
   font: 700 0.72rem/1 var(--font-body);
   letter-spacing: 0.16em;
 }
 .audience-card h3 {
   font-size: 1.55rem;
-  margin: 3.7rem 0 0.8rem;
+  margin: 0 0 0.6rem;
 }
 .audience-card p {
-  max-width: 480px;
-  margin: 0;
+  max-width: 520px;
+  margin: 0 0 1.6rem;
   color: #52697d;
   font-size: 0.95rem;
   line-height: 1.65;
+}
+.audience-solutions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: auto 0 0;
+  padding: 1.3rem 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+.audience-solutions li {
+  padding: 0.42rem 0.8rem;
+  border-radius: 999px;
+  background: #eaf5ff;
+  color: #0b4f86;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.audience-card:hover .audience-solutions li {
+  background: #dcefff;
 }
 .projects-section,
 .projects-page {
@@ -1188,8 +1216,8 @@ button:focus-visible {
     min-height: 220px;
     padding: 1.6rem;
   }
-  .audience-card h3 {
-    margin-top: 2.5rem;
+  .audience-card-top {
+    margin-bottom: 1.4rem;
   }
   .project-card {
     min-height: 310px;

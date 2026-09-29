@@ -3,6 +3,7 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { JsonLd } from '@/components/analytics/JsonLd';
 import { ContactSection } from '@/components/contact/ContactSection';
 import { FormLink } from '@/components/FormLink';
+import { AudienceCards } from '@/components/sections/AudienceCards';
 import { ProjectCards, TrustStrip } from '@/components/sections/Blocks';
 import { CTA } from '@/components/sections/CTA';
 import { FAQ } from '@/components/sections/FAQ';
@@ -17,29 +18,6 @@ import { faqSchema } from '@/lib/seo';
 export const metadata = {
   alternates: { canonical: '/' },
 };
-
-const audiences = [
-  [
-    '01',
-    'Serviços B2B',
-    'Consultorias, escritórios e operações que precisam organizar propostas, projetos e atendimento.',
-  ],
-  [
-    '02',
-    'Clínicas e saúde',
-    'Negócios que querem integrar atendimento, agenda, indicadores e processos administrativos.',
-  ],
-  [
-    '03',
-    'Distribuição e vendas',
-    'Empresas que precisam estruturar pedidos, catálogos, vendedores e informações comerciais.',
-  ],
-  [
-    '04',
-    'Novos produtos',
-    'Empresas e empreendedores que precisam construir uma primeira versão funcional.',
-  ],
-] as const;
 
 const problems = [
   'Informações espalhadas entre planilhas e mensagens',
@@ -141,15 +119,7 @@ export default function Home() {
             title="Tecnologia para operações que precisam avançar."
             description="Trabalhamos com empresas que precisam digitalizar processos, conectar ferramentas ou criar um novo produto."
           />
-          <div className="audience-grid">
-            {audiences.map(([number, title, description]) => (
-              <article className="audience-card" key={number}>
-                <span>{number}</span>
-                <h3>{title}</h3>
-                <p>{description}</p>
-              </article>
-            ))}
-          </div>
+          <AudienceCards />
         </div>
       </section>
 
