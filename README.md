@@ -28,6 +28,7 @@ Copie `.env.example` para `.env.local`.
 | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | Domínio de produção. Usado em canonical, sitemap, Open Graph e JSON-LD. |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Número comercial (55 + DDD + número). Sem ele, os links abrem o WhatsApp sem destinatário. |
+| `NEXT_PUBLIC_GA_ID` | ID do Google Analytics 4 (`G-...`). Carrega o GA4 com Consent Mode e envia os eventos de conversão direto para ele. |
 | `NEXT_PUBLIC_GTM_ID` | Container do Google Tag Manager. Sem ele, nenhuma tag nem banner de cookies é carregado. |
 
 | `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID`, `EMAILJS_PUBLIC_KEY`, `EMAILJS_PRIVATE_KEY` | Envio do formulário de contato pelo servidor. Sem elas, o envio é simulado no modo dev e falha em produção. |

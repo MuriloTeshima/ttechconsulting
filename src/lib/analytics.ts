@@ -1,3 +1,4 @@
+import { site } from '@/config/site';
 import { readAttribution } from './attribution';
 
 type DataLayerEvent = Record<string, unknown> & { event: string };
@@ -11,8 +12,13 @@ declare global {
 
 export function pushEvent(payload: DataLayerEvent) {
   if (typeof window === 'undefined') return;
+  // Copia antes do push: o gtag.js acrescenta campos internos ao objeto do dataLayer.
+  const { event, ...params } = payload;
   window.dataLayer = window.dataLayer ?? [];
   window.dataLayer.push(payload);
+
+  // GA4 instalado direto não lê eventos do dataLayer no formato do GTM; envia pelo gtag.
+  if (site.gaId && window.gtag) window.gtag('event', event, params);
 }
 
 /** Evento principal de conversão: clique em qualquer botão de WhatsApp. */

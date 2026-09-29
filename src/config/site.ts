@@ -21,6 +21,7 @@ export const site = {
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '',
   url: resolveSiteUrl(),
   gtmId: process.env.NEXT_PUBLIC_GTM_ID ?? '',
+  gaId: process.env.NEXT_PUBLIC_GA_ID ?? '',
 } as const;
 
 export const nav = [
