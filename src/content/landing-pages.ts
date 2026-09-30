@@ -10,6 +10,8 @@ export type LandingPage = {
   slug: string;
   segment: string;
   metaTitle: string;
+  /** Usa a marca curta (" | TTech") no título, para caber em ~60 caracteres. */
+  shortBrand?: boolean;
   metaDescription: string;
   eyebrow: string;
   title: string;
@@ -37,7 +39,7 @@ export const landingPages: LandingPage[] = [
   {
     slug: 'automacao-propostas-documentos',
     segment: 'Serviços B2B',
-    metaTitle: 'Automação de propostas, contratos e relatórios',
+    metaTitle: 'Automação de propostas e contratos',
     metaDescription:
       'Automatize propostas, contratos, documentos e relatórios da sua empresa de serviços. Menos retrabalho e mais consistência nas entregas.',
     eyebrow: 'AUTOMAÇÃO PARA EMPRESAS DE SERVIÇOS',
@@ -105,7 +107,7 @@ export const landingPages: LandingPage[] = [
   {
     slug: 'automacao-atendimento-clinicas',
     segment: 'Clínicas e saúde',
-    metaTitle: 'Automação de atendimento e indicadores para clínicas',
+    metaTitle: 'Automação de atendimento para clínicas',
     metaDescription:
       'Integre site, WhatsApp, CRM e agenda da sua clínica. Automação do atendimento administrativo e dashboard de agendamentos e indicadores.',
     eyebrow: 'AUTOMAÇÃO PARA CLÍNICAS',
@@ -174,7 +176,7 @@ export const landingPages: LandingPage[] = [
   {
     slug: 'portal-pedidos-distribuidoras',
     segment: 'Distribuição e vendas',
-    metaTitle: 'Portal de pedidos B2B para distribuidoras e representantes',
+    metaTitle: 'Portal de pedidos B2B para distribuidoras',
     metaDescription:
       'Organize pedidos recebidos pelo WhatsApp com um portal B2B: catálogo com condições por cliente, acompanhamento de pedidos e dashboard comercial.',
     eyebrow: 'PORTAL DE PEDIDOS B2B',
@@ -242,7 +244,8 @@ export const landingPages: LandingPage[] = [
   {
     slug: 'desenvolvimento-sistemas-ribeirao-preto',
     segment: 'Ribeirão Preto e região',
-    metaTitle: 'Desenvolvimento de sistemas sob medida em Ribeirão Preto',
+    metaTitle: 'Desenvolvimento de sistemas em Ribeirão Preto',
+    shortBrand: true,
     metaDescription:
       'Empresa de desenvolvimento de software em Ribeirão Preto. Sistemas web sob medida, portais, dashboards e automações para empresas da região.',
     eyebrow: 'DESENVOLVIMENTO DE SOFTWARE EM RIBEIRÃO PRETO',

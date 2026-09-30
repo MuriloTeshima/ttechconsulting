@@ -8,7 +8,7 @@ import { services } from '@/content/services';
 import { breadcrumbSchema, pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
-  title: 'Sobre a TTech',
+  title: 'Sobre a TTech, em Ribeirão Preto',
   description:
     'A TTech Consulting é uma empresa de desenvolvimento de software conduzida por Murilo Teshima Lira, em Ribeirão Preto.',
   path: '/sobre',

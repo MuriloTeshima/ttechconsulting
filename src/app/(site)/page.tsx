@@ -16,6 +16,7 @@ import { faq } from '@/content/faq';
 import { faqSchema } from '@/lib/seo';
 
 export const metadata = {
+  title: { absolute: 'Sistemas e automações em Ribeirão Preto | TTech Consulting' },
   alternates: { canonical: '/' },
 };
 

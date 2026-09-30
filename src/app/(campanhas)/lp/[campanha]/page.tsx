@@ -26,10 +26,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = getLandingPage((await params).campanha);
   if (!page) return {};
   return pageMetadata({
-    title: page.metaTitle,
+    title: page.shortBrand ? `${page.metaTitle} | TTech` : page.metaTitle,
     description: page.metaDescription,
     path: `/lp/${page.slug}`,
     index: page.index,
+    absoluteTitle: page.shortBrand,
   });
 }
 

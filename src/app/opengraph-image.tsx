@@ -1,6 +1,6 @@
 import { brandOgImage, ogContentType, ogSize } from '@/lib/og';
 
-export const alt = 'TTech Consulting — Sistemas, automações e produtos digitais';
+export const alt = 'TTech Consulting — Sistemas e automações em Ribeirão Preto';
 export const size = ogSize;
 export const contentType = ogContentType;
 
