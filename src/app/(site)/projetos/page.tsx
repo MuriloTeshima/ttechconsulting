@@ -6,7 +6,7 @@ import { SectionIntro } from '@/components/sections/SectionIntro';
 import { breadcrumbSchema, pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
-  title: 'Projetos',
+  title: 'Projetos de sistemas e automações',
   description:
     'Projetos e soluções que mostram como a TTech transforma processos, ideias e jornadas em produtos digitais.',
   path: '/projetos',

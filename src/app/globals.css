@@ -446,7 +446,7 @@ button:focus-visible {
 }
 .service-number {
   font: 700 0.7rem var(--font-body);
-  color: #7590aa;
+  color: #587089;
 }
 .service-card h3 {
   font-size: 1.38rem;
@@ -1165,7 +1165,7 @@ button:focus-visible {
 }
 .project-index strong {
   font: 600 0.7rem/1 var(--font-body);
-  color: #7890a6;
+  color: #587089;
 }
 .project-card h3 {
   font-size: 1.55rem;

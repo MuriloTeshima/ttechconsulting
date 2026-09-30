@@ -11,14 +11,17 @@ export function pageMetadata({
   description,
   path,
   index = true,
+  absoluteTitle = false,
 }: {
   title: string;
   description: string;
   path: string;
   index?: boolean;
+  /** Usa o título como está, sem o sufixo " | TTech Consulting" do layout. */
+  absoluteTitle?: boolean;
 }): Metadata {
   return {
-    title,
+    title: absoluteTitle ? { absolute: title } : title,
     description,
     alternates: { canonical: path },
     // Sem `images` aqui: definir imagens nos metadados sobrescreve o opengraph-image.tsx da rota,

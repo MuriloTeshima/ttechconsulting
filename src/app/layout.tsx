@@ -16,7 +16,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: 'TTech Consulting | Sistemas, automações e produtos digitais',
+    default: 'Sistemas e automações em Ribeirão Preto | TTech Consulting',
     template: '%s | TTech Consulting',
   },
   description: site.description,
