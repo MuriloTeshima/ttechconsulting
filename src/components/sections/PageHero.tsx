@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { ArrowRight } from 'lucide-react';
-import type { WhatsAppTopic } from '@/lib/whatsapp';
+import type { ProjectType } from '@/lib/contact-schema';
 import { FormLink } from '../FormLink';
 
 export function PageHero({
   eyebrow,
   title,
   description,
-  topic = 'geral',
+  projectType,
   label = 'Conversar sobre meu projeto',
   secondary,
   children,
@@ -16,7 +16,8 @@ export function PageHero({
   eyebrow: string;
   title: string;
   description: string;
-  topic?: WhatsAppTopic;
+  /** Tipo de projeto pré-selecionado no formulário. */
+  projectType?: ProjectType;
   label?: string;
   secondary?: { href: string; label: string };
   children?: ReactNode;
@@ -29,7 +30,7 @@ export function PageHero({
           <h1>{title}</h1>
           <p className="hero-description">{description}</p>
           <div className="hero-actions">
-            <FormLink topic={topic} location="hero">
+            <FormLink projectType={projectType} location="hero">
               {label}
             </FormLink>
             {secondary && (

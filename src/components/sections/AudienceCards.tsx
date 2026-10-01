@@ -1,5 +1,6 @@
 import { BriefcaseBusiness, Rocket, Stethoscope, Truck } from 'lucide-react';
-import { audiences, type AudienceIcon } from '@/content/audiences';
+import { getAudiences } from '@/lib/cms';
+import type { AudienceIcon } from '@/lib/content-types';
 
 const icons: Record<AudienceIcon, typeof Rocket> = {
   services: BriefcaseBusiness,
@@ -8,7 +9,8 @@ const icons: Record<AudienceIcon, typeof Rocket> = {
   product: Rocket,
 };
 
-export function AudienceCards() {
+export async function AudienceCards() {
+  const audiences = await getAudiences();
   return (
     <div className="audience-grid">
       {audiences.map((audience, index) => {

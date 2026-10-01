@@ -7,7 +7,8 @@ import {
   RefreshCw,
   Workflow,
 } from 'lucide-react';
-import { services, type Service, type ServiceIcon } from '@/content/services';
+import { getServices } from '@/lib/cms';
+import type { Service, ServiceIcon } from '@/lib/content-types';
 
 const icons: Record<ServiceIcon, typeof Layers3> = {
   layers: Layers3,
@@ -17,10 +18,11 @@ const icons: Record<ServiceIcon, typeof Layers3> = {
   refresh: RefreshCw,
 };
 
-export function ServiceCards({ list = services }: { list?: Service[] }) {
+export async function ServiceCards({ list }: { list?: Service[] }) {
+  const services = list ?? (await getServices());
   return (
     <div className="service-grid">
-      {list.map((service, index) => {
+      {services.map((service, index) => {
         const Icon = icons[service.icon];
         return (
           <Link className="service-card" href={`/${service.slug}`} key={service.slug}>
@@ -42,7 +44,8 @@ export function ServiceCards({ list = services }: { list?: Service[] }) {
   );
 }
 
-export function RelatedServices({ exclude }: { exclude: string }) {
+export async function RelatedServices({ exclude }: { exclude: string }) {
+  const services = await getServices();
   return (
     <div className="related-grid">
       {services

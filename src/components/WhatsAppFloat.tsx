@@ -1,10 +1,8 @@
-import type { WhatsAppTopic } from '@/lib/whatsapp';
 import { WhatsAppLink } from './WhatsAppLink';
 
-export function WhatsAppFloat({ topic = 'geral' }: { topic?: WhatsAppTopic }) {
+export function WhatsAppFloat() {
   return (
     <WhatsAppLink
-      topic={topic}
       location="floating"
       className="whatsapp-float"
       icon={false}

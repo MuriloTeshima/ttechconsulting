@@ -3,13 +3,12 @@
 import type { ComponentProps, ReactNode } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { trackCtaClick } from '@/lib/analytics';
-import { FORM_ID, projectTypeByTopic, SELECT_PROJECT_EVENT } from '@/lib/contact-schema';
-import type { WhatsAppTopic } from '@/lib/whatsapp';
+import { FORM_ID, SELECT_PROJECT_EVENT, type ProjectType } from '@/lib/contact-schema';
 
 type FormLinkProps = Omit<ComponentProps<'a'>, 'href' | 'children'> & {
   children?: ReactNode;
-  /** Contexto da página; define o tipo de projeto pré-selecionado no formulário. */
-  topic?: WhatsAppTopic;
+  /** Tipo de projeto pré-selecionado no formulário. */
+  projectType?: ProjectType;
   /** Onde o botão está na página; enviado ao dataLayer como cta_location. */
   location?: string;
   icon?: boolean;
@@ -21,14 +20,13 @@ type FormLinkProps = Omit<ComponentProps<'a'>, 'href' | 'children'> & {
  */
 export function FormLink({
   children = 'Conversar sobre meu projeto',
-  topic = 'geral',
+  projectType,
   location = 'section',
   className = 'button button-blue',
   icon = true,
   onClick,
   ...props
 }: FormLinkProps) {
-  const projectType = projectTypeByTopic[topic] ?? '';
   const href = projectType ? `/contato?tipo=${projectType}#${FORM_ID}` : `/contato#${FORM_ID}`;
 
   return (
@@ -36,7 +34,7 @@ export function FormLink({
       href={href}
       className={className}
       onClick={(event) => {
-        trackCtaClick({ location, projectType });
+        trackCtaClick({ location, projectType: projectType ?? '' });
         onClick?.(event);
         const form = document.getElementById(FORM_ID);
         if (!form) return;

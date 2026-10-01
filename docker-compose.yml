@@ -1,0 +1,17 @@
+# Postgres local para desenvolvimento do Payload CMS.
+# Em produção o banco é o Neon (Vercel → Storage).
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ttech
+      POSTGRES_PASSWORD: ttech
+      POSTGRES_DB: ttech_cms
+    ports:
+      - '5434:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

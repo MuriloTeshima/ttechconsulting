@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { site } from '@/config/site';
-import { services } from '@/content/services';
+import { getServices } from '@/lib/cms';
 import { FormLink } from '../FormLink';
 import { Logo } from '../Logo';
 
-const footerServices = services.filter((service) => service.slug !== 'evolucao-sustentacao');
-
-export function Footer() {
+export async function Footer() {
+  // As quatro primeiras soluções, na ordem definida no CMS.
+  const footerServices = (await getServices()).slice(0, 4);
   return (
     <footer className="footer">
       <div className="container">
@@ -31,6 +31,7 @@ export function Footer() {
             <div>
               <span>Institucional</span>
               <Link href="/projetos">Projetos</Link>
+              <Link href="/blog">Blog</Link>
               <Link href="/sobre">Sobre a TTech</Link>
               <Link href="/contato">Contato</Link>
             </div>

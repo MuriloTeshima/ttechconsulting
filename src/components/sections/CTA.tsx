@@ -1,15 +1,16 @@
-import type { WhatsAppTopic } from '@/lib/whatsapp';
+import type { ProjectType } from '@/lib/contact-schema';
 import { FormLink } from '../FormLink';
 
 export function CTA({
   title = 'Existe um processo na sua empresa que pode funcionar melhor?',
   description = 'Conte como sua equipe trabalha hoje, onde está o retrabalho e o que você deseja melhorar. Vamos conversar sobre um primeiro passo possível.',
-  topic = 'geral',
+  projectType,
   label = 'Conversar sobre meu projeto',
 }: {
   title?: string;
   description?: string;
-  topic?: WhatsAppTopic;
+  /** Tipo de projeto pré-selecionado no formulário. */
+  projectType?: ProjectType;
   label?: string;
 }) {
   return (
@@ -21,7 +22,7 @@ export function CTA({
           <h2>{title}</h2>
           <p>{description}</p>
         </div>
-        <FormLink topic={topic} location="final" className="button button-blue">
+        <FormLink projectType={projectType} location="final" className="button button-blue">
           {label}
         </FormLink>
       </div>
