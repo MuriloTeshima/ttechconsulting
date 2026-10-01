@@ -53,7 +53,10 @@ export default buildConfig({
     // Em produção as imagens vão para o Vercel Blob; localmente ficam em /media.
     vercelBlobStorage({
       enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
-      collections: { media: true },
+      // Cria os campos do plugin mesmo desligado: o esquema do banco fica igual em todos os ambientes.
+      alwaysInsertFields: true,
+      // Imagens públicas servidas direto pela rede do Blob, sem passar pelo servidor do site.
+      collections: { media: { disablePayloadAccessControl: true } },
       token: process.env.BLOB_READ_WRITE_TOKEN,
       clientUploads: true,
     }),

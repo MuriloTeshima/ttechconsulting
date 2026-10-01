@@ -15,7 +15,9 @@ import { services } from './data/services';
  * Os slugs vão fixos (generateSlug: false) para nenhuma URL do site mudar.
  */
 const payload = await getPayload({ config });
-const context = { disableRevalidate: true };
+// Um objeto novo por chamada: o plugin do Vercel Blob marca o context durante o envio, e um
+// context compartilhado faria os envios seguintes serem pulados em silêncio.
+const context = () => ({ disableRevalidate: true });
 const list = (items: string[]) => items.map((text) => ({ text }));
 
 async function exists(collection: CollectionSlug, where: Where) {
@@ -29,7 +31,7 @@ for (const service of services) {
   if (await exists('services', { slug: { equals: service.slug } })) continue;
   await payload.create({
     collection: 'services',
-    context,
+    context: context(),
     data: {
       ...service,
       generateSlug: false,
@@ -43,7 +45,7 @@ for (const page of landingPages) {
   if (await exists('landing-pages', { slug: { equals: page.slug } })) continue;
   await payload.create({
     collection: 'landing-pages',
-    context,
+    context: context(),
     data: {
       ...page,
       generateSlug: false,
@@ -59,7 +61,7 @@ for (const project of projects) {
   if (await exists('projects', { title: { equals: project.title } })) continue;
   await payload.create({
     collection: 'projects',
-    context,
+    context: context(),
     data: { ...project, tags: list(project.tags) },
   });
   created++;
@@ -69,7 +71,7 @@ for (const audience of audiences) {
   if (await exists('audiences', { title: { equals: audience.title } })) continue;
   await payload.create({
     collection: 'audiences',
-    context,
+    context: context(),
     data: { ...audience, solutions: list(audience.solutions) },
   });
   created++;
@@ -79,13 +81,13 @@ for (const logo of clientLogos) {
   if (await exists('client-logos', { name: { equals: logo.name } })) continue;
   const media = await payload.create({
     collection: 'media',
-    context,
+    context: context(),
     data: { alt: `Logo ${logo.name}` },
     filePath: path.resolve(process.cwd(), 'public', logo.src.replace(/^\//, '')),
   });
   await payload.create({
     collection: 'client-logos',
-    context,
+    context: context(),
     data: { name: logo.name, logo: media.id, scale: logo.scale ?? 1 },
   });
   created++;
@@ -93,7 +95,7 @@ for (const logo of clientLogos) {
 
 const homeFaq = await payload.findGlobal({ slug: 'home-faq' });
 if (!homeFaq.items?.length) {
-  await payload.updateGlobal({ slug: 'home-faq', context, data: { items: faq } });
+  await payload.updateGlobal({ slug: 'home-faq', context: context(), data: { items: faq } });
   created++;
 }
 
@@ -101,7 +103,7 @@ for (const title of ['Automação', 'Sistemas sob medida', 'Produto digital', 'G
   if (await exists('categories', { title: { equals: title } })) continue;
   await payload.create({
     collection: 'categories',
-    context,
+    context: context(),
     data: { title, slug: toSlug(title) ?? title, generateSlug: false },
   });
   created++;
