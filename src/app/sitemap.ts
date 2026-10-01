@@ -2,7 +2,9 @@ import type { MetadataRoute } from 'next';
 import { getSitemapEntries } from '@/lib/cms';
 import { absoluteUrl } from '@/lib/seo';
 
-// Atualizado a cada publicação no CMS (revalidação dos hooks das coleções).
+// Atualizado a cada publicação no CMS (hooks das coleções) e, por segurança, a cada hora.
+export const revalidate = 3600;
+
 const STATIC_PAGES = [
   { path: '/', priority: 1 },
   { path: '/solucoes', priority: 0.9 },
