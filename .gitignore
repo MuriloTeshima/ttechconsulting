@@ -17,3 +17,6 @@ next-env.d.ts
 # Arquivos gerados automaticamente pelo next dev
 AGENTS.md
 CLAUDE.md
+
+# Uploads locais do Payload (em produção vão para o Vercel Blob)
+/media

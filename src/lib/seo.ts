@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { site } from '@/config/site';
-import type { FaqItem } from '@/content/faq';
+import type { FaqItem } from '@/lib/content-types';
 
 export function absoluteUrl(path = '/') {
   return new URL(path, site.url).toString();

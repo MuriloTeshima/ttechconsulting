@@ -22,11 +22,11 @@ export function pushEvent(payload: DataLayerEvent) {
 }
 
 /** Evento principal de conversão: clique em qualquer botão de WhatsApp. */
-export function trackWhatsAppClick({ location, topic }: { location: string; topic: string }) {
+export function trackWhatsAppClick({ location, context }: { location: string; context: string }) {
   pushEvent({
     event: 'whatsapp_click',
     cta_location: location,
-    service: topic,
+    service: context,
     page_path: window.location.pathname,
     ...readAttribution(),
   });

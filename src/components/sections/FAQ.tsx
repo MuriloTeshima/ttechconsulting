@@ -1,8 +1,8 @@
 import { ChevronDown } from 'lucide-react';
-import { faq, type FaqItem } from '@/content/faq';
+import type { FaqItem } from '@/lib/content-types';
 import { SectionIntro } from './SectionIntro';
 
-export function FAQ({ items = faq }: { items?: FaqItem[] }) {
+export function FAQ({ items }: { items: FaqItem[] }) {
   return (
     <div className="faq-layout">
       <SectionIntro eyebrow="Perguntas frequentes" title="Clareza antes de começar." />

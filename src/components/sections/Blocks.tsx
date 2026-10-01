@@ -1,5 +1,6 @@
 import { Check, Code2, MapPin, RefreshCw } from 'lucide-react';
-import { projects, type Project } from '@/content/projects';
+import { getProjects } from '@/lib/cms';
+import type { Project } from '@/lib/content-types';
 
 export function CheckList({ items }: { items: string[] }) {
   return (
@@ -35,10 +36,11 @@ export function TrustStrip() {
   );
 }
 
-export function ProjectCards({ list = projects }: { list?: Project[] }) {
+export async function ProjectCards({ list }: { list?: Project[] }) {
+  const projects = list ?? (await getProjects());
   return (
     <div className="project-grid">
-      {list.map((project, index) => (
+      {projects.map((project, index) => (
         <article className="project-card" key={project.title}>
           <div className="project-index">
             <span>{project.type}</span>

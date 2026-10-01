@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import type { WhatsAppTopic } from './whatsapp';
 
 export const projectTypes = [
   { value: 'sistema', label: 'Sistema sob medida' },
@@ -20,19 +19,6 @@ export const FORM_ID = 'formulario';
 
 /** Evento de janela para um botão pré-selecionar o tipo de projeto no formulário da página. */
 export const SELECT_PROJECT_EVENT = 'ttech:select-project';
-
-/** Tipo de projeto pré-selecionado conforme a página de origem. */
-export const projectTypeByTopic: Partial<Record<WhatsAppTopic, ProjectType>> = {
-  sistema: 'sistema',
-  automacao: 'automacao',
-  mvp: 'mvp',
-  site: 'site',
-  evolucao: 'evolucao',
-  'lp-propostas': 'automacao',
-  'lp-clinicas': 'automacao',
-  'lp-pedidos': 'sistema',
-  'lp-ribeirao': 'sistema',
-};
 
 const phoneDigits = (value: string) => value.replace(/\D/g, '');
 

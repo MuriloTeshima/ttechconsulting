@@ -4,21 +4,67 @@ Site institucional e de campanhas da TTech Consulting. A conversão acontece pel
 
 ## Stack
 
-- Next.js 16 (App Router, todas as páginas geradas estaticamente) + React 19 + React Compiler
+- Next.js 16 (App Router, páginas estáticas revalidadas sob demanda) + React 19 + React Compiler
+- Payload CMS 3 (painel em `/admin`) sobre Postgres, com Drizzle ORM
 - TypeScript (strict)
-- Tailwind CSS v4 + CSS da marca em `src/app/globals.css`
+- Tailwind CSS v4 + CSS da marca em `src/app/(frontend)/globals.css`
 - Yarn 4 (`nodeLinker: node-modules`)
 - `next/font` (Space Grotesk e Inter), `next/image`, imagens Open Graph geradas com `next/og`
+
+## Rodando localmente
+
+Pré-requisitos: Node 20+, Yarn 4 (via Corepack) e Docker.
+
+```bash
+yarn install
+cp .env.example .env          # preencha PAYLOAD_SECRET e PREVIEW_SECRET (openssl rand -hex 32)
+docker compose up -d          # Postgres local na porta 5434
+yarn seed                     # carga inicial: serviços, landing pages, projetos, públicos, logos e FAQ
+yarn dev                      # site em http://localhost:3000 e painel em http://localhost:3000/admin
+```
+
+No primeiro acesso ao `/admin`, o Payload pede para criar o usuário administrador. Em desenvolvimento, as tabelas são criadas e atualizadas automaticamente a partir das coleções, e as imagens enviadas ficam na pasta `media/`.
 
 ## Comandos
 
 ```bash
-yarn install
-yarn dev        # http://localhost:3000
-yarn build && yarn start
+yarn dev                 # desenvolvimento
+yarn build && yarn start # build de produção local (precisa do Postgres rodando)
 yarn lint
 yarn typecheck
+yarn seed                # carga inicial do CMS (idempotente)
+yarn generate:types      # tipos das coleções em src/payload-types.ts
+yarn generate:db-schema  # esquema Drizzle tipado em src/payload-generated-schema.ts
+yarn generate:importmap  # componentes do painel (após adicionar componentes customizados)
+yarn migrate:create nome # nova migração após alterar coleções
+yarn migrate             # aplica migrações pendentes
+yarn ci                  # migrate + build (comando de build na Vercel)
 ```
+
+## CMS (Payload)
+
+O conteúdo do site é editado no painel `/admin`:
+
+| Grupo | Coleções | Observação |
+| --- | --- | --- |
+| Site | Serviços, Públicos, Projetos, Logos de clientes, Perguntas frequentes (home) | A ordem no painel (arrastar) é a ordem no site |
+| Campanhas | Landing pages | Rascunho, pré-visualização e publicação; `/lp/<slug>` |
+| Blog | Posts, Categorias | Editor rico, rascunho, pré-visualização e SEO por post; `/blog/<slug>` |
+| Mídia | Arquivos | Texto alternativo obrigatório |
+
+- **Leitura:** `src/lib/cms.ts` usa a API local do Payload e converte os documentos para os tipos de `src/lib/content-types.ts`, usados pelos componentes.
+- **Consultas próprias:** use `(await getCms()).db.drizzle` com o esquema tipado de `src/payload-generated-schema.ts`.
+- **Atualização do site:** os hooks das coleções (`src/collections/shared/revalidate.ts`) revalidam as páginas ao salvar, publicar ou apagar. Conteúdo novo aparece sem novo deploy.
+- **Pré-visualização:** o botão "Pré-visualizar" do painel abre `/next/preview`, que exige o `PREVIEW_SECRET` e um usuário logado.
+- **Migrações:** ao alterar uma coleção, rode `yarn migrate:create <nome>` e commite o arquivo em `src/migrations/`. A Vercel aplica as migrações pendentes no build.
+
+### Configuração na Vercel
+
+1. **Banco:** *Storage → Create → Neon (Postgres)*, conectado ao projeto. A Vercel cria `DATABASE_URL`.
+2. **Imagens:** *Storage → Create → Blob*, conectado ao projeto. A Vercel cria `BLOB_READ_WRITE_TOKEN`.
+3. **Variáveis:** cadastre `PAYLOAD_SECRET` e `PREVIEW_SECRET` (valores novos, diferentes dos locais).
+4. **Build:** em *Settings → Build and Deployment*, defina o *Build Command* como `yarn ci`.
+5. Depois do primeiro deploy, rode o seed apontando para o banco de produção (uma única vez) e crie o usuário em `https://ttechcs.com.br/admin`.
 
 ## Variáveis de ambiente
 
@@ -60,17 +106,24 @@ Os botões de chamada (header, hero, CTA final, rodapé, landing pages) usam `Fo
 ```
 src/
   app/
-    (site)/                 páginas institucionais (header, footer e botão flutuante)
-      [servico]/            páginas de solução geradas a partir de content/services.ts
-    (campanhas)/lp/[campanha]/  landing pages de tráfego pago (sem navegação)
-    sitemap.ts, robots.ts, manifest.ts, opengraph-image.tsx
-  components/               Logo, ContactLink, layout/, sections/, analytics/
-  config/site.ts            dados da empresa e navegação
-  content/                  textos: serviços, projetos, FAQ e landing pages
-  lib/                      whatsapp, analytics, atribuição (UTM), consentimento, SEO, OG
+    (frontend)/                 layout raiz do site
+      (site)/                   páginas institucionais, serviços ([servico]) e blog
+      (campanhas)/lp/[campanha]/  landing pages de tráfego pago (sem navegação)
+    (payload)/                  painel /admin e API do Payload (arquivos gerados)
+    next/preview, next/exit-preview  modo de pré-visualização de rascunhos
+    global-not-found.tsx        404 para URLs inexistentes (há dois layouts raiz)
+    sitemap.ts, robots.ts, manifest.ts
+  collections/, globals/        modelos de conteúdo do CMS
+  components/                   layout/, sections/, contact/, blog/, analytics/
+  config/site.ts                dados da empresa e navegação
+  lib/cms.ts                    leitura do conteúdo do CMS
+  lib/                          whatsapp, analytics, atribuição (UTM), consentimento, SEO, OG
+  migrations/                   migrações do banco (geradas pelo Payload)
+  seed/                         carga inicial do CMS
+  payload.config.ts
 ```
 
-Os textos ficam em `src/content/`. Para mudar uma copy, edite o conteúdo, não o componente.
+Os textos são editados no painel `/admin`, não no código.
 
 ## Marketing e mensuração
 
@@ -81,7 +134,7 @@ Os textos ficam em `src/content/`. Para mudar uma copy, edite o conteúdo, não 
 - `/lp/portal-pedidos-distribuidoras`: distribuidoras
 - `/lp/desenvolvimento-sistemas-ribeirao-preto`: busca local
 
-Para criar uma LP, adicione um item em `src/content/landing-pages.ts` e a mensagem correspondente em `src/lib/whatsapp.ts`. A página, a imagem OG, o JSON-LD e a entrada no sitemap são gerados automaticamente. Use `index: false` para páginas que não devem aparecer no Google.
+Para criar uma LP, use *Campanhas → Landing pages* no painel: preencha os textos, a mensagem do WhatsApp e o tipo de projeto, pré-visualize e publique. A página, a imagem OG, o JSON-LD e a entrada no sitemap são gerados automaticamente. Desmarque "Aparecer no Google" para páginas que não devem ser indexadas.
 
 **Eventos de conversão:** o envio do formulário dispara `form_submit`, o clique em WhatsApp dispara `whatsapp_click` e o clique em um botão que leva ao formulário dispara `cta_click`. Todos enviam ao `dataLayer` os mesmos parâmetros:
 

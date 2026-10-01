@@ -1,6 +1,5 @@
 import { MapPin, MessageCircle } from 'lucide-react';
-import { FORM_ID, projectTypeByTopic } from '@/lib/contact-schema';
-import type { WhatsAppTopic } from '@/lib/whatsapp';
+import { FORM_ID, type ProjectType } from '@/lib/contact-schema';
 import { WhatsAppLink } from '../WhatsAppLink';
 import { SectionIntro } from '../sections/SectionIntro';
 import { ContactForm } from './ContactForm';
@@ -9,14 +8,18 @@ export function ContactSection({
   eyebrow = 'FALE COM A TTECH',
   title = 'Conte sobre o projeto.',
   description = 'Preencha o formulário com o contexto do seu processo e respondemos pelo e-mail ou WhatsApp informado. Se preferir uma conversa mais rápida, chame direto no WhatsApp.',
-  topic = 'geral',
+  projectType,
+  whatsappMessage,
   location,
   id = FORM_ID,
 }: {
   eyebrow?: string;
   title?: string;
   description?: string;
-  topic?: WhatsAppTopic;
+  /** Tipo de projeto pré-selecionado no formulário. */
+  projectType?: ProjectType;
+  /** Mensagem do atalho de WhatsApp; sem ela, usa a mensagem padrão. */
+  whatsappMessage?: string;
   location: string;
   id?: string;
 }) {
@@ -31,7 +34,12 @@ export function ContactSection({
             </span>
             <div>
               <strong>Prefere conversar agora?</strong>
-              <WhatsAppLink topic={topic} location={`${location}-whatsapp`} className="text-link">
+              <WhatsAppLink
+                message={whatsappMessage}
+                context={projectType}
+                location={`${location}-whatsapp`}
+                className="text-link"
+              >
                 Abrir conversa no WhatsApp
               </WhatsAppLink>
             </div>
@@ -41,7 +49,7 @@ export function ContactSection({
           </p>
         </div>
         <div className="contact-form-card">
-          <ContactForm location={location} defaultProjectType={projectTypeByTopic[topic]} />
+          <ContactForm location={location} defaultProjectType={projectType} />
         </div>
       </div>
     </section>

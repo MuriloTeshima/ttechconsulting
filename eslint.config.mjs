@@ -5,5 +5,17 @@ import nextTs from 'eslint-config-next/typescript';
 export default defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', '.yarn/**']),
+  globalIgnores([
+    '.next/**',
+    'out/**',
+    'build/**',
+    'next-env.d.ts',
+    '.yarn/**',
+    'media/**',
+    // Gerados pelo Payload
+    'src/payload-types.ts',
+    'src/payload-generated-schema.ts',
+    'src/migrations/**',
+    'src/app/(payload)/**',
+  ]),
 ]);
