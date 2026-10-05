@@ -6,6 +6,7 @@ import { ArrowUpRight, CircleCheck, LoaderCircle } from 'lucide-react';
 import { sendContact } from '@/app/actions/contact';
 import { trackFormSubmit } from '@/lib/analytics';
 import { readAttribution } from '@/lib/attribution';
+import { formatPhone } from '@/lib/phone';
 import {
   isProjectType,
   projectTypes,
@@ -22,15 +23,6 @@ type ContactFormProps = {
 };
 
 const initialState: ContactState = { status: 'idle' };
-
-function formatPhone(value: string) {
-  const digits = value.replace(/\D/g, '').slice(0, 11);
-  if (digits.length <= 2) return digits;
-  if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
-  if (digits.length <= 10)
-    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
-  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
-}
 
 export function ContactForm(props: ContactFormProps) {
   // Trocar a key remonta o formulário limpo depois de um envio com sucesso.

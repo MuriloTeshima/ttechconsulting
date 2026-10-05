@@ -72,11 +72,16 @@ export interface Config {
     projects: Project;
     'client-logos': ClientLogo;
     'landing-pages': LandingPage;
+    quizzes: Quiz;
+    'quiz-responses': QuizResponse;
     posts: Post;
     categories: Category;
     media: Media;
     users: User;
+    exports: Export;
+    imports: Import;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -88,11 +93,16 @@ export interface Config {
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'client-logos': ClientLogosSelect<false> | ClientLogosSelect<true>;
     'landing-pages': LandingPagesSelect<false> | LandingPagesSelect<true>;
+    quizzes: QuizzesSelect<false> | QuizzesSelect<true>;
+    'quiz-responses': QuizResponsesSelect<false> | QuizResponsesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    exports: ExportsSelect<false> | ExportsSelect<true>;
+    imports: ImportsSelect<false> | ImportsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -113,7 +123,14 @@ export interface Config {
   };
   user: User;
   jobs: {
-    tasks: unknown;
+    tasks: {
+      createCollectionExport: TaskCreateCollectionExport;
+      createCollectionImport: TaskCreateCollectionImport;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
   };
 }
@@ -313,6 +330,10 @@ export interface LandingPage {
   projectType: 'sistema' | 'automacao' | 'mvp' | 'site' | 'evolucao' | 'outro';
   index?: boolean | null;
   /**
+   * Opcional: mostra na página um convite para o diagnóstico.
+   */
+  quiz?: (number | null) | Quiz;
+  /**
    * Para títulos longos caberem em ~60 caracteres.
    */
   shortBrand?: boolean | null;
@@ -367,6 +388,220 @@ export interface LandingPage {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * Diagnósticos interativos publicados em /diagnostico/<slug>.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quizzes".
+ */
+export interface Quiz {
+  id: number;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  /**
+   * Ex.: Empresas com ERP.
+   */
+  segment: string;
+  /**
+   * Pré-selecionado no formulário quando o contato vem desta página.
+   */
+  projectType: 'sistema' | 'automacao' | 'mvp' | 'site' | 'evolucao' | 'outro';
+  index?: boolean | null;
+  eyebrow: string;
+  headline: string;
+  description: string;
+  startLabel: string;
+  estimatedTime?: string | null;
+  questions: (
+    | {
+        /**
+         * Curto e único no quiz (ex.: erp, processos). Aparece nas respostas.
+         */
+        key: string;
+        question: string;
+        help?: string | null;
+        required?: boolean | null;
+        options: {
+          label: string;
+          points?: number | null;
+          /**
+           * Chaves das soluções (aba Soluções), separadas por vírgula. Ex.: portal-pedidos
+           */
+          recommends?: string | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'single';
+      }
+    | {
+        /**
+         * Curto e único no quiz (ex.: erp, processos). Aparece nas respostas.
+         */
+        key: string;
+        question: string;
+        help?: string | null;
+        required?: boolean | null;
+        options: {
+          label: string;
+          points?: number | null;
+          /**
+           * Chaves das soluções (aba Soluções), separadas por vírgula. Ex.: portal-pedidos
+           */
+          recommends?: string | null;
+          id?: string | null;
+        }[];
+        /**
+         * Vazio = sem limite.
+         */
+        maxSelections?: number | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'multiple';
+      }
+    | {
+        /**
+         * Curto e único no quiz (ex.: erp, processos). Aparece nas respostas.
+         */
+        key: string;
+        question: string;
+        help?: string | null;
+        required?: boolean | null;
+        minLabel: string;
+        maxLabel: string;
+        /**
+         * Pontos = (resposta − 1) × peso.
+         */
+        weight?: number | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'scale';
+      }
+    | {
+        /**
+         * Curto e único no quiz (ex.: erp, processos). Aparece nas respostas.
+         */
+        key: string;
+        question: string;
+        help?: string | null;
+        required?: boolean | null;
+        /**
+         * Ex.: pessoas
+         */
+        unit?: string | null;
+        placeholder?: string | null;
+        /**
+         * A primeira faixa que contém o valor define os pontos.
+         */
+        ranges?:
+          | {
+              min?: number | null;
+              max?: number | null;
+              points?: number | null;
+              /**
+               * Chaves das soluções (aba Soluções), separadas por vírgula. Ex.: portal-pedidos
+               */
+              recommends?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'number';
+      }
+    | {
+        /**
+         * Curto e único no quiz (ex.: erp, processos). Aparece nas respostas.
+         */
+        key: string;
+        question: string;
+        help?: string | null;
+        required?: boolean | null;
+        placeholder?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'text';
+      }
+  )[];
+  solutions?:
+    | {
+        /**
+         * Usada no campo "Recomenda".
+         */
+        key: string;
+        title: string;
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  results: {
+    title: string;
+    minScore: number;
+    summary: string;
+    id?: string | null;
+  }[];
+  /**
+   * O perfil obtido é acrescentado automaticamente ao final.
+   */
+  whatsappMessage: string;
+  leadTitle: string;
+  leadDescription: string;
+  askCompany?: boolean | null;
+  askRole?: boolean | null;
+  submitLabel: string;
+  /**
+   * O site acrescenta " | TTech Consulting". Total ideal: até 60.
+   */
+  metaTitle: string;
+  metaDescription: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Leads dos diagnósticos. Atualize o status e anote o andamento de cada contato.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quiz-responses".
+ */
+export interface QuizResponse {
+  id: number;
+  status: 'novo' | 'em-contato' | 'qualificado' | 'descartado';
+  notes?: string | null;
+  name: string;
+  email: string;
+  phone: string;
+  company?: string | null;
+  role?: string | null;
+  quizTitle: string;
+  profile: string;
+  score: number;
+  quiz?: (number | null) | Quiz;
+  recommendations?: string | null;
+  answers?:
+    | {
+        question?: string | null;
+        answer?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  pagePath?: string | null;
+  attribution?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -460,6 +695,80 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exports".
+ */
+export interface Export {
+  id: number;
+  name?: string | null;
+  format: 'csv' | 'json';
+  limit?: number | null;
+  page?: number | null;
+  sort?: string | null;
+  sortOrder?: ('asc' | 'desc') | null;
+  drafts?: ('yes' | 'no') | null;
+  selectionToUse?: ('currentSelection' | 'currentFilters' | 'all') | null;
+  fields?: string[] | null;
+  collectionSlug: string;
+  where?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imports".
+ */
+export interface Import {
+  id: number;
+  collectionSlug: string;
+  importMode?: ('create' | 'update' | 'upsert') | null;
+  matchField?: string | null;
+  status?: ('pending' | 'completed' | 'partial' | 'failed') | null;
+  summary?: {
+    imported?: number | null;
+    updated?: number | null;
+    total?: number | null;
+    issues?: number | null;
+    issueDetails?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -474,6 +783,98 @@ export interface PayloadKv {
     | number
     | boolean
     | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: number;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'createCollectionExport' | 'createCollectionImport';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'createCollectionExport' | 'createCollectionImport') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -501,6 +902,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'landing-pages';
         value: number | LandingPage;
+      } | null)
+    | ({
+        relationTo: 'quizzes';
+        value: number | Quiz;
+      } | null)
+    | ({
+        relationTo: 'quiz-responses';
+        value: number | QuizResponse;
       } | null)
     | ({
         relationTo: 'posts';
@@ -659,6 +1068,7 @@ export interface LandingPagesSelect<T extends boolean = true> {
   slug?: T;
   projectType?: T;
   index?: T;
+  quiz?: T;
   shortBrand?: T;
   eyebrow?: T;
   title?: T;
@@ -705,6 +1115,165 @@ export interface LandingPagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quizzes_select".
+ */
+export interface QuizzesSelect<T extends boolean = true> {
+  title?: T;
+  generateSlug?: T;
+  slug?: T;
+  segment?: T;
+  projectType?: T;
+  index?: T;
+  eyebrow?: T;
+  headline?: T;
+  description?: T;
+  startLabel?: T;
+  estimatedTime?: T;
+  questions?:
+    | T
+    | {
+        single?:
+          | T
+          | {
+              key?: T;
+              question?: T;
+              help?: T;
+              required?: T;
+              options?:
+                | T
+                | {
+                    label?: T;
+                    points?: T;
+                    recommends?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        multiple?:
+          | T
+          | {
+              key?: T;
+              question?: T;
+              help?: T;
+              required?: T;
+              options?:
+                | T
+                | {
+                    label?: T;
+                    points?: T;
+                    recommends?: T;
+                    id?: T;
+                  };
+              maxSelections?: T;
+              id?: T;
+              blockName?: T;
+            };
+        scale?:
+          | T
+          | {
+              key?: T;
+              question?: T;
+              help?: T;
+              required?: T;
+              minLabel?: T;
+              maxLabel?: T;
+              weight?: T;
+              id?: T;
+              blockName?: T;
+            };
+        number?:
+          | T
+          | {
+              key?: T;
+              question?: T;
+              help?: T;
+              required?: T;
+              unit?: T;
+              placeholder?: T;
+              ranges?:
+                | T
+                | {
+                    min?: T;
+                    max?: T;
+                    points?: T;
+                    recommends?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        text?:
+          | T
+          | {
+              key?: T;
+              question?: T;
+              help?: T;
+              required?: T;
+              placeholder?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  solutions?:
+    | T
+    | {
+        key?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  results?:
+    | T
+    | {
+        title?: T;
+        minScore?: T;
+        summary?: T;
+        id?: T;
+      };
+  whatsappMessage?: T;
+  leadTitle?: T;
+  leadDescription?: T;
+  askCompany?: T;
+  askRole?: T;
+  submitLabel?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quiz-responses_select".
+ */
+export interface QuizResponsesSelect<T extends boolean = true> {
+  status?: T;
+  notes?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  company?: T;
+  role?: T;
+  quizTitle?: T;
+  profile?: T;
+  score?: T;
+  quiz?: T;
+  recommendations?: T;
+  answers?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  pagePath?: T;
+  attribution?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -810,11 +1379,100 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exports_select".
+ */
+export interface ExportsSelect<T extends boolean = true> {
+  name?: T;
+  format?: T;
+  limit?: T;
+  page?: T;
+  sort?: T;
+  sortOrder?: T;
+  drafts?: T;
+  selectionToUse?: T;
+  fields?: T;
+  collectionSlug?: T;
+  where?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imports_select".
+ */
+export interface ImportsSelect<T extends boolean = true> {
+  collectionSlug?: T;
+  importMode?: T;
+  matchField?: T;
+  status?: T;
+  summary?:
+    | T
+    | {
+        imported?: T;
+        updated?: T;
+        total?: T;
+        issues?: T;
+        issueDetails?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -889,6 +1547,69 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCreateCollectionExport".
+ */
+export interface TaskCreateCollectionExport {
+  input: {
+    id: string;
+    name: string;
+    batchSize?: number | null;
+    collectionSlug:
+      | 'services'
+      | 'audiences'
+      | 'projects'
+      | 'client-logos'
+      | 'landing-pages'
+      | 'quizzes'
+      | 'quiz-responses'
+      | 'posts'
+      | 'categories'
+      | 'media'
+      | 'users'
+      | 'exports'
+      | 'imports';
+    drafts?: ('yes' | 'no') | null;
+    exportCollection: string;
+    fields?: string[] | null;
+    format: 'csv' | 'json';
+    limit?: number | null;
+    locale?: string | null;
+    maxLimit?: number | null;
+    page?: number | null;
+    sort?: string | null;
+    userCollection?: string | null;
+    userID?: string | null;
+    where?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCreateCollectionImport".
+ */
+export interface TaskCreateCollectionImport {
+  input: {
+    importId: string;
+    importCollection: string;
+    userID?: string | null;
+    userCollection?: string | null;
+    batchSize?: number | null;
+    debug?: boolean | null;
+    defaultVersionStatus?: ('draft' | 'published') | null;
+    maxLimit?: number | null;
+  };
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

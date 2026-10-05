@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { z } from 'zod';
 import { contactSchema, type ContactField, type ContactState } from '@/lib/contact-schema';
 import { isEmailConfigured, sendLeadEmail } from '@/lib/emailjs';
+import { isRateLimited } from '@/lib/rate-limit';
 
 const FIELDS: ContactField[] = [
   'name',
@@ -15,19 +16,6 @@ const FIELDS: ContactField[] = [
   'consent',
 ];
 const MIN_FILL_TIME_MS = 3000;
-const RATE_LIMIT = { max: 5, windowMs: 10 * 60 * 1000 };
-
-// Limite simples por instância do servidor; em serverless ele reinicia a cada nova instância.
-const attempts = new Map<string, number[]>();
-
-function isRateLimited(key: string) {
-  const now = Date.now();
-  const recent = (attempts.get(key) ?? []).filter((time) => now - time < RATE_LIMIT.windowMs);
-  recent.push(now);
-  attempts.set(key, recent);
-  return recent.length > RATE_LIMIT.max;
-}
-
 function readContext(formData: FormData) {
   let attribution: Record<string, string> = {};
   try {
