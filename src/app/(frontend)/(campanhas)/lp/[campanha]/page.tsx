@@ -13,6 +13,7 @@ import { LogoMarquee } from '@/components/sections/LogoMarquee';
 import { Process } from '@/components/sections/Process';
 import { SectionIntro } from '@/components/sections/SectionIntro';
 import { PreviewBanner } from '@/components/PreviewBanner';
+import { QuizInviteSection } from '@/components/quiz/QuizInviteSection';
 import { getLandingPage, getLandingPages } from '@/lib/cms';
 import { faqSchema, pageMetadata, serviceSchema } from '@/lib/seo';
 
@@ -98,6 +99,8 @@ export default async function LandingPage({ params }: Props) {
             </div>
           </div>
         </section>
+
+        {page.quiz && <QuizInviteSection quiz={page.quiz} />}
 
         <section className="section section-services" id="como-funciona">
           <div className="container">

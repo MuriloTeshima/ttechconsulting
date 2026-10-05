@@ -58,6 +58,17 @@ export type LandingPage = {
   whatsappMessage: string;
   /** Liga/desliga a indexação da página pelos buscadores. */
   index: boolean;
+  /** Quiz do nicho, exibido como convite na página (só se estiver publicado). */
+  quiz: QuizInvite | null;
+};
+
+export type QuizInvite = {
+  slug: string;
+  eyebrow: string;
+  headline: string;
+  description: string;
+  startLabel: string;
+  estimatedTime: string | null;
 };
 
 export type Project = { type: string; title: string; description: string; tags: string[] };

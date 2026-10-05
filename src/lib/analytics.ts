@@ -65,3 +65,16 @@ export function trackCtaClick({
     ...readAttribution(),
   });
 }
+
+/** Etapas do quiz: início, cada pergunta respondida e conclusão (lead). */
+export function trackQuiz(
+  event: 'quiz_start' | 'quiz_step' | 'quiz_complete',
+  params: Record<string, string | number>,
+) {
+  pushEvent({
+    event,
+    page_path: window.location.pathname,
+    ...params,
+    ...readAttribution(),
+  });
+}

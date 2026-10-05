@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres';
+import { importExportPlugin } from '@payloadcms/plugin-import-export';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob';
 import { pt } from '@payloadcms/translations/languages/pt';
@@ -13,6 +14,8 @@ import { LandingPages } from './collections/LandingPages';
 import { Media } from './collections/Media';
 import { Posts } from './collections/Posts';
 import { Projects } from './collections/Projects';
+import { QuizResponses } from './collections/QuizResponses';
+import { Quizzes } from './collections/Quizzes';
 import { Services } from './collections/Services';
 import { Users } from './collections/Users';
 import { HomeFaq } from './globals/HomeFaq';
@@ -32,6 +35,8 @@ export default buildConfig({
     Projects,
     ClientLogos,
     LandingPages,
+    Quizzes,
+    QuizResponses,
     Posts,
     Categories,
     Media,
@@ -50,6 +55,16 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
+    // Exportação das respostas dos quizzes em CSV, baixado na hora (sem salvar arquivo no servidor).
+    importExportPlugin({
+      collections: [
+        {
+          slug: 'quiz-responses',
+          import: false,
+          export: { format: 'csv', disableSave: true, disableJobsQueue: true },
+        },
+      ],
+    }),
     // Em produção as imagens vão para o Vercel Blob; localmente ficam em /media.
     vercelBlobStorage({
       enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),

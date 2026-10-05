@@ -3,6 +3,8 @@ import config from '@payload-config';
 import { getPayload } from 'payload';
 import { cache } from 'react';
 import type * as P from '@/payload-types';
+import type { PublicQuiz } from './quiz';
+import { toPublicQuiz } from './quiz-scoring';
 import type {
   Audience,
   ClientLogo,
@@ -12,6 +14,7 @@ import type {
   Post,
   PostSummary,
   Project,
+  QuizInvite,
   Service,
   TitledText,
 } from './content-types';
@@ -107,6 +110,19 @@ function toLandingPage(doc: P.LandingPage): LandingPage {
     projectType: doc.projectType,
     whatsappMessage: doc.whatsappMessage,
     index: doc.index ?? true,
+    quiz: toQuizInvite(doc.quiz),
+  };
+}
+
+function toQuizInvite(quiz: P.LandingPage['quiz']): QuizInvite | null {
+  if (!quiz || typeof quiz === 'number' || quiz._status !== 'published') return null;
+  return {
+    slug: quiz.slug,
+    eyebrow: quiz.eyebrow,
+    headline: quiz.headline,
+    description: quiz.description,
+    startLabel: quiz.startLabel,
+    estimatedTime: quiz.estimatedTime ?? null,
   };
 }
 
@@ -118,7 +134,7 @@ export const getLandingPages = cache(async (): Promise<LandingPage[]> => {
     collection: 'landing-pages',
     where: PUBLISHED,
     sort: '_order',
-    depth: 0,
+    depth: 1,
     limit: 100,
   });
   return docs.map(toLandingPage);
@@ -132,7 +148,7 @@ export const getLandingPage = cache(async (slug: string, draft = false) => {
     collection: 'landing-pages',
     draft,
     where: draft ? { slug: { equals: slug } } : { and: [{ slug: { equals: slug } }, PUBLISHED] },
-    depth: 0,
+    depth: 1,
     limit: 1,
   });
   return docs[0] ? toLandingPage(docs[0]) : null;
@@ -249,6 +265,41 @@ export const getPost = cache(async (slug: string, draft = false): Promise<Post |
   };
 });
 
+// Quizzes
+
+/** Documento completo do quiz (com pontuação). Só para uso no servidor. */
+export const getQuizDoc = cache(async (slug: string, draft = false) => {
+  const { docs } = await (
+    await getCms()
+  ).find({
+    collection: 'quizzes',
+    draft,
+    where: draft ? { slug: { equals: slug } } : { and: [{ slug: { equals: slug } }, PUBLISHED] },
+    depth: 0,
+    limit: 1,
+  });
+  return docs[0] ?? null;
+});
+
+/** Quiz no formato público, sem pontos nem recomendações. */
+export async function getQuiz(slug: string, draft = false): Promise<PublicQuiz | null> {
+  const doc = await getQuizDoc(slug, draft);
+  return doc ? toPublicQuiz(doc) : null;
+}
+
+export const getQuizSlugs = cache(async () => {
+  const { docs } = await (
+    await getCms()
+  ).find({
+    collection: 'quizzes',
+    where: PUBLISHED,
+    select: { slug: true },
+    depth: 0,
+    limit: 100,
+  });
+  return docs.map((doc) => doc.slug);
+});
+
 // Sitemap
 
 export type SitemapEntry = { path: string; updatedAt: string; priority: number };
@@ -257,7 +308,7 @@ export type SitemapEntry = { path: string; updatedAt: string; priority: number }
 export async function getSitemapEntries(): Promise<SitemapEntry[]> {
   const cms = await getCms();
   const select = { slug: true, updatedAt: true } as const;
-  const [services, landingPages, posts] = await Promise.all([
+  const [services, landingPages, posts, quizzes] = await Promise.all([
     cms.find({ collection: 'services', select, sort: '_order', limit: 100, depth: 0 }),
     cms.find({
       collection: 'landing-pages',
@@ -275,6 +326,13 @@ export async function getSitemapEntries(): Promise<SitemapEntry[]> {
       limit: 1000,
       depth: 0,
     }),
+    cms.find({
+      collection: 'quizzes',
+      select,
+      where: { and: [PUBLISHED, { index: { equals: true } }] },
+      limit: 100,
+      depth: 0,
+    }),
   ]);
   return [
     ...services.docs.map((doc) => ({
@@ -286,6 +344,11 @@ export async function getSitemapEntries(): Promise<SitemapEntry[]> {
       path: `/lp/${doc.slug}`,
       updatedAt: doc.updatedAt,
       priority: 0.8,
+    })),
+    ...quizzes.docs.map((doc) => ({
+      path: `/diagnostico/${doc.slug}`,
+      updatedAt: doc.updatedAt,
+      priority: 0.7,
     })),
     ...posts.docs.map((doc) => ({
       path: `/blog/${doc.slug}`,

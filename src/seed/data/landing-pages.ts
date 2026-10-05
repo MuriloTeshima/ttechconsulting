@@ -5,7 +5,7 @@ import type { LandingPage } from '@/lib/content-types';
  * Cada página liga uma dor específica a uma oferta específica.
  * Não publicar números, cases ou depoimentos sem comprovação e autorização.
  */
-export const landingPages: LandingPage[] = [
+export const landingPages: Omit<LandingPage, 'quiz'>[] = [
   {
     slug: 'automacao-propostas-documentos',
     segment: 'Serviços B2B',

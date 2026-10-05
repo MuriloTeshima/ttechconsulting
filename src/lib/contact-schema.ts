@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isValidPhone } from './phone';
 
 export const projectTypes = [
   { value: 'sistema', label: 'Sistema sob medida' },
@@ -20,18 +21,10 @@ export const FORM_ID = 'formulario';
 /** Evento de janela para um botão pré-selecionar o tipo de projeto no formulário da página. */
 export const SELECT_PROJECT_EVENT = 'ttech:select-project';
 
-const phoneDigits = (value: string) => value.replace(/\D/g, '');
-
 export const contactSchema = z.object({
   name: z.string().trim().min(2, 'Informe seu nome.').max(120, 'Use no máximo 120 caracteres.'),
   email: z.string().trim().toLowerCase().pipe(z.email('Informe um e-mail válido.')),
-  phone: z
-    .string()
-    .trim()
-    .refine((value) => {
-      const digits = phoneDigits(value);
-      return digits.length >= 10 && digits.length <= 13;
-    }, 'Informe um WhatsApp com DDD.'),
+  phone: z.string().trim().refine(isValidPhone, 'Informe um WhatsApp com DDD.'),
   company: z.string().trim().max(120, 'Use no máximo 120 caracteres.').optional().default(''),
   projectType: z.enum(projectTypes.map((type) => type.value) as [ProjectType, ...ProjectType[]], {
     error: 'Escolha o tipo de projeto.',
@@ -53,3 +46,18 @@ export type ContactState = {
   fieldErrors?: Partial<Record<ContactField, string>>;
   values?: Partial<Record<ContactField, string>>;
 };
+
+/** Contato pedido antes do resultado do quiz. */
+export const quizLeadSchema = z.object({
+  name: z.string().trim().min(2, 'Informe seu nome.').max(120, 'Use no máximo 120 caracteres.'),
+  email: z.string().trim().toLowerCase().pipe(z.email('Informe um e-mail válido.')),
+  phone: z.string().trim().refine(isValidPhone, 'Informe um WhatsApp com DDD.'),
+  company: z.string().trim().max(120, 'Use no máximo 120 caracteres.').optional().default(''),
+  role: z.string().trim().max(120, 'Use no máximo 120 caracteres.').optional().default(''),
+  consent: z.literal(true, { error: 'É preciso concordar para ver o resultado.' }),
+});
+
+export type QuizLead = z.input<typeof quizLeadSchema>;
+
+/** Estado do formulário antes da validação (a caixa de consentimento começa desmarcada). */
+export type QuizLeadInput = Omit<QuizLead, 'consent'> & { consent: boolean };

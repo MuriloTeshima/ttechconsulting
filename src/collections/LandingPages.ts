@@ -44,6 +44,16 @@ export const LandingPages: CollectionConfig = {
       admin: { position: 'sidebar' },
     },
     {
+      name: 'quiz',
+      label: 'Quiz do nicho',
+      type: 'relationship',
+      relationTo: 'quizzes',
+      admin: {
+        position: 'sidebar',
+        description: 'Opcional: mostra na página um convite para o diagnóstico.',
+      },
+    },
+    {
       name: 'shortBrand',
       label: 'Usar marca curta no título ("| TTech")',
       type: 'checkbox',

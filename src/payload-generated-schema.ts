@@ -18,6 +18,7 @@ import {
   boolean,
   timestamp,
   numeric,
+  text,
   jsonb,
   pgEnum,
 } from '@payloadcms/db-postgres/drizzle/pg-core';
@@ -63,10 +64,65 @@ export const enum__landing_pages_v_version_status = pgEnum('enum__landing_pages_
   'draft',
   'published',
 ]);
+export const enum_quizzes_project_type = pgEnum('enum_quizzes_project_type', [
+  'sistema',
+  'automacao',
+  'mvp',
+  'site',
+  'evolucao',
+  'outro',
+]);
+export const enum_quizzes_status = pgEnum('enum_quizzes_status', ['draft', 'published']);
+export const enum__quizzes_v_version_project_type = pgEnum('enum__quizzes_v_version_project_type', [
+  'sistema',
+  'automacao',
+  'mvp',
+  'site',
+  'evolucao',
+  'outro',
+]);
+export const enum__quizzes_v_version_status = pgEnum('enum__quizzes_v_version_status', [
+  'draft',
+  'published',
+]);
+export const enum_quiz_responses_status = pgEnum('enum_quiz_responses_status', [
+  'novo',
+  'em-contato',
+  'qualificado',
+  'descartado',
+]);
 export const enum_posts_status = pgEnum('enum_posts_status', ['draft', 'published']);
 export const enum__posts_v_version_status = pgEnum('enum__posts_v_version_status', [
   'draft',
   'published',
+]);
+export const enum_exports_format = pgEnum('enum_exports_format', ['csv', 'json']);
+export const enum_exports_sort_order = pgEnum('enum_exports_sort_order', ['asc', 'desc']);
+export const enum_exports_drafts = pgEnum('enum_exports_drafts', ['yes', 'no']);
+export const enum_imports_import_mode = pgEnum('enum_imports_import_mode', [
+  'create',
+  'update',
+  'upsert',
+]);
+export const enum_imports_status = pgEnum('enum_imports_status', [
+  'pending',
+  'completed',
+  'partial',
+  'failed',
+]);
+export const enum_payload_jobs_log_task_slug = pgEnum('enum_payload_jobs_log_task_slug', [
+  'inline',
+  'createCollectionExport',
+  'createCollectionImport',
+]);
+export const enum_payload_jobs_log_state = pgEnum('enum_payload_jobs_log_state', [
+  'failed',
+  'succeeded',
+]);
+export const enum_payload_jobs_task_slug = pgEnum('enum_payload_jobs_task_slug', [
+  'inline',
+  'createCollectionExport',
+  'createCollectionImport',
 ]);
 
 export const services_deliverables = pgTable(
@@ -356,6 +412,9 @@ export const landing_pages = pgTable(
     slug: varchar('slug'),
     projectType: enum_landing_pages_project_type('project_type').default('sistema'),
     index: boolean('index').default(true),
+    quiz: integer('quiz_id').references(() => quizzes.id, {
+      onDelete: 'set null',
+    }),
     shortBrand: boolean('short_brand').default(false),
     eyebrow: varchar('eyebrow'),
     title: varchar('title'),
@@ -384,6 +443,7 @@ export const landing_pages = pgTable(
   (columns) => [
     index('landing_pages__order_idx').on(columns._order),
     uniqueIndex('landing_pages_slug_idx').on(columns.slug),
+    index('landing_pages_quiz_idx').on(columns.quiz),
     index('landing_pages_updated_at_idx').on(columns.updatedAt),
     index('landing_pages_created_at_idx').on(columns.createdAt),
     index('landing_pages__status_idx').on(columns._status),
@@ -486,6 +546,9 @@ export const _landing_pages_v = pgTable(
     version_projectType:
       enum__landing_pages_v_version_project_type('version_project_type').default('sistema'),
     version_index: boolean('version_index').default(true),
+    version_quiz: integer('version_quiz_id').references(() => quizzes.id, {
+      onDelete: 'set null',
+    }),
     version_shortBrand: boolean('version_short_brand').default(false),
     version_eyebrow: varchar('version_eyebrow'),
     version_title: varchar('version_title'),
@@ -526,12 +589,654 @@ export const _landing_pages_v = pgTable(
     index('_landing_pages_v_parent_idx').on(columns.parent),
     index('_landing_pages_v_version_version__order_idx').on(columns.version__order),
     index('_landing_pages_v_version_version_slug_idx').on(columns.version_slug),
+    index('_landing_pages_v_version_version_quiz_idx').on(columns.version_quiz),
     index('_landing_pages_v_version_version_updated_at_idx').on(columns.version_updatedAt),
     index('_landing_pages_v_version_version_created_at_idx').on(columns.version_createdAt),
     index('_landing_pages_v_version_version__status_idx').on(columns.version__status),
     index('_landing_pages_v_created_at_idx').on(columns.createdAt),
     index('_landing_pages_v_updated_at_idx').on(columns.updatedAt),
     index('_landing_pages_v_latest_idx').on(columns.latest),
+  ],
+);
+
+export const quizzes_blocks_single_options = pgTable(
+  'quizzes_blocks_single_options',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    label: varchar('label'),
+    points: numeric('points', { mode: 'number' }).default(0),
+    recommends: varchar('recommends'),
+  },
+  (columns) => [
+    index('quizzes_blocks_single_options_order_idx').on(columns._order),
+    index('quizzes_blocks_single_options_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [quizzes_blocks_single.id],
+      name: 'quizzes_blocks_single_options_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const quizzes_blocks_single = pgTable(
+  'quizzes_blocks_single',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: varchar('id').primaryKey(),
+    key: varchar('key'),
+    question: varchar('question'),
+    help: varchar('help'),
+    required: boolean('required').default(true),
+    blockName: varchar('block_name'),
+  },
+  (columns) => [
+    index('quizzes_blocks_single_order_idx').on(columns._order),
+    index('quizzes_blocks_single_parent_id_idx').on(columns._parentID),
+    index('quizzes_blocks_single_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [quizzes.id],
+      name: 'quizzes_blocks_single_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const quizzes_blocks_multiple_options = pgTable(
+  'quizzes_blocks_multiple_options',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    label: varchar('label'),
+    points: numeric('points', { mode: 'number' }).default(0),
+    recommends: varchar('recommends'),
+  },
+  (columns) => [
+    index('quizzes_blocks_multiple_options_order_idx').on(columns._order),
+    index('quizzes_blocks_multiple_options_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [quizzes_blocks_multiple.id],
+      name: 'quizzes_blocks_multiple_options_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const quizzes_blocks_multiple = pgTable(
+  'quizzes_blocks_multiple',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: varchar('id').primaryKey(),
+    key: varchar('key'),
+    question: varchar('question'),
+    help: varchar('help'),
+    required: boolean('required').default(true),
+    maxSelections: numeric('max_selections', { mode: 'number' }),
+    blockName: varchar('block_name'),
+  },
+  (columns) => [
+    index('quizzes_blocks_multiple_order_idx').on(columns._order),
+    index('quizzes_blocks_multiple_parent_id_idx').on(columns._parentID),
+    index('quizzes_blocks_multiple_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [quizzes.id],
+      name: 'quizzes_blocks_multiple_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const quizzes_blocks_scale = pgTable(
+  'quizzes_blocks_scale',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: varchar('id').primaryKey(),
+    key: varchar('key'),
+    question: varchar('question'),
+    help: varchar('help'),
+    required: boolean('required').default(true),
+    minLabel: varchar('min_label'),
+    maxLabel: varchar('max_label'),
+    weight: numeric('weight', { mode: 'number' }).default(1),
+    blockName: varchar('block_name'),
+  },
+  (columns) => [
+    index('quizzes_blocks_scale_order_idx').on(columns._order),
+    index('quizzes_blocks_scale_parent_id_idx').on(columns._parentID),
+    index('quizzes_blocks_scale_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [quizzes.id],
+      name: 'quizzes_blocks_scale_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const quizzes_blocks_number_ranges = pgTable(
+  'quizzes_blocks_number_ranges',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    min: numeric('min', { mode: 'number' }),
+    max: numeric('max', { mode: 'number' }),
+    points: numeric('points', { mode: 'number' }).default(0),
+    recommends: varchar('recommends'),
+  },
+  (columns) => [
+    index('quizzes_blocks_number_ranges_order_idx').on(columns._order),
+    index('quizzes_blocks_number_ranges_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [quizzes_blocks_number.id],
+      name: 'quizzes_blocks_number_ranges_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const quizzes_blocks_number = pgTable(
+  'quizzes_blocks_number',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: varchar('id').primaryKey(),
+    key: varchar('key'),
+    question: varchar('question'),
+    help: varchar('help'),
+    required: boolean('required').default(true),
+    unit: varchar('unit'),
+    placeholder: varchar('placeholder'),
+    blockName: varchar('block_name'),
+  },
+  (columns) => [
+    index('quizzes_blocks_number_order_idx').on(columns._order),
+    index('quizzes_blocks_number_parent_id_idx').on(columns._parentID),
+    index('quizzes_blocks_number_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [quizzes.id],
+      name: 'quizzes_blocks_number_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const quizzes_blocks_text = pgTable(
+  'quizzes_blocks_text',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: varchar('id').primaryKey(),
+    key: varchar('key'),
+    question: varchar('question'),
+    help: varchar('help'),
+    required: boolean('required').default(true),
+    placeholder: varchar('placeholder'),
+    blockName: varchar('block_name'),
+  },
+  (columns) => [
+    index('quizzes_blocks_text_order_idx').on(columns._order),
+    index('quizzes_blocks_text_parent_id_idx').on(columns._parentID),
+    index('quizzes_blocks_text_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [quizzes.id],
+      name: 'quizzes_blocks_text_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const quizzes_solutions = pgTable(
+  'quizzes_solutions',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    key: varchar('key'),
+    title: varchar('title'),
+    description: varchar('description'),
+  },
+  (columns) => [
+    index('quizzes_solutions_order_idx').on(columns._order),
+    index('quizzes_solutions_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [quizzes.id],
+      name: 'quizzes_solutions_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const quizzes_results = pgTable(
+  'quizzes_results',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    title: varchar('title'),
+    minScore: numeric('min_score', { mode: 'number' }).default(0),
+    summary: varchar('summary'),
+  },
+  (columns) => [
+    index('quizzes_results_order_idx').on(columns._order),
+    index('quizzes_results_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [quizzes.id],
+      name: 'quizzes_results_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const quizzes = pgTable(
+  'quizzes',
+  {
+    id: serial('id').primaryKey(),
+    title: varchar('title'),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug'),
+    segment: varchar('segment'),
+    projectType: enum_quizzes_project_type('project_type').default('sistema'),
+    index: boolean('index').default(true),
+    eyebrow: varchar('eyebrow'),
+    headline: varchar('headline'),
+    description: varchar('description'),
+    startLabel: varchar('start_label').default('Começar diagnóstico'),
+    estimatedTime: varchar('estimated_time').default('Leva cerca de 2 minutos'),
+    whatsappMessage: varchar('whatsapp_message'),
+    leadTitle: varchar('lead_title').default('Seu diagnóstico está pronto.'),
+    leadDescription: varchar('lead_description').default(
+      'Informe seus dados para ver o resultado e as recomendações.',
+    ),
+    askCompany: boolean('ask_company').default(true),
+    askRole: boolean('ask_role').default(true),
+    submitLabel: varchar('submit_label').default('Ver meu resultado'),
+    metaTitle: varchar('meta_title'),
+    metaDescription: varchar('meta_description'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    _status: enum_quizzes_status('_status').default('draft'),
+  },
+  (columns) => [
+    uniqueIndex('quizzes_slug_idx').on(columns.slug),
+    index('quizzes_updated_at_idx').on(columns.updatedAt),
+    index('quizzes_created_at_idx').on(columns.createdAt),
+    index('quizzes__status_idx').on(columns._status),
+  ],
+);
+
+export const _quizzes_v_blocks_single_options = pgTable(
+  '_quizzes_v_blocks_single_options',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: serial('id').primaryKey(),
+    label: varchar('label'),
+    points: numeric('points', { mode: 'number' }).default(0),
+    recommends: varchar('recommends'),
+    _uuid: varchar('_uuid'),
+  },
+  (columns) => [
+    index('_quizzes_v_blocks_single_options_order_idx').on(columns._order),
+    index('_quizzes_v_blocks_single_options_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_quizzes_v_blocks_single.id],
+      name: '_quizzes_v_blocks_single_options_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const _quizzes_v_blocks_single = pgTable(
+  '_quizzes_v_blocks_single',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: serial('id').primaryKey(),
+    key: varchar('key'),
+    question: varchar('question'),
+    help: varchar('help'),
+    required: boolean('required').default(true),
+    _uuid: varchar('_uuid'),
+    blockName: varchar('block_name'),
+  },
+  (columns) => [
+    index('_quizzes_v_blocks_single_order_idx').on(columns._order),
+    index('_quizzes_v_blocks_single_parent_id_idx').on(columns._parentID),
+    index('_quizzes_v_blocks_single_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_quizzes_v.id],
+      name: '_quizzes_v_blocks_single_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const _quizzes_v_blocks_multiple_options = pgTable(
+  '_quizzes_v_blocks_multiple_options',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: serial('id').primaryKey(),
+    label: varchar('label'),
+    points: numeric('points', { mode: 'number' }).default(0),
+    recommends: varchar('recommends'),
+    _uuid: varchar('_uuid'),
+  },
+  (columns) => [
+    index('_quizzes_v_blocks_multiple_options_order_idx').on(columns._order),
+    index('_quizzes_v_blocks_multiple_options_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_quizzes_v_blocks_multiple.id],
+      name: '_quizzes_v_blocks_multiple_options_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const _quizzes_v_blocks_multiple = pgTable(
+  '_quizzes_v_blocks_multiple',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: serial('id').primaryKey(),
+    key: varchar('key'),
+    question: varchar('question'),
+    help: varchar('help'),
+    required: boolean('required').default(true),
+    maxSelections: numeric('max_selections', { mode: 'number' }),
+    _uuid: varchar('_uuid'),
+    blockName: varchar('block_name'),
+  },
+  (columns) => [
+    index('_quizzes_v_blocks_multiple_order_idx').on(columns._order),
+    index('_quizzes_v_blocks_multiple_parent_id_idx').on(columns._parentID),
+    index('_quizzes_v_blocks_multiple_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_quizzes_v.id],
+      name: '_quizzes_v_blocks_multiple_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const _quizzes_v_blocks_scale = pgTable(
+  '_quizzes_v_blocks_scale',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: serial('id').primaryKey(),
+    key: varchar('key'),
+    question: varchar('question'),
+    help: varchar('help'),
+    required: boolean('required').default(true),
+    minLabel: varchar('min_label'),
+    maxLabel: varchar('max_label'),
+    weight: numeric('weight', { mode: 'number' }).default(1),
+    _uuid: varchar('_uuid'),
+    blockName: varchar('block_name'),
+  },
+  (columns) => [
+    index('_quizzes_v_blocks_scale_order_idx').on(columns._order),
+    index('_quizzes_v_blocks_scale_parent_id_idx').on(columns._parentID),
+    index('_quizzes_v_blocks_scale_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_quizzes_v.id],
+      name: '_quizzes_v_blocks_scale_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const _quizzes_v_blocks_number_ranges = pgTable(
+  '_quizzes_v_blocks_number_ranges',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: serial('id').primaryKey(),
+    min: numeric('min', { mode: 'number' }),
+    max: numeric('max', { mode: 'number' }),
+    points: numeric('points', { mode: 'number' }).default(0),
+    recommends: varchar('recommends'),
+    _uuid: varchar('_uuid'),
+  },
+  (columns) => [
+    index('_quizzes_v_blocks_number_ranges_order_idx').on(columns._order),
+    index('_quizzes_v_blocks_number_ranges_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_quizzes_v_blocks_number.id],
+      name: '_quizzes_v_blocks_number_ranges_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const _quizzes_v_blocks_number = pgTable(
+  '_quizzes_v_blocks_number',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: serial('id').primaryKey(),
+    key: varchar('key'),
+    question: varchar('question'),
+    help: varchar('help'),
+    required: boolean('required').default(true),
+    unit: varchar('unit'),
+    placeholder: varchar('placeholder'),
+    _uuid: varchar('_uuid'),
+    blockName: varchar('block_name'),
+  },
+  (columns) => [
+    index('_quizzes_v_blocks_number_order_idx').on(columns._order),
+    index('_quizzes_v_blocks_number_parent_id_idx').on(columns._parentID),
+    index('_quizzes_v_blocks_number_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_quizzes_v.id],
+      name: '_quizzes_v_blocks_number_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const _quizzes_v_blocks_text = pgTable(
+  '_quizzes_v_blocks_text',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: serial('id').primaryKey(),
+    key: varchar('key'),
+    question: varchar('question'),
+    help: varchar('help'),
+    required: boolean('required').default(true),
+    placeholder: varchar('placeholder'),
+    _uuid: varchar('_uuid'),
+    blockName: varchar('block_name'),
+  },
+  (columns) => [
+    index('_quizzes_v_blocks_text_order_idx').on(columns._order),
+    index('_quizzes_v_blocks_text_parent_id_idx').on(columns._parentID),
+    index('_quizzes_v_blocks_text_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_quizzes_v.id],
+      name: '_quizzes_v_blocks_text_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const _quizzes_v_version_solutions = pgTable(
+  '_quizzes_v_version_solutions',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: serial('id').primaryKey(),
+    key: varchar('key'),
+    title: varchar('title'),
+    description: varchar('description'),
+    _uuid: varchar('_uuid'),
+  },
+  (columns) => [
+    index('_quizzes_v_version_solutions_order_idx').on(columns._order),
+    index('_quizzes_v_version_solutions_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_quizzes_v.id],
+      name: '_quizzes_v_version_solutions_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const _quizzes_v_version_results = pgTable(
+  '_quizzes_v_version_results',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: serial('id').primaryKey(),
+    title: varchar('title'),
+    minScore: numeric('min_score', { mode: 'number' }).default(0),
+    summary: varchar('summary'),
+    _uuid: varchar('_uuid'),
+  },
+  (columns) => [
+    index('_quizzes_v_version_results_order_idx').on(columns._order),
+    index('_quizzes_v_version_results_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_quizzes_v.id],
+      name: '_quizzes_v_version_results_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const _quizzes_v = pgTable(
+  '_quizzes_v',
+  {
+    id: serial('id').primaryKey(),
+    parent: integer('parent_id').references(() => quizzes.id, {
+      onDelete: 'set null',
+    }),
+    version_title: varchar('version_title'),
+    version_generateSlug: boolean('version_generate_slug').default(true),
+    version_slug: varchar('version_slug'),
+    version_segment: varchar('version_segment'),
+    version_projectType:
+      enum__quizzes_v_version_project_type('version_project_type').default('sistema'),
+    version_index: boolean('version_index').default(true),
+    version_eyebrow: varchar('version_eyebrow'),
+    version_headline: varchar('version_headline'),
+    version_description: varchar('version_description'),
+    version_startLabel: varchar('version_start_label').default('Começar diagnóstico'),
+    version_estimatedTime: varchar('version_estimated_time').default('Leva cerca de 2 minutos'),
+    version_whatsappMessage: varchar('version_whatsapp_message'),
+    version_leadTitle: varchar('version_lead_title').default('Seu diagnóstico está pronto.'),
+    version_leadDescription: varchar('version_lead_description').default(
+      'Informe seus dados para ver o resultado e as recomendações.',
+    ),
+    version_askCompany: boolean('version_ask_company').default(true),
+    version_askRole: boolean('version_ask_role').default(true),
+    version_submitLabel: varchar('version_submit_label').default('Ver meu resultado'),
+    version_metaTitle: varchar('version_meta_title'),
+    version_metaDescription: varchar('version_meta_description'),
+    version_updatedAt: timestamp('version_updated_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version_createdAt: timestamp('version_created_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version__status: enum__quizzes_v_version_status('version__status').default('draft'),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    latest: boolean('latest'),
+  },
+  (columns) => [
+    index('_quizzes_v_parent_idx').on(columns.parent),
+    index('_quizzes_v_version_version_slug_idx').on(columns.version_slug),
+    index('_quizzes_v_version_version_updated_at_idx').on(columns.version_updatedAt),
+    index('_quizzes_v_version_version_created_at_idx').on(columns.version_createdAt),
+    index('_quizzes_v_version_version__status_idx').on(columns.version__status),
+    index('_quizzes_v_created_at_idx').on(columns.createdAt),
+    index('_quizzes_v_updated_at_idx').on(columns.updatedAt),
+    index('_quizzes_v_latest_idx').on(columns.latest),
+  ],
+);
+
+export const quiz_responses_answers = pgTable(
+  'quiz_responses_answers',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    question: varchar('question'),
+    answer: varchar('answer'),
+  },
+  (columns) => [
+    index('quiz_responses_answers_order_idx').on(columns._order),
+    index('quiz_responses_answers_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [quiz_responses.id],
+      name: 'quiz_responses_answers_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const quiz_responses = pgTable(
+  'quiz_responses',
+  {
+    id: serial('id').primaryKey(),
+    status: enum_quiz_responses_status('status').notNull().default('novo'),
+    notes: varchar('notes'),
+    name: varchar('name').notNull(),
+    email: varchar('email').notNull(),
+    phone: varchar('phone').notNull(),
+    company: varchar('company'),
+    role: varchar('role'),
+    quizTitle: varchar('quiz_title').notNull(),
+    profile: varchar('profile').notNull(),
+    score: numeric('score', { mode: 'number' }).notNull(),
+    quiz: integer('quiz_id').references(() => quizzes.id, {
+      onDelete: 'set null',
+    }),
+    recommendations: varchar('recommendations'),
+    pagePath: varchar('page_path'),
+    attribution: jsonb('attribution'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('quiz_responses_quiz_idx').on(columns.quiz),
+    index('quiz_responses_updated_at_idx').on(columns.updatedAt),
+    index('quiz_responses_created_at_idx').on(columns.createdAt),
   ],
 );
 
@@ -753,6 +1458,97 @@ export const users = pgTable(
   ],
 );
 
+export const exports = pgTable(
+  'exports',
+  {
+    id: serial('id').primaryKey(),
+    name: varchar('name'),
+    format: enum_exports_format('format').notNull().default('csv'),
+    limit: numeric('limit', { mode: 'number' }),
+    page: numeric('page', { mode: 'number' }).default(1),
+    sort: varchar('sort'),
+    sortOrder: enum_exports_sort_order('sort_order'),
+    drafts: enum_exports_drafts('drafts').default('yes'),
+    collectionSlug: varchar('collection_slug').notNull().default('quiz-responses'),
+    where: jsonb('where').default(sql`'{}'::jsonb`),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    url: varchar('url'),
+    thumbnailURL: varchar('thumbnail_u_r_l'),
+    filename: varchar('filename'),
+    mimeType: varchar('mime_type'),
+    filesize: numeric('filesize', { mode: 'number' }),
+    width: numeric('width', { mode: 'number' }),
+    height: numeric('height', { mode: 'number' }),
+    focalX: numeric('focal_x', { mode: 'number' }),
+    focalY: numeric('focal_y', { mode: 'number' }),
+  },
+  (columns) => [
+    index('exports_updated_at_idx').on(columns.updatedAt),
+    index('exports_created_at_idx').on(columns.createdAt),
+    uniqueIndex('exports_filename_idx').on(columns.filename),
+  ],
+);
+
+export const exports_texts = pgTable(
+  'exports_texts',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order').notNull(),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    text: varchar('text'),
+  },
+  (columns) => [
+    index('exports_texts_order_parent').on(columns.order, columns.parent),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [exports.id],
+      name: 'exports_texts_parent_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const imports = pgTable(
+  'imports',
+  {
+    id: serial('id').primaryKey(),
+    collectionSlug: varchar('collection_slug').notNull(),
+    importMode: enum_imports_import_mode('import_mode'),
+    matchField: varchar('match_field').default('id'),
+    status: enum_imports_status('status').default('pending'),
+    summary_imported: numeric('summary_imported', { mode: 'number' }),
+    summary_updated: numeric('summary_updated', { mode: 'number' }),
+    summary_total: numeric('summary_total', { mode: 'number' }),
+    summary_issues: numeric('summary_issues', { mode: 'number' }),
+    summary_issueDetails: jsonb('summary_issue_details'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    url: varchar('url'),
+    thumbnailURL: varchar('thumbnail_u_r_l'),
+    filename: varchar('filename'),
+    mimeType: varchar('mime_type'),
+    filesize: numeric('filesize', { mode: 'number' }),
+    width: numeric('width', { mode: 'number' }),
+    height: numeric('height', { mode: 'number' }),
+    focalX: numeric('focal_x', { mode: 'number' }),
+    focalY: numeric('focal_y', { mode: 'number' }),
+  },
+  (columns) => [
+    index('imports_updated_at_idx').on(columns.updatedAt),
+    index('imports_created_at_idx').on(columns.createdAt),
+    uniqueIndex('imports_filename_idx').on(columns.filename),
+  ],
+);
+
 export const payload_kv = pgTable(
   'payload_kv',
   {
@@ -761,6 +1557,73 @@ export const payload_kv = pgTable(
     data: jsonb('data').notNull(),
   },
   (columns) => [uniqueIndex('payload_kv_key_idx').on(columns.key)],
+);
+
+export const payload_jobs_log = pgTable(
+  'payload_jobs_log',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    executedAt: timestamp('executed_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    completedAt: timestamp('completed_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    taskSlug: enum_payload_jobs_log_task_slug('task_slug').notNull(),
+    taskID: varchar('task_i_d').notNull(),
+    input: jsonb('input'),
+    output: jsonb('output'),
+    state: enum_payload_jobs_log_state('state').notNull(),
+    error: jsonb('error'),
+  },
+  (columns) => [
+    index('payload_jobs_log_order_idx').on(columns._order),
+    index('payload_jobs_log_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [payload_jobs.id],
+      name: 'payload_jobs_log_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+);
+
+export const payload_jobs = pgTable(
+  'payload_jobs',
+  {
+    id: serial('id').primaryKey(),
+    input: jsonb('input'),
+    completedAt: timestamp('completed_at', { mode: 'string', withTimezone: true, precision: 3 }),
+    totalTried: numeric('total_tried', { mode: 'number' }).default(0),
+    hasError: boolean('has_error').default(false),
+    error: jsonb('error'),
+    taskSlug: enum_payload_jobs_task_slug('task_slug'),
+    queue: varchar('queue').default('default'),
+    waitUntil: timestamp('wait_until', { mode: 'string', withTimezone: true, precision: 3 }),
+    processing: boolean('processing').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('payload_jobs_completed_at_idx').on(columns.completedAt),
+    index('payload_jobs_total_tried_idx').on(columns.totalTried),
+    index('payload_jobs_has_error_idx').on(columns.hasError),
+    index('payload_jobs_task_slug_idx').on(columns.taskSlug),
+    index('payload_jobs_queue_idx').on(columns.queue),
+    index('payload_jobs_wait_until_idx').on(columns.waitUntil),
+    index('payload_jobs_processing_idx').on(columns.processing),
+    index('payload_jobs_updated_at_idx').on(columns.updatedAt),
+    index('payload_jobs_created_at_idx').on(columns.createdAt),
+  ],
 );
 
 export const payload_locked_documents = pgTable(
@@ -794,6 +1657,8 @@ export const payload_locked_documents_rels = pgTable(
     projectsID: integer('projects_id'),
     'client-logosID': integer('client_logos_id'),
     'landing-pagesID': integer('landing_pages_id'),
+    quizzesID: integer('quizzes_id'),
+    'quiz-responsesID': integer('quiz_responses_id'),
     postsID: integer('posts_id'),
     categoriesID: integer('categories_id'),
     mediaID: integer('media_id'),
@@ -808,6 +1673,8 @@ export const payload_locked_documents_rels = pgTable(
     index('payload_locked_documents_rels_projects_id_idx').on(columns.projectsID),
     index('payload_locked_documents_rels_client_logos_id_idx').on(columns['client-logosID']),
     index('payload_locked_documents_rels_landing_pages_id_idx').on(columns['landing-pagesID']),
+    index('payload_locked_documents_rels_quizzes_id_idx').on(columns.quizzesID),
+    index('payload_locked_documents_rels_quiz_responses_id_idx').on(columns['quiz-responsesID']),
     index('payload_locked_documents_rels_posts_id_idx').on(columns.postsID),
     index('payload_locked_documents_rels_categories_id_idx').on(columns.categoriesID),
     index('payload_locked_documents_rels_media_id_idx').on(columns.mediaID),
@@ -841,6 +1708,16 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns['landing-pagesID']],
       foreignColumns: [landing_pages.id],
       name: 'payload_locked_documents_rels_landing_pages_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['quizzesID']],
+      foreignColumns: [quizzes.id],
+      name: 'payload_locked_documents_rels_quizzes_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['quiz-responsesID']],
+      foreignColumns: [quiz_responses.id],
+      name: 'payload_locked_documents_rels_quiz_responses_fk',
     }).onDelete('cascade'),
     foreignKey({
       columns: [columns['postsID']],
@@ -1051,7 +1928,12 @@ export const relations_landing_pages_faq = relations(landing_pages_faq, ({ one }
     relationName: 'faq',
   }),
 }));
-export const relations_landing_pages = relations(landing_pages, ({ many }) => ({
+export const relations_landing_pages = relations(landing_pages, ({ one, many }) => ({
+  quiz: one(quizzes, {
+    fields: [landing_pages.quiz],
+    references: [quizzes.id],
+    relationName: 'quiz',
+  }),
   signals: many(landing_pages_signals, {
     relationName: 'signals',
   }),
@@ -1111,6 +1993,11 @@ export const relations__landing_pages_v = relations(_landing_pages_v, ({ one, ma
     references: [landing_pages.id],
     relationName: 'parent',
   }),
+  version_quiz: one(quizzes, {
+    fields: [_landing_pages_v.version_quiz],
+    references: [quizzes.id],
+    relationName: 'version_quiz',
+  }),
   version_signals: many(_landing_pages_v_version_signals, {
     relationName: 'version_signals',
   }),
@@ -1122,6 +2009,274 @@ export const relations__landing_pages_v = relations(_landing_pages_v, ({ one, ma
   }),
   version_faq: many(_landing_pages_v_version_faq, {
     relationName: 'version_faq',
+  }),
+}));
+export const relations_quizzes_blocks_single_options = relations(
+  quizzes_blocks_single_options,
+  ({ one }) => ({
+    _parentID: one(quizzes_blocks_single, {
+      fields: [quizzes_blocks_single_options._parentID],
+      references: [quizzes_blocks_single.id],
+      relationName: 'options',
+    }),
+  }),
+);
+export const relations_quizzes_blocks_single = relations(
+  quizzes_blocks_single,
+  ({ one, many }) => ({
+    _parentID: one(quizzes, {
+      fields: [quizzes_blocks_single._parentID],
+      references: [quizzes.id],
+      relationName: '_blocks_single',
+    }),
+    options: many(quizzes_blocks_single_options, {
+      relationName: 'options',
+    }),
+  }),
+);
+export const relations_quizzes_blocks_multiple_options = relations(
+  quizzes_blocks_multiple_options,
+  ({ one }) => ({
+    _parentID: one(quizzes_blocks_multiple, {
+      fields: [quizzes_blocks_multiple_options._parentID],
+      references: [quizzes_blocks_multiple.id],
+      relationName: 'options',
+    }),
+  }),
+);
+export const relations_quizzes_blocks_multiple = relations(
+  quizzes_blocks_multiple,
+  ({ one, many }) => ({
+    _parentID: one(quizzes, {
+      fields: [quizzes_blocks_multiple._parentID],
+      references: [quizzes.id],
+      relationName: '_blocks_multiple',
+    }),
+    options: many(quizzes_blocks_multiple_options, {
+      relationName: 'options',
+    }),
+  }),
+);
+export const relations_quizzes_blocks_scale = relations(quizzes_blocks_scale, ({ one }) => ({
+  _parentID: one(quizzes, {
+    fields: [quizzes_blocks_scale._parentID],
+    references: [quizzes.id],
+    relationName: '_blocks_scale',
+  }),
+}));
+export const relations_quizzes_blocks_number_ranges = relations(
+  quizzes_blocks_number_ranges,
+  ({ one }) => ({
+    _parentID: one(quizzes_blocks_number, {
+      fields: [quizzes_blocks_number_ranges._parentID],
+      references: [quizzes_blocks_number.id],
+      relationName: 'ranges',
+    }),
+  }),
+);
+export const relations_quizzes_blocks_number = relations(
+  quizzes_blocks_number,
+  ({ one, many }) => ({
+    _parentID: one(quizzes, {
+      fields: [quizzes_blocks_number._parentID],
+      references: [quizzes.id],
+      relationName: '_blocks_number',
+    }),
+    ranges: many(quizzes_blocks_number_ranges, {
+      relationName: 'ranges',
+    }),
+  }),
+);
+export const relations_quizzes_blocks_text = relations(quizzes_blocks_text, ({ one }) => ({
+  _parentID: one(quizzes, {
+    fields: [quizzes_blocks_text._parentID],
+    references: [quizzes.id],
+    relationName: '_blocks_text',
+  }),
+}));
+export const relations_quizzes_solutions = relations(quizzes_solutions, ({ one }) => ({
+  _parentID: one(quizzes, {
+    fields: [quizzes_solutions._parentID],
+    references: [quizzes.id],
+    relationName: 'solutions',
+  }),
+}));
+export const relations_quizzes_results = relations(quizzes_results, ({ one }) => ({
+  _parentID: one(quizzes, {
+    fields: [quizzes_results._parentID],
+    references: [quizzes.id],
+    relationName: 'results',
+  }),
+}));
+export const relations_quizzes = relations(quizzes, ({ many }) => ({
+  _blocks_single: many(quizzes_blocks_single, {
+    relationName: '_blocks_single',
+  }),
+  _blocks_multiple: many(quizzes_blocks_multiple, {
+    relationName: '_blocks_multiple',
+  }),
+  _blocks_scale: many(quizzes_blocks_scale, {
+    relationName: '_blocks_scale',
+  }),
+  _blocks_number: many(quizzes_blocks_number, {
+    relationName: '_blocks_number',
+  }),
+  _blocks_text: many(quizzes_blocks_text, {
+    relationName: '_blocks_text',
+  }),
+  solutions: many(quizzes_solutions, {
+    relationName: 'solutions',
+  }),
+  results: many(quizzes_results, {
+    relationName: 'results',
+  }),
+}));
+export const relations__quizzes_v_blocks_single_options = relations(
+  _quizzes_v_blocks_single_options,
+  ({ one }) => ({
+    _parentID: one(_quizzes_v_blocks_single, {
+      fields: [_quizzes_v_blocks_single_options._parentID],
+      references: [_quizzes_v_blocks_single.id],
+      relationName: 'options',
+    }),
+  }),
+);
+export const relations__quizzes_v_blocks_single = relations(
+  _quizzes_v_blocks_single,
+  ({ one, many }) => ({
+    _parentID: one(_quizzes_v, {
+      fields: [_quizzes_v_blocks_single._parentID],
+      references: [_quizzes_v.id],
+      relationName: '_blocks_single',
+    }),
+    options: many(_quizzes_v_blocks_single_options, {
+      relationName: 'options',
+    }),
+  }),
+);
+export const relations__quizzes_v_blocks_multiple_options = relations(
+  _quizzes_v_blocks_multiple_options,
+  ({ one }) => ({
+    _parentID: one(_quizzes_v_blocks_multiple, {
+      fields: [_quizzes_v_blocks_multiple_options._parentID],
+      references: [_quizzes_v_blocks_multiple.id],
+      relationName: 'options',
+    }),
+  }),
+);
+export const relations__quizzes_v_blocks_multiple = relations(
+  _quizzes_v_blocks_multiple,
+  ({ one, many }) => ({
+    _parentID: one(_quizzes_v, {
+      fields: [_quizzes_v_blocks_multiple._parentID],
+      references: [_quizzes_v.id],
+      relationName: '_blocks_multiple',
+    }),
+    options: many(_quizzes_v_blocks_multiple_options, {
+      relationName: 'options',
+    }),
+  }),
+);
+export const relations__quizzes_v_blocks_scale = relations(_quizzes_v_blocks_scale, ({ one }) => ({
+  _parentID: one(_quizzes_v, {
+    fields: [_quizzes_v_blocks_scale._parentID],
+    references: [_quizzes_v.id],
+    relationName: '_blocks_scale',
+  }),
+}));
+export const relations__quizzes_v_blocks_number_ranges = relations(
+  _quizzes_v_blocks_number_ranges,
+  ({ one }) => ({
+    _parentID: one(_quizzes_v_blocks_number, {
+      fields: [_quizzes_v_blocks_number_ranges._parentID],
+      references: [_quizzes_v_blocks_number.id],
+      relationName: 'ranges',
+    }),
+  }),
+);
+export const relations__quizzes_v_blocks_number = relations(
+  _quizzes_v_blocks_number,
+  ({ one, many }) => ({
+    _parentID: one(_quizzes_v, {
+      fields: [_quizzes_v_blocks_number._parentID],
+      references: [_quizzes_v.id],
+      relationName: '_blocks_number',
+    }),
+    ranges: many(_quizzes_v_blocks_number_ranges, {
+      relationName: 'ranges',
+    }),
+  }),
+);
+export const relations__quizzes_v_blocks_text = relations(_quizzes_v_blocks_text, ({ one }) => ({
+  _parentID: one(_quizzes_v, {
+    fields: [_quizzes_v_blocks_text._parentID],
+    references: [_quizzes_v.id],
+    relationName: '_blocks_text',
+  }),
+}));
+export const relations__quizzes_v_version_solutions = relations(
+  _quizzes_v_version_solutions,
+  ({ one }) => ({
+    _parentID: one(_quizzes_v, {
+      fields: [_quizzes_v_version_solutions._parentID],
+      references: [_quizzes_v.id],
+      relationName: 'version_solutions',
+    }),
+  }),
+);
+export const relations__quizzes_v_version_results = relations(
+  _quizzes_v_version_results,
+  ({ one }) => ({
+    _parentID: one(_quizzes_v, {
+      fields: [_quizzes_v_version_results._parentID],
+      references: [_quizzes_v.id],
+      relationName: 'version_results',
+    }),
+  }),
+);
+export const relations__quizzes_v = relations(_quizzes_v, ({ one, many }) => ({
+  parent: one(quizzes, {
+    fields: [_quizzes_v.parent],
+    references: [quizzes.id],
+    relationName: 'parent',
+  }),
+  _blocks_single: many(_quizzes_v_blocks_single, {
+    relationName: '_blocks_single',
+  }),
+  _blocks_multiple: many(_quizzes_v_blocks_multiple, {
+    relationName: '_blocks_multiple',
+  }),
+  _blocks_scale: many(_quizzes_v_blocks_scale, {
+    relationName: '_blocks_scale',
+  }),
+  _blocks_number: many(_quizzes_v_blocks_number, {
+    relationName: '_blocks_number',
+  }),
+  _blocks_text: many(_quizzes_v_blocks_text, {
+    relationName: '_blocks_text',
+  }),
+  version_solutions: many(_quizzes_v_version_solutions, {
+    relationName: 'version_solutions',
+  }),
+  version_results: many(_quizzes_v_version_results, {
+    relationName: 'version_results',
+  }),
+}));
+export const relations_quiz_responses_answers = relations(quiz_responses_answers, ({ one }) => ({
+  _parentID: one(quiz_responses, {
+    fields: [quiz_responses_answers._parentID],
+    references: [quiz_responses.id],
+    relationName: 'answers',
+  }),
+}));
+export const relations_quiz_responses = relations(quiz_responses, ({ one, many }) => ({
+  quiz: one(quizzes, {
+    fields: [quiz_responses.quiz],
+    references: [quizzes.id],
+    relationName: 'quiz',
+  }),
+  answers: many(quiz_responses_answers, {
+    relationName: 'answers',
   }),
 }));
 export const relations_posts = relations(posts, ({ one }) => ({
@@ -1167,7 +2322,32 @@ export const relations_users = relations(users, ({ many }) => ({
     relationName: 'sessions',
   }),
 }));
+export const relations_exports_texts = relations(exports_texts, ({ one }) => ({
+  parent: one(exports, {
+    fields: [exports_texts.parent],
+    references: [exports.id],
+    relationName: '_texts',
+  }),
+}));
+export const relations_exports = relations(exports, ({ many }) => ({
+  _texts: many(exports_texts, {
+    relationName: '_texts',
+  }),
+}));
+export const relations_imports = relations(imports, () => ({}));
 export const relations_payload_kv = relations(payload_kv, () => ({}));
+export const relations_payload_jobs_log = relations(payload_jobs_log, ({ one }) => ({
+  _parentID: one(payload_jobs, {
+    fields: [payload_jobs_log._parentID],
+    references: [payload_jobs.id],
+    relationName: 'log',
+  }),
+}));
+export const relations_payload_jobs = relations(payload_jobs, ({ many }) => ({
+  log: many(payload_jobs_log, {
+    relationName: 'log',
+  }),
+}));
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -1200,6 +2380,16 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels['landing-pagesID']],
       references: [landing_pages.id],
       relationName: 'landing-pages',
+    }),
+    quizzesID: one(quizzes, {
+      fields: [payload_locked_documents_rels.quizzesID],
+      references: [quizzes.id],
+      relationName: 'quizzes',
+    }),
+    'quiz-responsesID': one(quiz_responses, {
+      fields: [payload_locked_documents_rels['quiz-responsesID']],
+      references: [quiz_responses.id],
+      relationName: 'quiz-responses',
     }),
     postsID: one(posts, {
       fields: [payload_locked_documents_rels.postsID],
@@ -1273,8 +2463,21 @@ type DatabaseSchema = {
   enum_landing_pages_status: typeof enum_landing_pages_status;
   enum__landing_pages_v_version_project_type: typeof enum__landing_pages_v_version_project_type;
   enum__landing_pages_v_version_status: typeof enum__landing_pages_v_version_status;
+  enum_quizzes_project_type: typeof enum_quizzes_project_type;
+  enum_quizzes_status: typeof enum_quizzes_status;
+  enum__quizzes_v_version_project_type: typeof enum__quizzes_v_version_project_type;
+  enum__quizzes_v_version_status: typeof enum__quizzes_v_version_status;
+  enum_quiz_responses_status: typeof enum_quiz_responses_status;
   enum_posts_status: typeof enum_posts_status;
   enum__posts_v_version_status: typeof enum__posts_v_version_status;
+  enum_exports_format: typeof enum_exports_format;
+  enum_exports_sort_order: typeof enum_exports_sort_order;
+  enum_exports_drafts: typeof enum_exports_drafts;
+  enum_imports_import_mode: typeof enum_imports_import_mode;
+  enum_imports_status: typeof enum_imports_status;
+  enum_payload_jobs_log_task_slug: typeof enum_payload_jobs_log_task_slug;
+  enum_payload_jobs_log_state: typeof enum_payload_jobs_log_state;
+  enum_payload_jobs_task_slug: typeof enum_payload_jobs_task_slug;
   services_deliverables: typeof services_deliverables;
   services_examples: typeof services_examples;
   services_faq: typeof services_faq;
@@ -1294,13 +2497,42 @@ type DatabaseSchema = {
   _landing_pages_v_version_deliverables: typeof _landing_pages_v_version_deliverables;
   _landing_pages_v_version_faq: typeof _landing_pages_v_version_faq;
   _landing_pages_v: typeof _landing_pages_v;
+  quizzes_blocks_single_options: typeof quizzes_blocks_single_options;
+  quizzes_blocks_single: typeof quizzes_blocks_single;
+  quizzes_blocks_multiple_options: typeof quizzes_blocks_multiple_options;
+  quizzes_blocks_multiple: typeof quizzes_blocks_multiple;
+  quizzes_blocks_scale: typeof quizzes_blocks_scale;
+  quizzes_blocks_number_ranges: typeof quizzes_blocks_number_ranges;
+  quizzes_blocks_number: typeof quizzes_blocks_number;
+  quizzes_blocks_text: typeof quizzes_blocks_text;
+  quizzes_solutions: typeof quizzes_solutions;
+  quizzes_results: typeof quizzes_results;
+  quizzes: typeof quizzes;
+  _quizzes_v_blocks_single_options: typeof _quizzes_v_blocks_single_options;
+  _quizzes_v_blocks_single: typeof _quizzes_v_blocks_single;
+  _quizzes_v_blocks_multiple_options: typeof _quizzes_v_blocks_multiple_options;
+  _quizzes_v_blocks_multiple: typeof _quizzes_v_blocks_multiple;
+  _quizzes_v_blocks_scale: typeof _quizzes_v_blocks_scale;
+  _quizzes_v_blocks_number_ranges: typeof _quizzes_v_blocks_number_ranges;
+  _quizzes_v_blocks_number: typeof _quizzes_v_blocks_number;
+  _quizzes_v_blocks_text: typeof _quizzes_v_blocks_text;
+  _quizzes_v_version_solutions: typeof _quizzes_v_version_solutions;
+  _quizzes_v_version_results: typeof _quizzes_v_version_results;
+  _quizzes_v: typeof _quizzes_v;
+  quiz_responses_answers: typeof quiz_responses_answers;
+  quiz_responses: typeof quiz_responses;
   posts: typeof posts;
   _posts_v: typeof _posts_v;
   categories: typeof categories;
   media: typeof media;
   users_sessions: typeof users_sessions;
   users: typeof users;
+  exports: typeof exports;
+  exports_texts: typeof exports_texts;
+  imports: typeof imports;
   payload_kv: typeof payload_kv;
+  payload_jobs_log: typeof payload_jobs_log;
+  payload_jobs: typeof payload_jobs;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
@@ -1327,13 +2559,42 @@ type DatabaseSchema = {
   relations__landing_pages_v_version_deliverables: typeof relations__landing_pages_v_version_deliverables;
   relations__landing_pages_v_version_faq: typeof relations__landing_pages_v_version_faq;
   relations__landing_pages_v: typeof relations__landing_pages_v;
+  relations_quizzes_blocks_single_options: typeof relations_quizzes_blocks_single_options;
+  relations_quizzes_blocks_single: typeof relations_quizzes_blocks_single;
+  relations_quizzes_blocks_multiple_options: typeof relations_quizzes_blocks_multiple_options;
+  relations_quizzes_blocks_multiple: typeof relations_quizzes_blocks_multiple;
+  relations_quizzes_blocks_scale: typeof relations_quizzes_blocks_scale;
+  relations_quizzes_blocks_number_ranges: typeof relations_quizzes_blocks_number_ranges;
+  relations_quizzes_blocks_number: typeof relations_quizzes_blocks_number;
+  relations_quizzes_blocks_text: typeof relations_quizzes_blocks_text;
+  relations_quizzes_solutions: typeof relations_quizzes_solutions;
+  relations_quizzes_results: typeof relations_quizzes_results;
+  relations_quizzes: typeof relations_quizzes;
+  relations__quizzes_v_blocks_single_options: typeof relations__quizzes_v_blocks_single_options;
+  relations__quizzes_v_blocks_single: typeof relations__quizzes_v_blocks_single;
+  relations__quizzes_v_blocks_multiple_options: typeof relations__quizzes_v_blocks_multiple_options;
+  relations__quizzes_v_blocks_multiple: typeof relations__quizzes_v_blocks_multiple;
+  relations__quizzes_v_blocks_scale: typeof relations__quizzes_v_blocks_scale;
+  relations__quizzes_v_blocks_number_ranges: typeof relations__quizzes_v_blocks_number_ranges;
+  relations__quizzes_v_blocks_number: typeof relations__quizzes_v_blocks_number;
+  relations__quizzes_v_blocks_text: typeof relations__quizzes_v_blocks_text;
+  relations__quizzes_v_version_solutions: typeof relations__quizzes_v_version_solutions;
+  relations__quizzes_v_version_results: typeof relations__quizzes_v_version_results;
+  relations__quizzes_v: typeof relations__quizzes_v;
+  relations_quiz_responses_answers: typeof relations_quiz_responses_answers;
+  relations_quiz_responses: typeof relations_quiz_responses;
   relations_posts: typeof relations_posts;
   relations__posts_v: typeof relations__posts_v;
   relations_categories: typeof relations_categories;
   relations_media: typeof relations_media;
   relations_users_sessions: typeof relations_users_sessions;
   relations_users: typeof relations_users;
+  relations_exports_texts: typeof relations_exports_texts;
+  relations_exports: typeof relations_exports;
+  relations_imports: typeof relations_imports;
   relations_payload_kv: typeof relations_payload_kv;
+  relations_payload_jobs_log: typeof relations_payload_jobs_log;
+  relations_payload_jobs: typeof relations_payload_jobs;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;

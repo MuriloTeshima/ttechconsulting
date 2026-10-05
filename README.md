@@ -58,6 +58,22 @@ O conteúdo do site é editado no painel `/admin`:
 - **Pré-visualização:** o botão "Pré-visualizar" do painel abre `/next/preview`, que exige o `PREVIEW_SECRET` e um usuário logado.
 - **Migrações:** ao alterar uma coleção, rode `yarn migrate:create <nome>` e commite o arquivo em `src/migrations/`. A Vercel aplica as migrações pendentes no build.
 
+### Quizzes (diagnósticos)
+
+Diagnósticos interativos em `/diagnostico/<slug>`, criados e editados em *Captação → Quizzes*:
+
+- **Perguntas** em blocos: escolha única, múltipla escolha, escala de 1 a 5, número (pontuado por faixas) e texto livre. O identificador de cada pergunta precisa ser único no quiz.
+- **Pontuação e recomendações:** cada opção (ou faixa de número) soma pontos e pode indicar soluções pelo campo *Recomenda* (chaves da aba *Soluções*, separadas por vírgula). A escala soma `(resposta − 1) × peso`.
+- **Resultados:** vale o perfil com a maior *pontuação mínima* que o total atinge.
+- **Contato antes do resultado:** nome, e-mail e WhatsApp sempre; empresa e cargo opcionais.
+- A pontuação é calculada só no servidor (`src/lib/quiz-scoring.ts`); o navegador recebe apenas perguntas e opções.
+- Rascunho e pré-visualização como nas landing pages; na pré-visualização o resultado aparece, mas nada é gravado nem enviado.
+- Uma landing page pode convidar para o quiz do nicho pelo campo *Quiz do nicho*.
+
+As respostas ficam em *Captação → Respostas de quiz*, com status, anotações, respostas legíveis, perfil, pontuação, página e UTMs, e podem ser exportadas em CSV pelo botão *Exportar*. Cada resposta também gera o aviso por e-mail do formulário de contato.
+
+Eventos no `dataLayer`/GA4: `quiz_start`, `quiz_step` (com `step` e `question_key`) e `quiz_complete` (com `profile`).
+
 ### Configuração na Vercel
 
 1. **Banco:** *Storage → Create → Neon (Postgres)*, conectado ao projeto. A Vercel cria `DATABASE_URL`.

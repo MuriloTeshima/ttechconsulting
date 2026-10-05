@@ -27,6 +27,15 @@ export default function Privacidade() {
         consentimento. O envio é processado pelo serviço EmailJS, que entrega a mensagem ao e-mail
         da TTech. Os dados não são vendidos nem compartilhados para outras finalidades.
       </p>
+      <h2>Diagnósticos (quizzes)</h2>
+      <p>
+        Ao concluir um diagnóstico, guardamos as respostas, o resultado calculado e os dados de
+        contato informados (nome, e-mail, WhatsApp e, quando solicitados, empresa e cargo), além da
+        página e dos parâmetros de campanha da visita. Essas informações são usadas para enviar o
+        resultado, entender a necessidade da empresa e entrar em contato sobre o diagnóstico, com
+        base no seu consentimento. O progresso do quiz fica salvo apenas no seu navegador até a
+        conclusão.
+      </p>
       <h2>Cookies e mensuração</h2>
       <p>
         Com o seu consentimento, o site utiliza ferramentas de análise e de publicidade (como Google

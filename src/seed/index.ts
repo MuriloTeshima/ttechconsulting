@@ -7,6 +7,7 @@ import { clientLogos } from './data/clients';
 import { faq } from './data/faq';
 import { landingPages } from './data/landing-pages';
 import { projects } from './data/projects';
+import { erpQuiz, quizLandingPages } from './data/quizzes';
 import { services } from './data/services';
 
 /**
@@ -105,6 +106,43 @@ for (const title of ['Automação', 'Sistemas sob medida', 'Produto digital', 'G
     collection: 'categories',
     context: context(),
     data: { title, slug: toSlug(title) ?? title, generateSlug: false },
+  });
+  created++;
+}
+
+let quizId: number | undefined;
+const existingQuiz = await payload.find({
+  collection: 'quizzes',
+  where: { slug: { equals: erpQuiz.slug } },
+  limit: 1,
+});
+if (existingQuiz.docs[0]) {
+  quizId = existingQuiz.docs[0].id;
+} else {
+  const quiz = await payload.create({
+    collection: 'quizzes',
+    context: context(),
+    data: { ...erpQuiz, generateSlug: false, _status: 'published' },
+  });
+  quizId = quiz.id;
+  created++;
+}
+
+// Convida para o quiz nas landing pages do nicho, sem sobrescrever uma escolha feita no painel.
+for (const lpSlug of quizLandingPages) {
+  const { docs } = await payload.find({
+    collection: 'landing-pages',
+    where: { slug: { equals: lpSlug } },
+    depth: 0,
+    limit: 1,
+  });
+  const page = docs[0];
+  if (!page || page.quiz) continue;
+  await payload.update({
+    collection: 'landing-pages',
+    id: page.id,
+    context: context(),
+    data: { quiz: quizId },
   });
   created++;
 }
