@@ -288,4 +288,220 @@ export const landingPages: Omit<LandingPage, 'quiz'>[] = [
       'Olá! Sou de Ribeirão Preto e região e gostaria de conversar sobre o desenvolvimento de um sistema para minha empresa.',
     index: true,
   },
+  {
+    slug: 'sistemas-integrados-erp',
+    segment: 'Empresas com ERP',
+    metaTitle: 'Sistemas sob medida integrados ao seu ERP',
+    metaDescription:
+      'Portal de pedidos, app para vendedores, painéis e automações integrados ao ERP que sua empresa já usa. Menos planilhas e retrabalho em Ribeirão Preto e região.',
+    eyebrow: 'SISTEMAS INTEGRADOS AO ERP',
+    title: 'Tire das planilhas os processos que o seu ERP não',
+    highlight: 'cobre.',
+    description:
+      'Desenvolvemos portais, aplicativos e automações sob medida, integrados ao ERP que sua empresa já usa. A informação passa a circular entre equipe, vendedores e clientes sem redigitação.',
+    signalsTitle: 'SINAIS DE QUE É HORA DE INTEGRAR',
+    signals: [
+      'Pedidos chegam pelo WhatsApp e são redigitados no ERP',
+      'Relatórios montados à mão com dados exportados do sistema',
+      'Vendedores e clientes sem acesso a estoque, preço e status',
+    ],
+    problemTitle: 'O ERP organiza a empresa. O que fica fora dele vira retrabalho.',
+    problemText:
+      'Financeiro, estoque e faturamento estão no ERP, mas parte importante da operação acontece fora dele: em planilhas, mensagens e controles paralelos. A equipe gasta horas copiando e conferindo informações, e os erros aparecem no pedido, na entrega e no fechamento do mês.',
+    pains: [
+      'Informações digitadas mais de uma vez',
+      'Planilhas paralelas que só uma pessoa entende',
+      'Equipe externa sem acesso ao que está no sistema',
+      'Gestão sem indicadores atualizados',
+    ],
+    solutionTitle: 'Sistemas sob medida que conversam com o seu ERP.',
+    solutionText:
+      'Não substituímos o ERP. Construímos em volta dele as ferramentas que a operação precisa, com integração para os dados circularem nos dois sentidos.',
+    deliverables: [
+      {
+        title: 'Portal de pedidos B2B',
+        text: 'Clientes fazem pedidos com o catálogo e as condições de cada um, e o pedido entra direto no ERP.',
+      },
+      {
+        title: 'App para vendedores e técnicos',
+        text: 'Estoque, preço, histórico do cliente e lançamento de pedidos ou ordens de serviço em campo, integrados ao sistema.',
+      },
+      {
+        title: 'Portal do cliente',
+        text: 'Status de pedidos, entregas, documentos e solicitações em um só lugar, sem depender de ligação ou mensagem.',
+      },
+      {
+        title: 'Painéis e relatórios automáticos',
+        text: 'Indicadores de vendas, operação e financeiro atualizados com os dados do ERP, sem montar relatório à mão.',
+      },
+    ],
+    note: 'Trabalhamos com ERPs que oferecem API ou outra forma segura de integração, como TOTVS Protheus, Sankhya, Omie e Bling. A viabilidade de cada integração é confirmada no diagnóstico.',
+    faq: [
+      {
+        q: 'Vocês substituem o nosso ERP?',
+        a: 'Não. O ERP continua sendo o sistema principal da empresa. Construímos as ferramentas que faltam em volta dele e integramos as informações.',
+      },
+      {
+        q: 'Com quais ERPs vocês trabalham?',
+        a: 'Com ERPs que permitem integração segura, por API ou por troca automatizada de arquivos. No diagnóstico avaliamos o seu sistema, o que ele permite e qual é o melhor caminho.',
+      },
+      {
+        q: 'Precisamos ter uma equipe de TI?',
+        a: 'Não. Precisamos de alguém que conheça o processo para validar as decisões. A parte técnica, incluindo a integração e a publicação, fica com a TTech.',
+      },
+      {
+        q: 'Dá para começar com uma parte só?',
+        a: 'Sim. O projeto começa por um fluxo essencial, como o portal de pedidos ou um painel, e evolui em etapas a partir do uso real.',
+      },
+    ],
+    ctaLabel: 'Conversar sobre integração',
+    finalTitle: 'Quais processos da sua empresa ainda acontecem fora do ERP?',
+    finalText:
+      'Conte onde a equipe mais perde tempo copiando ou conferindo informações. No diagnóstico, mapeamos o processo e propomos um primeiro passo integrado ao seu sistema.',
+    projectType: 'sistema',
+    whatsappMessage:
+      'Olá! Vi a página sobre sistemas integrados ao ERP e gostaria de conversar sobre um processo da minha empresa.',
+    index: true,
+  },
+  {
+    slug: 'app-equipe-externa-erp',
+    segment: 'Equipes de campo',
+    metaTitle: 'App para vendedores e técnicos integrado ao ERP',
+    metaDescription:
+      'Aplicativo para equipe externa consultar estoque, preço e histórico do cliente e lançar pedidos ou ordens de serviço direto no ERP, inclusive sem internet.',
+    eyebrow: 'APP PARA EQUIPE EXTERNA',
+    title: 'Sua equipe de campo com o ERP na palma da',
+    highlight: 'mão.',
+    description:
+      'Um aplicativo para vendedores, representantes e técnicos consultarem informações e registrarem pedidos, visitas e ordens de serviço direto no sistema da empresa, sem ligar para o escritório.',
+    signalsTitle: 'SINAIS DE QUE É HORA DE UM APP',
+    signals: [
+      'Vendedores ligam para o escritório para consultar estoque e preço',
+      'Ordens de serviço preenchidas em papel e digitadas depois',
+      'Gestão sem visão do que acontece em campo',
+    ],
+    problemTitle: 'A equipe está na rua. A informação ficou no escritório.',
+    problemText:
+      'Quando vendedores e técnicos dependem de alguém no escritório para consultar o ERP, o atendimento fica lento e o escritório para o que está fazendo. E tudo o que é anotado em papel ou mensagem precisa ser digitado de novo no sistema.',
+    pains: [
+      'Consultas por telefone e mensagem o dia inteiro',
+      'Pedidos e ordens de serviço redigitados no ERP',
+      'Informações desatualizadas passadas ao cliente',
+      'Nenhum registro confiável das visitas e atendimentos',
+    ],
+    solutionTitle: 'Um aplicativo feito para a rotina da sua equipe externa.',
+    solutionText:
+      'Desenhamos o app a partir do que a equipe faz em campo, com integração ao ERP para que o pedido ou a ordem de serviço registrada no celular seja a mesma que o escritório enxerga.',
+    deliverables: [
+      {
+        title: 'Consulta de estoque e preço',
+        text: 'Disponibilidade, tabela de preço e condições de cada cliente, atualizadas a partir do ERP.',
+      },
+      {
+        title: 'Pedidos e ordens de serviço',
+        text: 'Lançamento em campo com checklist, fotos e assinatura do cliente, enviado direto ao sistema.',
+      },
+      {
+        title: 'Funcionamento sem internet',
+        text: 'Registros guardados no aparelho e sincronizados quando a conexão voltar.',
+      },
+      {
+        title: 'Visão da gestão',
+        text: 'Visitas, pedidos e atendimentos do dia em um painel, sem depender de relatório manual.',
+      },
+    ],
+    note: 'A integração depende das formas de acesso que o seu ERP oferece. A viabilidade é confirmada no diagnóstico, antes de definir escopo e prazo.',
+    faq: [
+      {
+        q: 'Precisa ser um aplicativo de loja (App Store e Google Play)?',
+        a: 'Nem sempre. Para muitas operações, uma aplicação web instalável no celular atende bem e tem custo menor. Avaliamos o caso antes de decidir.',
+      },
+      {
+        q: 'Funciona em celulares da própria equipe?',
+        a: 'Sim. O acesso é controlado por usuário, e é possível bloquear o acesso de quem sai da empresa.',
+      },
+      {
+        q: 'E se a equipe ficar sem sinal?',
+        a: 'O app pode guardar os dados essenciais no aparelho e permitir registros sem internet, sincronizando com o ERP quando a conexão voltar.',
+      },
+    ],
+    ctaLabel: 'Conversar sobre o app',
+    finalTitle: 'O que sua equipe externa mais pede para o escritório hoje?',
+    finalText:
+      'Conte como vendedores e técnicos trabalham em campo e o que precisam consultar ou registrar. Vamos desenhar juntos uma primeira versão do aplicativo.',
+    projectType: 'sistema',
+    whatsappMessage:
+      'Olá! Vi a página sobre app para equipe externa e gostaria de conversar sobre a rotina da minha equipe de campo.',
+    index: true,
+  },
+  {
+    slug: 'paineis-indicadores-erp',
+    segment: 'Gestão e indicadores',
+    metaTitle: 'Painéis de indicadores com dados do ERP',
+    metaDescription:
+      'Painéis de vendas, operação e comissões atualizados automaticamente com os dados do ERP. Sem exportar, colar e montar planilha todo mês.',
+    eyebrow: 'PAINÉIS E RELATÓRIOS AUTOMÁTICOS',
+    title: 'Os indicadores da empresa atualizados sem montar',
+    highlight: 'planilha.',
+    description:
+      'Painéis de vendas, operação, financeiro e comissões que leem os dados direto do ERP e das ferramentas da empresa. A gestão olha para o mesmo número, no mesmo momento.',
+    signalsTitle: 'SINAIS DE QUE É HORA DE UM PAINEL',
+    signals: [
+      'Relatórios montados a partir de exportações do ERP',
+      'Números diferentes em cada área para o mesmo indicador',
+      'Comissões e metas calculadas em planilhas',
+    ],
+    problemTitle: 'Relatório que depende de planilha chega atrasado e gera discussão.',
+    problemText:
+      'Quando cada indicador nasce de uma exportação e de fórmulas manuais, o número chega dias depois, depende de poucas pessoas e nem sempre bate entre as áreas. A reunião vira uma discussão sobre qual planilha está certa.',
+    pains: [
+      'Horas por mês consolidando dados',
+      'Dependência de uma pessoa para montar o relatório',
+      'Indicadores divergentes entre áreas',
+      'Decisões tomadas com números atrasados',
+    ],
+    solutionTitle: 'Painéis construídos sobre os dados que a empresa já tem.',
+    solutionText:
+      'Conectamos o ERP e as demais fontes, tratamos as regras de cálculo da empresa e entregamos painéis com acesso controlado para cada perfil.',
+    deliverables: [
+      {
+        title: 'Painel comercial',
+        text: 'Vendas por vendedor, região, cliente e produto, com metas e comparativos.',
+      },
+      {
+        title: 'Comissões automáticas',
+        text: 'Regras de comissão da empresa calculadas a partir dos dados do ERP, com memória de cálculo.',
+      },
+      {
+        title: 'Operação e entregas',
+        text: 'Pedidos em aberto, prazos, atrasos e produtividade da equipe.',
+      },
+      {
+        title: 'Acesso por perfil',
+        text: 'Diretoria, gestores e vendedores veem apenas os indicadores que fazem sentido para cada um.',
+      },
+    ],
+    faq: [
+      {
+        q: 'Por que não usar uma ferramenta de BI pronta?',
+        a: 'Ferramentas de BI são ótimas quando os dados já estão organizados. O painel sob medida faz sentido quando há regras de cálculo próprias, dados que precisam ser tratados ou acesso para clientes e parceiros. No diagnóstico indicamos o melhor caminho, inclusive se for uma ferramenta pronta.',
+      },
+      {
+        q: 'Os dados ficam atualizados em tempo real?',
+        a: 'Depende da forma de integração com o ERP. Na maioria dos casos, a atualização acontece em intervalos de minutos ou horas, o que já elimina o relatório manual.',
+      },
+      {
+        q: 'Dá para começar com um indicador só?',
+        a: 'Sim. O melhor começo é o relatório que mais dá trabalho hoje. Depois, o painel evolui com os próximos indicadores.',
+      },
+    ],
+    ctaLabel: 'Conversar sobre indicadores',
+    finalTitle: 'Qual relatório mais dá trabalho na sua empresa hoje?',
+    finalText:
+      'Conte quais indicadores a gestão acompanha e como eles são montados. Vamos propor um primeiro painel com os dados que você já tem.',
+    projectType: 'sistema',
+    whatsappMessage:
+      'Olá! Vi a página sobre painéis de indicadores e gostaria de conversar sobre os relatórios da minha empresa.',
+    index: true,
+  },
 ];

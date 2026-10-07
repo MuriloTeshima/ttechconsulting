@@ -1,4 +1,5 @@
 import config from '@payload-config';
+import { convertMarkdownToLexical, editorConfigFactory } from '@payloadcms/richtext-lexical';
 import path from 'path';
 import { getPayload, type CollectionSlug, type Where } from 'payload';
 import { toSlug } from '@/collections/shared/fields';
@@ -7,7 +8,8 @@ import { clientLogos } from './data/clients';
 import { faq } from './data/faq';
 import { landingPages } from './data/landing-pages';
 import { projects } from './data/projects';
-import { erpQuiz, quizLandingPages } from './data/quizzes';
+import { posts } from './data/posts';
+import { quizzes } from './data/quizzes';
 import { services } from './data/services';
 
 /**
@@ -110,39 +112,76 @@ for (const title of ['Automação', 'Sistemas sob medida', 'Produto digital', 'G
   created++;
 }
 
-let quizId: number | undefined;
-const existingQuiz = await payload.find({
-  collection: 'quizzes',
-  where: { slug: { equals: erpQuiz.slug } },
-  limit: 1,
-});
-if (existingQuiz.docs[0]) {
-  quizId = existingQuiz.docs[0].id;
-} else {
-  const quiz = await payload.create({
+for (const { quiz: quizData, landingPages: lpSlugs } of quizzes) {
+  let quizId: number;
+  const existingQuiz = await payload.find({
     collection: 'quizzes',
-    context: context(),
-    data: { ...erpQuiz, generateSlug: false, _status: 'published' },
+    where: { slug: { equals: quizData.slug } },
+    limit: 1,
   });
-  quizId = quiz.id;
-  created++;
+  if (existingQuiz.docs[0]) {
+    quizId = existingQuiz.docs[0].id;
+  } else {
+    const quiz = await payload.create({
+      collection: 'quizzes',
+      context: context(),
+      data: { ...quizData, generateSlug: false, _status: 'published' },
+    });
+    quizId = quiz.id;
+    created++;
+  }
+
+  // Convida para o quiz nas landing pages do nicho, sem sobrescrever uma escolha feita no painel.
+  for (const lpSlug of lpSlugs) {
+    const { docs } = await payload.find({
+      collection: 'landing-pages',
+      where: { slug: { equals: lpSlug } },
+      depth: 0,
+      limit: 1,
+    });
+    const page = docs[0];
+    if (!page || page.quiz) continue;
+    await payload.update({
+      collection: 'landing-pages',
+      id: page.id,
+      context: context(),
+      data: { quiz: quizId },
+    });
+    created++;
+  }
 }
 
-// Convida para o quiz nas landing pages do nicho, sem sobrescrever uma escolha feita no painel.
-for (const lpSlug of quizLandingPages) {
-  const { docs } = await payload.find({
-    collection: 'landing-pages',
-    where: { slug: { equals: lpSlug } },
+const editorConfig = await editorConfigFactory.default({ config: payload.config });
+
+for (const post of posts) {
+  if (await exists('posts', { slug: { equals: post.slug } })) continue;
+  const { docs: categories } = await payload.find({
+    collection: 'categories',
+    where: { title: { equals: post.category } },
     depth: 0,
     limit: 1,
   });
-  const page = docs[0];
-  if (!page || page.quiz) continue;
-  await payload.update({
-    collection: 'landing-pages',
-    id: page.id,
+  const cover = await payload.create({
+    collection: 'media',
     context: context(),
-    data: { quiz: quizId },
+    data: { alt: post.cover.alt },
+    filePath: path.resolve(process.cwd(), 'src/seed/images/blog', post.cover.file),
+  });
+  await payload.create({
+    collection: 'posts',
+    context: context(),
+    data: {
+      title: post.title,
+      slug: post.slug,
+      generateSlug: false,
+      publishedAt: post.publishedAt,
+      category: categories[0]?.id,
+      excerpt: post.excerpt,
+      cover: cover.id,
+      content: convertMarkdownToLexical({ editorConfig, markdown: post.content }),
+      seo: post.seo,
+      _status: 'published',
+    },
   });
   created++;
 }

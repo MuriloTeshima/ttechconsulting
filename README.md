@@ -19,7 +19,7 @@ Pré-requisitos: Node 20+, Yarn 4 (via Corepack) e Docker.
 yarn install
 cp .env.example .env          # preencha PAYLOAD_SECRET e PREVIEW_SECRET (openssl rand -hex 32)
 docker compose up -d          # Postgres local na porta 5434
-yarn seed                     # carga inicial: serviços, landing pages, projetos, públicos, logos e FAQ
+yarn seed                     # carga inicial: serviços, landing pages, quizzes, posts do blog, projetos, públicos, logos e FAQ
 yarn dev                      # site em http://localhost:3000 e painel em http://localhost:3000/admin
 ```
 
@@ -135,7 +135,7 @@ src/
   lib/cms.ts                    leitura do conteúdo do CMS
   lib/                          whatsapp, analytics, atribuição (UTM), consentimento, SEO, OG
   migrations/                   migrações do banco (geradas pelo Payload)
-  seed/                         carga inicial do CMS
+  seed/                         carga inicial do CMS (images/blog: capas CC0 do StockSnap)
   payload.config.ts
 ```
 
