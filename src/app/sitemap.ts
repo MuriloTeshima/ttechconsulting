@@ -2,8 +2,9 @@ import type { MetadataRoute } from 'next';
 import { getSitemapEntries } from '@/lib/cms';
 import { absoluteUrl } from '@/lib/seo';
 
-// Atualizado a cada publicação no CMS (hooks das coleções) e, por segurança, a cada hora.
-export const revalidate = 3600;
+// Gerado a cada requisição: na Vercel, a revalidação sob demanda dos hooks do CMS não chega a
+// esta rota, e o conteúdo novo só aparecia depois de até uma hora. São poucas consultas leves.
+export const dynamic = 'force-dynamic';
 
 const STATIC_PAGES = [
   { path: '/', priority: 1 },

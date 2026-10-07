@@ -14,20 +14,14 @@ import type {
  * Os hooks do Payload rodam dentro da transação do banco, antes do commit. Uma página
  * regenerada nesse intervalo leria os dados antigos (aconteceu com o sitemap). Por isso há
  * uma segunda revalidação em `after()`, que roda depois da resposta, já com o commit feito.
- * O sitemap fica em `src/app`, fora dos layouts de `(frontend)`, então a revalidação por layout
- * não o alcança e ele precisa ser revalidado pelo próprio caminho.
+ * O sitemap é dinâmico e não depende desta revalidação.
  * Fora do Next (seed, CLI do Payload) não há o que revalidar; por isso o try/catch.
  */
-function revalidatePaths() {
-  revalidatePath('/', 'layout');
-  revalidatePath('/sitemap.xml');
-}
-
 function revalidateSite(context: RequestContext) {
   if (context.disableRevalidate) return;
   try {
-    revalidatePaths();
-    after(revalidatePaths);
+    revalidatePath('/', 'layout');
+    after(() => revalidatePath('/', 'layout'));
   } catch {
     // Executado fora de uma requisição do Next.js.
   }
