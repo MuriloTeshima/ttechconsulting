@@ -16,6 +16,7 @@ import {
   type QuizAnswerValue,
   type QuizResult,
 } from '@/lib/quiz';
+import { Turnstile } from '../contact/Turnstile';
 import { WhatsAppLink } from '../WhatsAppLink';
 
 type Stage =
@@ -65,6 +66,9 @@ export function QuizRunner({ quiz }: { quiz: PublicQuiz }) {
   const [pending, startTransition] = useTransition();
   const startedAtRef = useRef(0);
   const honeypotRef = useRef<HTMLInputElement>(null);
+  const turnstileTokenRef = useRef('');
+  // Cada tentativa de envio consome o token anterior; o contador pede um novo.
+  const [attempt, setAttempt] = useState(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   // Há progresso salvo? Lido só no navegador (no servidor, sempre "não").
@@ -127,6 +131,7 @@ export function QuizRunner({ quiz }: { quiz: PublicQuiz }) {
         lead,
         startedAt: startedAtRef.current,
         website: honeypotRef.current?.value,
+        turnstileToken: turnstileTokenRef.current,
         pagePath: window.location.pathname,
         attribution: readAttribution(),
       });
@@ -141,6 +146,7 @@ export function QuizRunner({ quiz }: { quiz: PublicQuiz }) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
+      setAttempt((value) => value + 1);
       setFormMessage(state.message);
       setLeadErrors(state.fieldErrors ?? {});
       // Resposta inválida no servidor: volta para a primeira pergunta com problema.
@@ -315,6 +321,12 @@ export function QuizRunner({ quiz }: { quiz: PublicQuiz }) {
               autoComplete="off"
             />
           </div>
+          <Turnstile
+            onToken={(token) => {
+              turnstileTokenRef.current = token;
+            }}
+            resetSignal={attempt}
+          />
           <div className="quiz-nav">
             <button
               type="button"

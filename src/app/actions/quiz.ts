@@ -8,6 +8,7 @@ import { isEmailConfigured, sendLeadEmail } from '@/lib/emailjs';
 import type { QuizAnswers, QuizResult } from '@/lib/quiz';
 import { scoreQuiz } from '@/lib/quiz-scoring';
 import { isRateLimited } from '@/lib/rate-limit';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 export type QuizSubmission = {
   slug: string;
@@ -17,6 +18,8 @@ export type QuizSubmission = {
   startedAt: number;
   /** Campo invisível: preenchido só por robôs. */
   website?: string;
+  /** Token do Cloudflare Turnstile. */
+  turnstileToken?: string;
   pagePath: string;
   attribution: Record<string, string>;
 };
@@ -81,6 +84,13 @@ export async function submitQuiz(input: QuizSubmission): Promise<QuizSubmitState
   }
 
   const ip = (await headers()).get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'local';
+  if (!(await verifyTurnstile(input.turnstileToken, ip))) {
+    return {
+      status: 'error',
+      message:
+        'Não conseguimos confirmar o envio. Recarregue a página e tente de novo, ou fale pelo WhatsApp.',
+    };
+  }
   if (isRateLimited(`quiz:${ip}`)) {
     return {
       status: 'error',

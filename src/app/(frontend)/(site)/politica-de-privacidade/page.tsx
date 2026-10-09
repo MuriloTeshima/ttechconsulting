@@ -24,8 +24,9 @@ export default function Privacidade() {
         Ao enviar o formulário, coletamos nome, e-mail, WhatsApp, empresa, tipo de projeto e a
         mensagem escrita, além da página e dos parâmetros de campanha da visita. Esses dados são
         usados apenas para responder ao contato e conduzir a conversa comercial, com base no seu
-        consentimento. O envio é processado pelo serviço EmailJS, que entrega a mensagem ao e-mail
-        da TTech. Os dados não são vendidos nem compartilhados para outras finalidades.
+        consentimento. A mensagem fica registrada no sistema do site e é encaminhada ao e-mail da
+        TTech pelo serviço EmailJS. Os dados não são vendidos nem compartilhados para outras
+        finalidades.
       </p>
       <h2>Diagnósticos (quizzes)</h2>
       <p>
@@ -54,6 +55,12 @@ export default function Privacidade() {
       <p>
         A infraestrutura de hospedagem pode registrar dados técnicos necessários ao funcionamento e
         à segurança do site, como endereço IP e requisições.
+      </p>
+      <h2>Proteção contra spam</h2>
+      <p>
+        O formulário de contato e os diagnósticos usam o Cloudflare Turnstile para diferenciar
+        pessoas de robôs. Para isso, a Cloudflare analisa sinais técnicos do navegador e da conexão
+        no momento do envio, sem cookies de publicidade e sem usar os dados para outras finalidades.
       </p>
       <h2>Direitos e contato</h2>
       <p>

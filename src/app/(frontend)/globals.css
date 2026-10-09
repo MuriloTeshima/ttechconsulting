@@ -1860,6 +1860,10 @@ button:focus-visible {
   opacity: 0.75;
   transform: none;
 }
+/* Turnstile: invisível na maioria dos acessos; quando aparece, ocupa a linha antes do botão. */
+.turnstile:has(iframe) {
+  margin: 4px 0 16px;
+}
 .form-honeypot {
   position: absolute;
   left: -10000px;

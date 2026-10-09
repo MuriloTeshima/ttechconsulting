@@ -91,6 +91,20 @@ export const enum_quiz_responses_status = pgEnum('enum_quiz_responses_status', [
   'qualificado',
   'descartado',
 ]);
+export const enum_contact_leads_status = pgEnum('enum_contact_leads_status', [
+  'novo',
+  'em-contato',
+  'qualificado',
+  'descartado',
+]);
+export const enum_contact_leads_project_type = pgEnum('enum_contact_leads_project_type', [
+  'sistema',
+  'automacao',
+  'mvp',
+  'site',
+  'evolucao',
+  'outro',
+]);
 export const enum_posts_status = pgEnum('enum_posts_status', ['draft', 'published']);
 export const enum__posts_v_version_status = pgEnum('enum__posts_v_version_status', [
   'draft',
@@ -1240,6 +1254,34 @@ export const quiz_responses = pgTable(
   ],
 );
 
+export const contact_leads = pgTable(
+  'contact_leads',
+  {
+    id: serial('id').primaryKey(),
+    status: enum_contact_leads_status('status').notNull().default('novo'),
+    notes: varchar('notes'),
+    emailSent: boolean('email_sent').default(false),
+    name: varchar('name').notNull(),
+    email: varchar('email').notNull(),
+    phone: varchar('phone').notNull(),
+    company: varchar('company'),
+    projectType: enum_contact_leads_project_type('project_type').notNull(),
+    message: varchar('message').notNull(),
+    pagePath: varchar('page_path'),
+    attribution: jsonb('attribution'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('contact_leads_updated_at_idx').on(columns.updatedAt),
+    index('contact_leads_created_at_idx').on(columns.createdAt),
+  ],
+);
+
 export const posts = pgTable(
   'posts',
   {
@@ -1659,6 +1701,7 @@ export const payload_locked_documents_rels = pgTable(
     'landing-pagesID': integer('landing_pages_id'),
     quizzesID: integer('quizzes_id'),
     'quiz-responsesID': integer('quiz_responses_id'),
+    'contact-leadsID': integer('contact_leads_id'),
     postsID: integer('posts_id'),
     categoriesID: integer('categories_id'),
     mediaID: integer('media_id'),
@@ -1675,6 +1718,7 @@ export const payload_locked_documents_rels = pgTable(
     index('payload_locked_documents_rels_landing_pages_id_idx').on(columns['landing-pagesID']),
     index('payload_locked_documents_rels_quizzes_id_idx').on(columns.quizzesID),
     index('payload_locked_documents_rels_quiz_responses_id_idx').on(columns['quiz-responsesID']),
+    index('payload_locked_documents_rels_contact_leads_id_idx').on(columns['contact-leadsID']),
     index('payload_locked_documents_rels_posts_id_idx').on(columns.postsID),
     index('payload_locked_documents_rels_categories_id_idx').on(columns.categoriesID),
     index('payload_locked_documents_rels_media_id_idx').on(columns.mediaID),
@@ -1718,6 +1762,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns['quiz-responsesID']],
       foreignColumns: [quiz_responses.id],
       name: 'payload_locked_documents_rels_quiz_responses_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['contact-leadsID']],
+      foreignColumns: [contact_leads.id],
+      name: 'payload_locked_documents_rels_contact_leads_fk',
     }).onDelete('cascade'),
     foreignKey({
       columns: [columns['postsID']],
@@ -2279,6 +2328,7 @@ export const relations_quiz_responses = relations(quiz_responses, ({ one, many }
     relationName: 'answers',
   }),
 }));
+export const relations_contact_leads = relations(contact_leads, () => ({}));
 export const relations_posts = relations(posts, ({ one }) => ({
   category: one(categories, {
     fields: [posts.category],
@@ -2391,6 +2441,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [quiz_responses.id],
       relationName: 'quiz-responses',
     }),
+    'contact-leadsID': one(contact_leads, {
+      fields: [payload_locked_documents_rels['contact-leadsID']],
+      references: [contact_leads.id],
+      relationName: 'contact-leads',
+    }),
     postsID: one(posts, {
       fields: [payload_locked_documents_rels.postsID],
       references: [posts.id],
@@ -2468,6 +2523,8 @@ type DatabaseSchema = {
   enum__quizzes_v_version_project_type: typeof enum__quizzes_v_version_project_type;
   enum__quizzes_v_version_status: typeof enum__quizzes_v_version_status;
   enum_quiz_responses_status: typeof enum_quiz_responses_status;
+  enum_contact_leads_status: typeof enum_contact_leads_status;
+  enum_contact_leads_project_type: typeof enum_contact_leads_project_type;
   enum_posts_status: typeof enum_posts_status;
   enum__posts_v_version_status: typeof enum__posts_v_version_status;
   enum_exports_format: typeof enum_exports_format;
@@ -2521,6 +2578,7 @@ type DatabaseSchema = {
   _quizzes_v: typeof _quizzes_v;
   quiz_responses_answers: typeof quiz_responses_answers;
   quiz_responses: typeof quiz_responses;
+  contact_leads: typeof contact_leads;
   posts: typeof posts;
   _posts_v: typeof _posts_v;
   categories: typeof categories;
@@ -2583,6 +2641,7 @@ type DatabaseSchema = {
   relations__quizzes_v: typeof relations__quizzes_v;
   relations_quiz_responses_answers: typeof relations_quiz_responses_answers;
   relations_quiz_responses: typeof relations_quiz_responses;
+  relations_contact_leads: typeof relations_contact_leads;
   relations_posts: typeof relations_posts;
   relations__posts_v: typeof relations__posts_v;
   relations_categories: typeof relations_categories;

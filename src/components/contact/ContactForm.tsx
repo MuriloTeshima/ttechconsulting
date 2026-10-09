@@ -15,6 +15,7 @@ import {
   type ContactState,
   type ProjectType,
 } from '@/lib/contact-schema';
+import { Turnstile } from './Turnstile';
 
 type ContactFormProps = {
   /** Onde o formulário está na página; enviado ao dataLayer como cta_location. */
@@ -234,6 +235,9 @@ function ContactFormBody({
         </label>
         {error('consent')}
       </div>
+
+      {/* Token novo a cada tentativa: o anterior já foi consumido pelo servidor. */}
+      <Turnstile resetSignal={state} />
 
       {/* Campos de controle: armadilha para robôs e contexto da visita. */}
       <div className="form-honeypot" aria-hidden="true">

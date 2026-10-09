@@ -95,6 +95,8 @@ Copie `.env.example` para `.env.local`.
 
 | `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID`, `EMAILJS_PUBLIC_KEY`, `EMAILJS_PRIVATE_KEY` | Envio do formulário de contato pelo servidor. Sem elas, o envio é simulado no modo dev e falha em produção. |
 | `CONTACT_TO` | Destinatário dos contatos. Padrão: e-mail em `src/config/site.ts`. |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile no contato e nos quizzes. Sem elas, a verificação fica desligada. |
+| `RESEND_API_KEY`, `EMAIL_FROM` | E-mails do painel (redefinição de senha) via Resend. Sem a chave, o e-mail só aparece no console. |
 
 ## Formulário de contato
 
@@ -103,8 +105,9 @@ Fica no fim da home, na página `/contato` e nas landing pages (antes do CTA fin
 Os botões de chamada (header, hero, CTA final, rodapé, landing pages) usam `FormLink`: na página que tem o formulário, rolam até ele; nas demais, abrem `/contato?tipo=<tipo>#formulario` com o tipo de projeto pré-selecionado. O WhatsApp continua no atalho ao lado do formulário e no botão flutuante (`WhatsAppLink`).
 
 - Envio por Server Action (`src/app/actions/contact.ts`), com validação em `src/lib/contact-schema.ts`.
+- Cada envio é gravado em **Captação → Contatos do site** no painel (com exportação em CSV) antes do aviso por e-mail. Se o e-mail falhar, o contato continua salvo, com "Aviso por e-mail enviado" desmarcado.
 - O e-mail sai pela API REST do EmailJS chamada do servidor (`src/lib/emailjs.ts`), com a chave privada; nada de chave no navegador.
-- Anti-spam: campo invisível, tempo mínimo de preenchimento (3 s) e limite de 5 envios válidos a cada 10 minutos por IP.
+- Anti-spam: Cloudflare Turnstile (invisível na maioria dos acessos, `src/components/contact/Turnstile.tsx` e `src/lib/turnstile.ts`), campo invisível, tempo mínimo de preenchimento (3 s) e limite de 5 envios válidos a cada 10 minutos por IP. O quiz usa as mesmas proteções.
 - Evento `form_submit` no `dataLayer`, com os mesmos parâmetros de atribuição do `whatsapp_click`.
 
 **Configuração no EmailJS:**
@@ -116,6 +119,13 @@ Os botões de chamada (header, hero, CTA final, rodapé, landing pages) usam `Fo
    - **Reply To:** `{{email}}`
    - **Subject:** `Novo contato: {{project_type}} — {{name}}`
    - **Conteúdo:** use as variáveis `{{name}}`, `{{email}}`, `{{phone}}`, `{{whatsapp_link}}`, `{{company}}`, `{{project_type}}`, `{{message}}`, `{{page}}` e `{{attribution}}`.
+
+## Segurança do painel
+
+- Login bloqueado por 15 minutos depois de 5 senhas erradas seguidas.
+- API GraphQL desligada (o painel usa só a REST).
+- `/admin`, `/api` e `/next` fora dos buscadores (`robots.txt` e `X-Robots-Tag: noindex`).
+- "Esqueci minha senha" envia o e-mail pelo Resend, com o link montado a partir de `NEXT_PUBLIC_SITE_URL`.
 
 ## Estrutura
 
