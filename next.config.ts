@@ -43,7 +43,14 @@ const nextConfig: NextConfig = {
     return webpackConfig;
   },
   async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }];
+    return [
+      { source: '/:path*', headers: securityHeaders },
+      // Painel e API fora dos buscadores, mesmo que algum link chegue até eles.
+      {
+        source: '/:area(admin|api)/:path*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+    ];
   },
   async redirects() {
     return [{ source: '/cases', destination: '/projetos', permanent: true }];

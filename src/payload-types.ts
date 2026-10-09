@@ -74,6 +74,7 @@ export interface Config {
     'landing-pages': LandingPage;
     quizzes: Quiz;
     'quiz-responses': QuizResponse;
+    'contact-leads': ContactLead;
     posts: Post;
     categories: Category;
     media: Media;
@@ -95,6 +96,7 @@ export interface Config {
     'landing-pages': LandingPagesSelect<false> | LandingPagesSelect<true>;
     quizzes: QuizzesSelect<false> | QuizzesSelect<true>;
     'quiz-responses': QuizResponsesSelect<false> | QuizResponsesSelect<true>;
+    'contact-leads': ContactLeadsSelect<false> | ContactLeadsSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -604,6 +606,36 @@ export interface QuizResponse {
   createdAt: string;
 }
 /**
+ * Mensagens do formulário de contato. Ficam salvas mesmo se o aviso por e-mail falhar.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-leads".
+ */
+export interface ContactLead {
+  id: number;
+  status: 'novo' | 'em-contato' | 'qualificado' | 'descartado';
+  notes?: string | null;
+  emailSent?: boolean | null;
+  name: string;
+  email: string;
+  phone: string;
+  company?: string | null;
+  projectType: 'sistema' | 'automacao' | 'mvp' | 'site' | 'evolucao' | 'outro';
+  message: string;
+  pagePath?: string | null;
+  attribution?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
@@ -910,6 +942,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'quiz-responses';
         value: number | QuizResponse;
+      } | null)
+    | ({
+        relationTo: 'contact-leads';
+        value: number | ContactLead;
       } | null)
     | ({
         relationTo: 'posts';
@@ -1277,6 +1313,25 @@ export interface QuizResponsesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-leads_select".
+ */
+export interface ContactLeadsSelect<T extends boolean = true> {
+  status?: T;
+  notes?: T;
+  emailSent?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  company?: T;
+  projectType?: T;
+  message?: T;
+  pagePath?: T;
+  attribution?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
@@ -1565,6 +1620,7 @@ export interface TaskCreateCollectionExport {
       | 'landing-pages'
       | 'quizzes'
       | 'quiz-responses'
+      | 'contact-leads'
       | 'posts'
       | 'categories'
       | 'media'

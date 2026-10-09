@@ -22,6 +22,8 @@ export const site = {
   url: resolveSiteUrl(),
   gtmId: process.env.NEXT_PUBLIC_GTM_ID ?? '',
   gaId: process.env.NEXT_PUBLIC_GA_ID ?? '',
+  /** Cloudflare Turnstile (anti-spam). Vazio desliga o widget. */
+  turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? '',
 } as const;
 
 export const nav = [

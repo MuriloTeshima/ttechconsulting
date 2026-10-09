@@ -2,9 +2,11 @@
 
 import { headers } from 'next/headers';
 import { z } from 'zod';
+import { getCms } from '@/lib/cms';
 import { contactSchema, type ContactField, type ContactState } from '@/lib/contact-schema';
 import { isEmailConfigured, sendLeadEmail } from '@/lib/emailjs';
 import { isRateLimited } from '@/lib/rate-limit';
+import { TURNSTILE_FIELD, verifyTurnstile } from '@/lib/turnstile';
 
 const FIELDS: ContactField[] = [
   'name',
@@ -65,8 +67,17 @@ export async function sendContact(_prev: ContactState, formData: FormData): Prom
     };
   }
 
-  // Só envios válidos contam para o limite, para não punir quem corrige erros de preenchimento.
   const ip = (await headers()).get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'local';
+  if (!(await verifyTurnstile(String(formData.get(TURNSTILE_FIELD) ?? ''), ip))) {
+    return {
+      status: 'error',
+      message:
+        'Não conseguimos confirmar o envio. Recarregue a página e tente de novo, ou fale pelo WhatsApp.',
+      values,
+    };
+  }
+
+  // Só envios válidos contam para o limite, para não punir quem corrige erros de preenchimento.
   if (isRateLimited(ip)) {
     console.warn('[contato] Limite de envios atingido', { ip });
     return {
@@ -77,30 +88,67 @@ export async function sendContact(_prev: ContactState, formData: FormData): Prom
   }
 
   const context = readContext(formData);
+  const { name, email, phone, company, projectType, message } = result.data;
+  const cms = await getCms();
 
-  if (!isEmailConfigured()) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.info('[contato] EmailJS não configurado; envio simulado:', result.data, context);
-      return { status: 'success' };
-    }
-    console.error('[contato] EmailJS não configurado em produção');
-    return {
-      status: 'error',
-      message: 'Não foi possível enviar agora. Fale com a gente pelo WhatsApp.',
-      values,
-    };
+  // O contato fica salvo no painel antes do aviso por e-mail: se o EmailJS falhar, nada se perde.
+  let leadId: number | undefined;
+  try {
+    const doc = await cms.create({
+      collection: 'contact-leads',
+      context: { disableRevalidate: true },
+      data: {
+        name,
+        email,
+        phone,
+        company,
+        projectType,
+        message,
+        ...context,
+        status: 'novo',
+        emailSent: false,
+      },
+    });
+    leadId = doc.id;
+  } catch (error) {
+    console.error('[contato] Falha ao gravar o contato', error);
   }
 
-  try {
-    await sendLeadEmail(result.data, context);
-    console.info('[contato] E-mail enviado', { projectType: result.data.projectType });
-    return { status: 'success' };
-  } catch (error) {
-    console.error('[contato] Falha no envio', error);
+  let emailSent = false;
+  if (isEmailConfigured()) {
+    try {
+      await sendLeadEmail(result.data, context);
+      emailSent = true;
+    } catch (error) {
+      console.error('[contato] Falha no envio do e-mail', error);
+    }
+  } else if (process.env.NODE_ENV === 'production') {
+    console.error('[contato] EmailJS não configurado em produção');
+  }
+
+  if (leadId && emailSent) {
+    await cms
+      .update({
+        collection: 'contact-leads',
+        id: leadId,
+        context: { disableRevalidate: true },
+        data: { emailSent: true },
+      })
+      .catch((error) => console.error('[contato] Falha ao marcar o e-mail como enviado', error));
+  }
+
+  if (!leadId && !emailSent) {
     return {
       status: 'error',
       message: 'Não foi possível enviar agora. Tente novamente ou fale pelo WhatsApp.',
       values,
     };
   }
+
+  console.info('[contato] Contato registrado', {
+    projectType: result.data.projectType,
+    saved: Boolean(leadId),
+    emailSent,
+  });
+  return { status: 'success' };
 }

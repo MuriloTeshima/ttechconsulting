@@ -2159,6 +2159,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@payloadcms/email-resend@npm:3.90.2":
+  version: 3.90.2
+  resolution: "@payloadcms/email-resend@npm:3.90.2"
+  peerDependencies:
+    payload: 3.90.2
+  checksum: 10c0/20fdc49211aebc3c30aa18ebfe05862a30da65a75d24e4860a920342bf9bed43e0f1f6746ee3a575863baeedc4b4e944b0128ce9303ea3cd2d5c7722e5950231
+  languageName: node
+  linkType: hard
+
 "@payloadcms/graphql@npm:3.90.2":
   version: 3.90.2
   resolution: "@payloadcms/graphql@npm:3.90.2"
@@ -9945,6 +9954,7 @@ __metadata:
     "@faceless-ui/scroll-info": "npm:2.0.0"
     "@next/third-parties": "npm:16.3.6"
     "@payloadcms/db-postgres": "npm:3.90.2"
+    "@payloadcms/email-resend": "npm:3.90.2"
     "@payloadcms/next": "npm:3.90.2"
     "@payloadcms/plugin-import-export": "npm:3.90.2"
     "@payloadcms/richtext-lexical": "npm:3.90.2"

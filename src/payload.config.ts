@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres';
+import { resendAdapter } from '@payloadcms/email-resend';
 import { importExportPlugin } from '@payloadcms/plugin-import-export';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob';
@@ -10,6 +11,7 @@ import { fileURLToPath } from 'url';
 import { Audiences } from './collections/Audiences';
 import { Categories } from './collections/Categories';
 import { ClientLogos } from './collections/ClientLogos';
+import { ContactLeads } from './collections/ContactLeads';
 import { LandingPages } from './collections/LandingPages';
 import { Media } from './collections/Media';
 import { Posts } from './collections/Posts';
@@ -37,6 +39,7 @@ export default buildConfig({
     LandingPages,
     Quizzes,
     QuizResponses,
+    ContactLeads,
     Posts,
     Categories,
     Media,
@@ -44,6 +47,16 @@ export default buildConfig({
   ],
   globals: [HomeFaq],
   editor: lexicalEditor(),
+  // O painel usa só a API REST; a GraphQL ficaria exposta sem uso.
+  graphQL: { disable: true },
+  // E-mails do painel (redefinição de senha). Sem a chave, o Payload só escreve no console.
+  email: process.env.RESEND_API_KEY
+    ? resendAdapter({
+        apiKey: process.env.RESEND_API_KEY,
+        defaultFromAddress: process.env.EMAIL_FROM || 'nao-responda@ttechcs.com.br',
+        defaultFromName: 'TTech Consulting',
+      })
+    : undefined,
   secret: process.env.PAYLOAD_SECRET || '',
   i18n: { supportedLanguages: { pt }, fallbackLanguage: 'pt' },
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
@@ -55,15 +68,13 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
-    // Exportação das respostas dos quizzes em CSV, baixado na hora (sem salvar arquivo no servidor).
+    // Exportação dos leads em CSV, baixado na hora (sem salvar arquivo no servidor).
     importExportPlugin({
-      collections: [
-        {
-          slug: 'quiz-responses',
-          import: false,
-          export: { format: 'csv', disableSave: true, disableJobsQueue: true },
-        },
-      ],
+      collections: (['quiz-responses', 'contact-leads'] as const).map((slug) => ({
+        slug,
+        import: false,
+        export: { format: 'csv' as const, disableSave: true, disableJobsQueue: true },
+      })),
     }),
     // Em produção as imagens vão para o Vercel Blob; localmente ficam em /media.
     vercelBlobStorage({
