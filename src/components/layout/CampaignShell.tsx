@@ -3,7 +3,7 @@ import { FormLink } from '../FormLink';
 import { Logo } from '../Logo';
 import { LegalBar } from './Footer';
 
-/** Cabeçalho enxuto para landing pages: sem navegação que tire o foco da conversão. */
+/** Lean header for landing pages, with no navigation pulling focus away from conversion. */
 export function CampaignHeader({
   projectType,
   label,

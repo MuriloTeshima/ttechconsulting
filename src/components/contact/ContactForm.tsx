@@ -18,7 +18,7 @@ import {
 import { Turnstile } from './Turnstile';
 
 type ContactFormProps = {
-  /** Onde o formulário está na página; enviado ao dataLayer como cta_location. */
+  /** Where the form sits on the page; sent to the dataLayer as cta_location. */
   location: string;
   defaultProjectType?: ProjectType;
 };
@@ -26,7 +26,7 @@ type ContactFormProps = {
 const initialState: ContactState = { status: 'idle' };
 
 export function ContactForm(props: ContactFormProps) {
-  // Trocar a key remonta o formulário limpo depois de um envio com sucesso.
+  // Changing the key remounts a clean form after a successful submission.
   const [formKey, setFormKey] = useState(0);
   return <ContactFormBody key={formKey} {...props} onReset={() => setFormKey((key) => key + 1)} />;
 }
@@ -51,15 +51,15 @@ function ContactFormBody({
       const input = form.elements.namedItem(name);
       if (input instanceof HTMLInputElement) input.value = value;
     };
-    // O tempo de preenchimento conta desde a abertura, não desde a última tentativa.
+    // Fill time counts from when the form opened, not from the last attempt.
     if (!startedAtRef.current) startedAtRef.current = Date.now();
     set('startedAt', String(startedAtRef.current));
     set('pagePath', window.location.pathname);
     set('attribution', JSON.stringify(readAttribution()));
   }, [state]);
 
-  // Pré-seleção do tipo de projeto: pelo ?tipo= da URL (vindo de outra página)
-  // ou pelo evento disparado por um botão da mesma página.
+  // Project type preselection: from the URL's ?tipo= (coming from another page)
+  // or from the event fired by a button on the same page.
   useEffect(() => {
     const select = (type: string) => {
       const field = formRef.current?.elements.namedItem('projectType');
@@ -236,10 +236,10 @@ function ContactFormBody({
         {error('consent')}
       </div>
 
-      {/* Token novo a cada tentativa: o anterior já foi consumido pelo servidor. */}
+      {/* A new token on each attempt, since the server already used the previous one. */}
       <Turnstile resetSignal={state} />
 
-      {/* Campos de controle: armadilha para robôs e contexto da visita. */}
+      {/* Control fields: bot trap and visit context. */}
       <div className="form-honeypot" aria-hidden="true">
         <label htmlFor={`${location}-website`}>Não preencha este campo</label>
         <input

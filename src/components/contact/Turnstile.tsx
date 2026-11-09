@@ -44,15 +44,15 @@ function loadTurnstile() {
 }
 
 type TurnstileProps = {
-  /** Recebe o token quando o formulário não usa FormData (o quiz). */
+  /** Receives the token when the form doesn't use FormData (the quiz). */
   onToken?: (token: string) => void;
-  /** Qualquer valor novo gera um token novo: cada token vale para um único envio. */
+  /** Any new value generates a new token, since each token is good for one submission. */
   resetSignal?: unknown;
 };
 
 /**
- * Verificação anti-robô da Cloudflare. Só aparece quando a Cloudflare desconfia do visitante;
- * no restante dos casos é invisível. Dentro de um <form>, o token vai no campo cf-turnstile-response.
+ * Cloudflare bot check. It only appears when Cloudflare is suspicious of the visitor;
+ * otherwise it's invisible. Inside a <form>, the token goes in the cf-turnstile-response field.
  */
 export function Turnstile({ onToken, resetSignal }: TurnstileProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -77,7 +77,7 @@ export function Turnstile({ onToken, resetSignal }: TurnstileProps) {
           'expired-callback': () => onTokenRef.current?.(''),
         });
       })
-      // Sem o script (bloqueador, rede), o envio segue e o servidor decide.
+      // Without the script (blocker, network), the submission goes ahead and the server decides.
       .catch(() => undefined);
     return () => {
       cancelled = true;

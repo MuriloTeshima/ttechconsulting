@@ -1,8 +1,8 @@
 import type { ProjectType } from './contact-schema';
 
 /**
- * Formatos de conteúdo consumidos pelos componentes do site.
- * O CMS (src/lib/cms.ts) converte os documentos do Payload para estes tipos.
+ * Content shapes used by the site components.
+ * The CMS layer (src/lib/cms.ts) converts Payload documents to these types.
  */
 
 export type FaqItem = { q: string; a: string };
@@ -14,7 +14,7 @@ export type ServiceIcon = 'layers' | 'workflow' | 'blocks' | 'monitor' | 'refres
 export type Service = {
   slug: string;
   title: string;
-  /** Título da aba e do Google (o layout acrescenta " | TTech Consulting"). */
+  /** Title for the browser tab and Google (the layout appends " | TTech Consulting"). */
   seoTitle: string;
   short: string;
   lead: string;
@@ -22,7 +22,7 @@ export type Service = {
   deliverables: string[];
   suitable: string;
   icon: ServiceIcon;
-  /** Tipo de projeto pré-selecionado no formulário quando o contato vem desta página. */
+  /** Project type preselected in the form when the contact comes from this page. */
   projectType: ProjectType;
   cta: string;
   examples: TitledText[];
@@ -33,7 +33,7 @@ export type LandingPage = {
   slug: string;
   segment: string;
   metaTitle: string;
-  /** Usa a marca curta (" | TTech") no título, para caber em ~60 caracteres. */
+  /** Uses the short brand (" | TTech") in the title so it fits in ~60 characters. */
   shortBrand?: boolean;
   metaDescription: string;
   eyebrow: string;
@@ -54,11 +54,11 @@ export type LandingPage = {
   finalTitle: string;
   finalText: string;
   projectType: ProjectType;
-  /** Mensagem pré-preenchida do WhatsApp nesta página. */
+  /** Prefilled WhatsApp message on this page. */
   whatsappMessage: string;
-  /** Liga/desliga a indexação da página pelos buscadores. */
+  /** Turns search engine indexing of the page on or off. */
   index: boolean;
-  /** Quiz do nicho, exibido como convite na página (só se estiver publicado). */
+  /** The niche's quiz, shown as an invitation on the page (only if published). */
   quiz: QuizInvite | null;
 };
 
@@ -85,9 +85,9 @@ export type Audience = {
 export type ClientLogo = {
   name: string;
   src: string;
-  /** Proporção do logo (largura / altura). */
+  /** Logo aspect ratio (width / height). */
   ratio: number;
-  /** Ajuste fino de altura para equilibrar o peso visual entre logos. */
+  /** Height fine-tuning to balance visual weight across logos. */
   scale?: number;
 };
 
@@ -103,7 +103,7 @@ export type PostSummary = {
 };
 
 export type Post = PostSummary & {
-  /** Estado serializado do editor Lexical (renderizado com <RichText />). */
+  /** Serialized Lexical editor state (rendered with <RichText />). */
   content: import('@/payload-types').Post['content'];
   seoTitle: string;
   seoDescription: string;

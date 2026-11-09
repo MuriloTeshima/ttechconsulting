@@ -13,13 +13,13 @@ import { quizzes } from './data/quizzes';
 import { services } from './data/services';
 
 /**
- * Carga inicial do CMS com o conteúdo que existia no código.
- * Idempotente: pula documentos que já existem. Uso: `yarn seed`.
- * Os slugs vão fixos (generateSlug: false) para nenhuma URL do site mudar.
+ * Initial CMS content, taken from what used to live in the code.
+ * Idempotent: skips documents that already exist. Usage: `yarn seed`.
+ * Slugs are fixed (generateSlug: false) so no site URL changes.
  */
 const payload = await getPayload({ config });
-// Um objeto novo por chamada: o plugin do Vercel Blob marca o context durante o envio, e um
-// context compartilhado faria os envios seguintes serem pulados em silêncio.
+// A new object on every call: the Vercel Blob plugin marks the context during upload, and a
+// shared context would make the following uploads get skipped silently.
 const context = () => ({ disableRevalidate: true });
 const list = (items: string[]) => items.map((text) => ({ text }));
 
@@ -131,7 +131,7 @@ for (const { quiz: quizData, landingPages: lpSlugs } of quizzes) {
     created++;
   }
 
-  // Convida para o quiz nas landing pages do nicho, sem sobrescrever uma escolha feita no painel.
+  // Links the niche's landing pages to the quiz without overwriting a choice made in the panel.
   for (const lpSlug of lpSlugs) {
     const { docs } = await payload.find({
       collection: 'landing-pages',

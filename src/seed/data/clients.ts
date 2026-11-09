@@ -1,6 +1,6 @@
 import type { ClientLogo } from '@/lib/content-types';
 
-/** Logos em public/clientes/, todos na cor #1E1F21. */
+/** Logos in public/clientes/, all in color #1E1F21. */
 export const clientLogos: ClientLogo[] = [
   { name: 'Ideal Track', src: '/clientes/idealtrack.svg', ratio: 573 / 124 },
   { name: 'Votorantim Cimentos', src: '/clientes/votorantimcimentos.svg', ratio: 593 / 143 },

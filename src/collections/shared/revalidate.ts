@@ -8,14 +8,14 @@ import type {
 } from 'payload';
 
 /**
- * Atualiza as páginas estáticas do site depois de uma alteração no CMS.
- * O site é pequeno, então revalidar tudo é mais simples e seguro do que mapear rota a rota.
+ * Refreshes the site's static pages after a CMS change.
+ * The site is small, so revalidating everything is simpler and safer than mapping route by route.
  *
- * Os hooks do Payload rodam dentro da transação do banco, antes do commit. Uma página
- * regenerada nesse intervalo leria os dados antigos (aconteceu com o sitemap). Por isso há
- * uma segunda revalidação em `after()`, que roda depois da resposta, já com o commit feito.
- * O sitemap é dinâmico e não depende desta revalidação.
- * Fora do Next (seed, CLI do Payload) não há o que revalidar; por isso o try/catch.
+ * Payload hooks run inside the database transaction, before the commit. A page
+ * regenerated in that gap would read the old data (it happened with the sitemap). That's why there's
+ * a second revalidation in `after()`, which runs after the response, once the commit is done.
+ * The sitemap is dynamic and doesn't depend on this revalidation.
+ * Outside Next (seed, Payload CLI) there's nothing to revalidate, hence the try/catch.
  */
 function revalidateSite(context: RequestContext) {
   if (context.disableRevalidate) return;
@@ -23,7 +23,7 @@ function revalidateSite(context: RequestContext) {
     revalidatePath('/', 'layout');
     after(() => revalidatePath('/', 'layout'));
   } catch {
-    // Executado fora de uma requisição do Next.js.
+    // Running outside a Next.js request.
   }
 }
 

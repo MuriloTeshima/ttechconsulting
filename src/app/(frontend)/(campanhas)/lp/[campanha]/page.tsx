@@ -19,7 +19,7 @@ import { faqSchema, pageMetadata, serviceSchema } from '@/lib/seo';
 
 type Props = { params: Promise<{ campanha: string }> };
 
-// Landing pages novas publicadas no CMS abrem sem novo build.
+// New landing pages published in the CMS open without a new build.
 export async function generateStaticParams() {
   return (await getLandingPages()).map((page) => ({ campanha: page.slug }));
 }

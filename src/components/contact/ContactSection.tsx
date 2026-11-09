@@ -16,9 +16,9 @@ export function ContactSection({
   eyebrow?: string;
   title?: string;
   description?: string;
-  /** Tipo de projeto pré-selecionado no formulário. */
+  /** Project type preselected in the form. */
   projectType?: ProjectType;
-  /** Mensagem do atalho de WhatsApp; sem ela, usa a mensagem padrão. */
+  /** Message for the WhatsApp shortcut; without it, the default message is used. */
   whatsappMessage?: string;
   location: string;
   id?: string;

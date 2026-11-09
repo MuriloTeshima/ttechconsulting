@@ -28,13 +28,13 @@ function saveChoice(choice: ConsentChoice) {
   try {
     localStorage.setItem(CONSENT_KEY, choice);
   } catch {
-    // Sem armazenamento: a escolha vale só para esta visita.
+    // No storage: the choice only lasts for this visit.
   }
   window.dispatchEvent(new Event(CHANGE_EVENT));
 }
 
 export function ConsentBanner() {
-  // No servidor devolve 'unset' para não renderizar o banner no HTML estático.
+  // On the server it returns 'unset' so the banner isn't rendered in the static HTML.
   const choice = useSyncExternalStore(subscribe, readChoice, () => 'unset');
   if (choice !== 'pending') return null;
 

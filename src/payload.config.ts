@@ -47,9 +47,9 @@ export default buildConfig({
   ],
   globals: [HomeFaq],
   editor: lexicalEditor(),
-  // O painel usa só a API REST; a GraphQL ficaria exposta sem uso.
+  // The panel only uses the REST API; GraphQL would be exposed for nothing.
   graphQL: { disable: true },
-  // E-mails do painel (redefinição de senha). Sem a chave, o Payload só escreve no console.
+  // Panel emails (password reset). Without the key, Payload only writes them to the console.
   email: process.env.RESEND_API_KEY
     ? resendAdapter({
         apiKey: process.env.RESEND_API_KEY,
@@ -63,12 +63,12 @@ export default buildConfig({
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URL || '' },
     migrationDir: path.resolve(dirname, 'migrations'),
-    // Esquema Drizzle tipado para consultas próprias (payload.db.drizzle).
+    // Typed Drizzle schema for custom queries (payload.db.drizzle).
     generateSchemaOutputFile: path.resolve(dirname, 'payload-generated-schema.ts'),
   }),
   sharp,
   plugins: [
-    // Exportação dos leads em CSV, baixado na hora (sem salvar arquivo no servidor).
+    // CSV export of the leads, downloaded on the spot (no file saved on the server).
     importExportPlugin({
       collections: (['quiz-responses', 'contact-leads'] as const).map((slug) => ({
         slug,
@@ -76,12 +76,12 @@ export default buildConfig({
         export: { format: 'csv' as const, disableSave: true, disableJobsQueue: true },
       })),
     }),
-    // Em produção as imagens vão para o Vercel Blob; localmente ficam em /media.
+    // In production images go to Vercel Blob; locally they stay in /media.
     vercelBlobStorage({
       enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
-      // Cria os campos do plugin mesmo desligado: o esquema do banco fica igual em todos os ambientes.
+      // Creates the plugin's fields even when it's off, so the database schema is the same in every environment.
       alwaysInsertFields: true,
-      // Imagens públicas servidas direto pela rede do Blob, sem passar pelo servidor do site.
+      // Public images served straight from the Blob network, without going through the site's server.
       collections: { media: { disablePayloadAccessControl: true } },
       token: process.env.BLOB_READ_WRITE_TOKEN,
       clientUploads: true,

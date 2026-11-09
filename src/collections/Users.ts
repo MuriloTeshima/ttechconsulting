@@ -10,12 +10,12 @@ export const Users: CollectionConfig = {
   labels: { singular: 'Usuário', plural: 'Usuários' },
   admin: { useAsTitle: 'email', group: 'Administração' },
   auth: {
-    // Bloqueia a conta por 15 minutos depois de 5 senhas erradas seguidas.
+    // Locks the account for 15 minutes after 5 wrong passwords in a row.
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,
     cookies: { secure: process.env.NODE_ENV === 'production', sameSite: 'Lax' },
     forgotPassword: {
-      // O link usa a URL pública do site: o Payload não conhece o domínio sem `serverURL`.
+      // The link uses the site's public URL, since Payload doesn't know the domain without `serverURL`.
       generateEmailSubject: () => `Redefinição de senha · ${site.name}`,
       generateEmailHTML: (args) => {
         const url = new URL(`/admin/reset/${args?.token ?? ''}`, site.url).toString();

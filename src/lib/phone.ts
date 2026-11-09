@@ -1,4 +1,4 @@
-/** Máscara de telefone brasileiro: (16) 99999-9999. */
+/** Brazilian phone mask: (16) 99999-9999. */
 export function formatPhone(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11);
   if (digits.length <= 2) return digits;

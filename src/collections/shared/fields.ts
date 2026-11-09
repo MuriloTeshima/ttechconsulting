@@ -1,7 +1,7 @@
 import { slugField, type ArrayField, type Field } from 'payload';
 import { projectTypes } from '@/lib/contact-schema';
 
-/** Converte texto em slug preservando a palavra: "Automação" → "automacao". */
+/** Turns text into a slug while keeping the word: "Automação" → "automacao". */
 export function toSlug(value: unknown) {
   if (typeof value !== 'string') return undefined;
   return value
@@ -20,7 +20,7 @@ export const slug = (useAsSlug = 'title') =>
     slugify: ({ valueToSlugify }) => toSlug(valueToSlugify),
   });
 
-/** Lista de textos simples (ex.: entregas, sinais, dores). */
+/** List of plain texts (e.g. deliverables, signs, pain points). */
 export const textList = (name: string, label: string, required = true): ArrayField => ({
   name,
   label,
@@ -31,7 +31,7 @@ export const textList = (name: string, label: string, required = true): ArrayFie
   fields: [{ name: 'text', label: 'Texto', type: 'text', required: true }],
 });
 
-/** Lista de blocos com título e texto (ex.: exemplos, entregas de landing page). */
+/** List of blocks with a title and text (e.g. examples, landing page deliverables). */
 export const titledTextList = (name: string, label: string): ArrayField => ({
   name,
   label,
@@ -71,7 +71,7 @@ export const projectTypeField: Field = {
   },
 };
 
-/** Campos de SEO de uma página: título (até ~60 caracteres) e descrição (até ~155). */
+/** SEO fields for a page: title (up to ~60 characters) and description (up to ~155). */
 export const seoGroup = (): Field => ({
   name: 'seo',
   label: 'SEO',

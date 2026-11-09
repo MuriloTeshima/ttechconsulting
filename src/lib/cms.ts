@@ -20,10 +20,10 @@ import type {
 } from './content-types';
 
 /**
- * Acesso ao conteúdo do CMS (API local do Payload, sobre o Drizzle/Postgres).
- * Converte os documentos para os tipos de src/lib/content-types.ts usados pelos componentes.
- * Consultas próprias fora das coleções podem usar `(await getCms()).db.drizzle` com o
- * esquema tipado em src/payload-generated-schema.ts.
+ * Access to CMS content (Payload's Local API, on Drizzle/Postgres).
+ * Converts documents to the types in src/lib/content-types.ts that the components use.
+ * Custom queries outside the collections can use `(await getCms()).db.drizzle` with the
+ * typed schema in src/payload-generated-schema.ts.
  */
 export const getCms = cache(() => getPayload({ config }));
 
@@ -45,7 +45,7 @@ function toImage(media: number | P.Media | null | undefined): MediaImage | null 
   };
 }
 
-// Serviços
+// Services
 
 function toService(doc: P.Service): Service {
   return {
@@ -126,7 +126,7 @@ function toQuizInvite(quiz: P.LandingPage['quiz']): QuizInvite | null {
   };
 }
 
-/** Landing pages publicadas (para rotas estáticas e sitemap). */
+/** Published landing pages (for static routes and the sitemap). */
 export const getLandingPages = cache(async (): Promise<LandingPage[]> => {
   const { docs } = await (
     await getCms()
@@ -140,7 +140,7 @@ export const getLandingPages = cache(async (): Promise<LandingPage[]> => {
   return docs.map(toLandingPage);
 });
 
-/** Uma landing page; com `draft`, devolve a versão mais recente, mesmo não publicada. */
+/** One landing page; with `draft`, returns the latest version even if unpublished. */
 export const getLandingPage = cache(async (slug: string, draft = false) => {
   const { docs } = await (
     await getCms()
@@ -154,7 +154,7 @@ export const getLandingPage = cache(async (slug: string, draft = false) => {
   return docs[0] ? toLandingPage(docs[0]) : null;
 });
 
-// Home: projetos, públicos, logos e FAQ
+// Home: projects, audiences, logos and FAQ
 
 export const getProjects = cache(async (): Promise<Project[]> => {
   const { docs } = await (
@@ -267,7 +267,7 @@ export const getPost = cache(async (slug: string, draft = false): Promise<Post |
 
 // Quizzes
 
-/** Documento completo do quiz (com pontuação). Só para uso no servidor. */
+/** Full quiz document (with scoring). Server use only. */
 export const getQuizDoc = cache(async (slug: string, draft = false) => {
   const { docs } = await (
     await getCms()
@@ -281,7 +281,7 @@ export const getQuizDoc = cache(async (slug: string, draft = false) => {
   return docs[0] ?? null;
 });
 
-/** Quiz no formato público, sem pontos nem recomendações. */
+/** Quiz in the public shape, without points or recommendations. */
 export async function getQuiz(slug: string, draft = false): Promise<PublicQuiz | null> {
   const doc = await getQuizDoc(slug, draft);
   return doc ? toPublicQuiz(doc) : null;
@@ -304,7 +304,7 @@ export const getQuizSlugs = cache(async () => {
 
 export type SitemapEntry = { path: string; updatedAt: string; priority: number };
 
-/** Páginas vindas do CMS com a data real da última alteração. */
+/** Pages from the CMS with the real date of their last change. */
 export async function getSitemapEntries(): Promise<SitemapEntry[]> {
   const cms = await getCms();
   const select = { slug: true, updatedAt: true } as const;

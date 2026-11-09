@@ -4,7 +4,7 @@ import { isAnswered, type PublicQuiz, type QuizAnswers, type QuizResult } from '
 
 type Question = Quiz['questions'][number];
 
-/** Converte o documento do CMS no formato público, sem pontos nem recomendações. */
+/** Converts the CMS document to the public shape, without points or recommendations. */
 export function toPublicQuiz(doc: Quiz): PublicQuiz {
   return {
     slug: doc.slug,
@@ -66,11 +66,11 @@ const splitKeys = (value?: string | null) =>
 type Scored = {
   points: number;
   recommends: string[];
-  /** Resposta em texto legível, para o painel e o e-mail. */
+  /** Answer as readable text, for the panel and the email. */
   display: string;
 };
 
-/** Valida e pontua uma resposta. Lança erro com mensagem amigável se for inválida. */
+/** Validates and scores one answer. Throws with a friendly message if it's invalid. */
 function scoreAnswer(q: Question, value: QuizAnswers[string] | undefined): Scored | null {
   if (!isAnswered(value)) {
     if (q.required ?? true) throw new Error('Responda esta pergunta para continuar.');
@@ -132,8 +132,8 @@ export type ScoredQuiz = QuizResult & {
 };
 
 /**
- * Valida todas as respostas e calcula pontuação, perfil e soluções recomendadas.
- * Devolve os erros por pergunta (chave → mensagem) quando há respostas inválidas.
+ * Validates all answers and works out the score, profile and recommended solutions.
+ * Returns errors per question (key → message) when there are invalid answers.
  */
 export function scoreQuiz(
   doc: Quiz,
@@ -157,7 +157,7 @@ export function scoreQuiz(
   }
   if (Object.keys(errors).length) return { ok: false, errors };
 
-  // Vale o perfil com a maior pontuação mínima que o total atinge.
+  // The profile with the highest minimum score the total reaches wins.
   const profiles = [...doc.results].sort((a, b) => a.minScore - b.minScore);
   const profile = profiles.filter((p) => score >= p.minScore).pop() ?? profiles[0]!;
   const solutions = (doc.solutions ?? [])

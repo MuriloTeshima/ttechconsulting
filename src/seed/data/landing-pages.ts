@@ -1,9 +1,9 @@
 import type { LandingPage } from '@/lib/content-types';
 
 /**
- * Landing pages de tráfego pago (seção 19 do documento de estratégia).
- * Cada página liga uma dor específica a uma oferta específica.
- * Não publicar números, cases ou depoimentos sem comprovação e autorização.
+ * Paid-traffic landing pages (section 19 of the strategy document).
+ * Each page ties one specific pain point to one specific offer.
+ * Don't publish numbers, case studies or testimonials without proof and permission.
  */
 export const landingPages: Omit<LandingPage, 'quiz'>[] = [
   {

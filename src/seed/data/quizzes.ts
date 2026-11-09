@@ -2,7 +2,7 @@ import type { RequiredDataFromCollectionSlug } from 'payload';
 
 type QuizData = RequiredDataFromCollectionSlug<'quizzes'>;
 
-/** Primeiro quiz: diagnóstico de operação fora do ERP (nicho de empresas médias com ERP). */
+/** First quiz: assessment of work done outside the ERP (niche: mid-size companies with an ERP). */
 export const erpQuiz: Omit<QuizData, 'generateSlug'> = {
   title: 'Diagnóstico de operação fora do ERP',
   slug: 'operacao-fora-do-erp',
@@ -206,7 +206,7 @@ export const erpQuiz: Omit<QuizData, 'generateSlug'> = {
     'Responda 8 perguntas e descubra onde sua empresa perde tempo com planilhas e redigitação fora do ERP, e quais soluções fazem sentido para começar.',
 };
 
-/** Diagnóstico de automação de propostas, contratos e relatórios (empresas de serviços B2B). */
+/** Assessment for automating proposals, contracts and reports (B2B service companies). */
 export const documentsQuiz: Omit<QuizData, 'generateSlug'> = {
   title: 'Diagnóstico de automação de documentos',
   slug: 'automacao-documentos',
@@ -377,7 +377,7 @@ export const documentsQuiz: Omit<QuizData, 'generateSlug'> = {
     'Descubra quanto das propostas, contratos e relatórios da sua empresa pode ser automatizado. 8 perguntas, resultado na hora.',
 };
 
-/** Teste de prontidão para MVP (empreendedores e empresas criando um produto digital). */
+/** MVP readiness test (founders and companies building a digital product). */
 export const mvpQuiz: Omit<QuizData, 'generateSlug'> = {
   title: 'Teste de prontidão para MVP',
   slug: 'prontidao-mvp',
@@ -546,7 +546,7 @@ export const mvpQuiz: Omit<QuizData, 'generateSlug'> = {
     'Sua ideia está pronta para virar um MVP? Responda 8 perguntas e descubra o próximo passo: validar, prototipar ou desenvolver a primeira versão.',
 };
 
-/** Quizzes do seed e as landing pages que convidam para cada um (quando existirem). */
+/** Seed quizzes and the landing pages that invite visitors to each one (when they exist). */
 export const quizzes = [
   {
     quiz: erpQuiz,

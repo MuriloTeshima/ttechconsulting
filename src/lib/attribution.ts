@@ -13,7 +13,7 @@ const PARAMS = [
 
 export type Attribution = Partial<Record<(typeof PARAMS)[number] | 'landing_page', string>>;
 
-/** Guarda os parâmetros de campanha do primeiro acesso da sessão. */
+/** Stores the campaign parameters from the session's first visit. */
 export function captureAttribution() {
   try {
     if (sessionStorage.getItem(STORAGE_KEY)) return;
@@ -26,7 +26,7 @@ export function captureAttribution() {
     data.landing_page = window.location.pathname;
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
-    // Armazenamento indisponível (modo privado, bloqueio de cookies): segue sem atribuição.
+    // Storage unavailable (private mode, blocked cookies): carry on without attribution.
   }
 }
 

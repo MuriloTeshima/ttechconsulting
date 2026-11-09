@@ -7,9 +7,9 @@ import { AttributionCapture } from './AttributionCapture';
 import { ConsentBanner } from './ConsentBanner';
 
 /**
- * Vercel Web Analytics mede visitas sem cookies, então roda fora do consentimento.
- * GA4 (direto) e GTM respeitam o Consent Mode: tudo negado até o visitante aceitar no banner.
- * Use GA4 direto ou uma tag GA4 dentro do GTM, não os dois, para não contar em dobro.
+ * Vercel Web Analytics measures visits without cookies, so it runs outside consent.
+ * GA4 (direct) and GTM respect Consent Mode: everything is denied until the visitor accepts in the banner.
+ * Use direct GA4 or a GA4 tag inside GTM, never both, or events are counted twice.
  */
 export function Analytics() {
   const googleTags = Boolean(site.gaId || site.gtmId);

@@ -7,16 +7,16 @@ import { FORM_ID, SELECT_PROJECT_EVENT, type ProjectType } from '@/lib/contact-s
 
 type FormLinkProps = Omit<ComponentProps<'a'>, 'href' | 'children'> & {
   children?: ReactNode;
-  /** Tipo de projeto pré-selecionado no formulário. */
+  /** Project type preselected in the form. */
   projectType?: ProjectType;
-  /** Onde o botão está na página; enviado ao dataLayer como cta_location. */
+  /** Where the button sits on the page; sent to the dataLayer as cta_location. */
   location?: string;
   icon?: boolean;
 };
 
 /**
- * Botão de chamada que leva ao formulário de contato.
- * Se a página já tem o formulário, rola até ele; senão, abre /contato com o tipo pré-selecionado.
+ * Call-to-action button that leads to the contact form.
+ * If the page already has the form, it scrolls to it; otherwise it opens /contato with the type preselected.
  */
 export function FormLink({
   children = 'Conversar sobre meu projeto',

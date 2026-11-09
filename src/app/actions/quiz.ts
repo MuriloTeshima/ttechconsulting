@@ -14,11 +14,11 @@ export type QuizSubmission = {
   slug: string;
   answers: QuizAnswers;
   lead: QuizLeadInput;
-  /** Momento em que o quiz começou (anti-spam). */
+  /** When the quiz was started (anti-spam). */
   startedAt: number;
-  /** Campo invisível: preenchido só por robôs. */
+  /** Hidden field: only bots fill it in. */
   website?: string;
-  /** Token do Cloudflare Turnstile. */
+  /** Cloudflare Turnstile token. */
   turnstileToken?: string;
   pagePath: string;
   attribution: Record<string, string>;
@@ -70,10 +70,10 @@ export async function submitQuiz(input: QuizSubmission): Promise<QuizSubmitState
   }
   const { score, answers, ...result } = scored.result;
 
-  // Pré-visualização de rascunho: mostra o resultado sem gravar nem avisar.
+  // Draft preview: shows the result without saving or notifying.
   if (draft) return { status: 'success', result };
 
-  // Anti-spam: devolve o resultado normalmente, mas não grava nada.
+  // Anti-spam: returns the result as usual but saves nothing.
   const tooFast = input.startedAt > 0 && Date.now() - input.startedAt < MIN_FILL_TIME_MS;
   if (input.website || tooFast) {
     console.warn('[quiz] Envio descartado pelo anti-spam', {
@@ -102,7 +102,7 @@ export async function submitQuiz(input: QuizSubmission): Promise<QuizSubmitState
   const attribution = cleanAttribution(input.attribution);
   const pagePath = String(input.pagePath ?? '').slice(0, 200);
 
-  // A resposta fica salva no painel mesmo que o aviso por e-mail falhe.
+  // The response is saved in the panel even if the email notification fails.
   try {
     await (
       await getCms()

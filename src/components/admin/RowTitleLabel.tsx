@@ -12,7 +12,7 @@ const blockTypes: Record<string, string> = {
 
 type Row = { question?: string; title?: string; label?: string; blockType?: string };
 
-/** Rótulo das linhas no painel: tipo da pergunta e o texto, em vez de "Sem título". */
+/** Row label in the panel: the question type and text, instead of "Sem título" (untitled). */
 export function RowTitleLabel() {
   const { data, rowNumber } = useRowLabel<Row>();
   const text = data?.question || data?.title || data?.label;

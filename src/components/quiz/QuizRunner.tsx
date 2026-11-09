@@ -36,7 +36,7 @@ const emptyLead: QuizLeadInput = {
   consent: false,
 };
 
-// Progresso salvo no navegador, para quem fechar a página continuar de onde parou.
+// Progress saved in the browser, so someone who closes the page can pick up where they left off.
 const storageKey = (slug: string) => `ttech-quiz:${slug}`;
 function readSaved(slug: string): Saved | null {
   try {
@@ -51,7 +51,7 @@ function writeSaved(slug: string, saved: Saved | null) {
     if (saved) localStorage.setItem(storageKey(slug), JSON.stringify(saved));
     else localStorage.removeItem(storageKey(slug));
   } catch {
-    // Armazenamento indisponível: o quiz funciona, só não guarda o progresso.
+    // Storage unavailable: the quiz still works, it just doesn't keep progress.
   }
 }
 const noopSubscribe = () => () => {};
@@ -67,11 +67,11 @@ export function QuizRunner({ quiz }: { quiz: PublicQuiz }) {
   const startedAtRef = useRef(0);
   const honeypotRef = useRef<HTMLInputElement>(null);
   const turnstileTokenRef = useRef('');
-  // Cada tentativa de envio consome o token anterior; o contador pede um novo.
+  // Each submission attempt uses up the previous token; the counter asks for a new one.
   const [attempt, setAttempt] = useState(0);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  // Há progresso salvo? Lido só no navegador (no servidor, sempre "não").
+  // Is there saved progress? Read only in the browser (always "no" on the server).
   const hasSaved = useSyncExternalStore(
     noopSubscribe,
     () => Boolean(readSaved(quiz.slug)?.index),
@@ -81,7 +81,7 @@ export function QuizRunner({ quiz }: { quiz: PublicQuiz }) {
   const total = quiz.questions.length;
   const stageKey = stage.kind === 'question' ? `q${stage.index}` : stage.kind;
 
-  // Leva o foco ao título de cada etapa (leitores de tela e teclado).
+  // Moves focus to each step's title (screen readers and keyboard).
   useEffect(() => {
     if (stage.kind !== 'intro') headingRef.current?.focus();
   }, [stageKey, stage.kind]);
@@ -149,7 +149,7 @@ export function QuizRunner({ quiz }: { quiz: PublicQuiz }) {
       setAttempt((value) => value + 1);
       setFormMessage(state.message);
       setLeadErrors(state.fieldErrors ?? {});
-      // Resposta inválida no servidor: volta para a primeira pergunta com problema.
+      // Invalid answer on the server: go back to the first question with a problem.
       const firstInvalid = quiz.questions.findIndex((q) => state.questionErrors?.[q.key]);
       if (firstInvalid >= 0) {
         setStage({ kind: 'question', index: firstInvalid });

@@ -11,8 +11,8 @@ export function consentState(choice: ConsentChoice) {
 }
 
 /**
- * Consent Mode v2: tudo negado por padrão até o visitante escolher (LGPD).
- * Roda antes do GTM para que as tags respeitem o estado inicial.
+ * Consent Mode v2: everything denied by default until the visitor chooses (LGPD).
+ * Runs before GTM so the tags respect the initial state.
  */
 export const consentBootstrapScript = `
 window.dataLayer=window.dataLayer||[];

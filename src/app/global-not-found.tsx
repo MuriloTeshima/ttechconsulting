@@ -5,8 +5,8 @@ import { Header } from '@/components/layout/Header';
 import { fontVariables } from './fonts';
 import './(frontend)/globals.css';
 
-// 404 para URLs que não correspondem a nenhuma rota. Necessário porque o app tem dois
-// layouts raiz (site e painel do Payload), então não existe um layout único para compor a página.
+// 404 for URLs that match no route. Needed because the app has two
+// root layouts (site and Payload panel), so there's no single layout to build the page from.
 export const metadata: Metadata = {
   title: 'Página não encontrada | TTech Consulting',
   robots: { index: false },

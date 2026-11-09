@@ -1,8 +1,8 @@
 import 'server-only';
 
 /**
- * Verificação do Cloudflare Turnstile nos formulários.
- * Sem TURNSTILE_SECRET_KEY a verificação fica desligada e valem só o honeypot e o limite por IP.
+ * Cloudflare Turnstile check for the forms.
+ * Without TURNSTILE_SECRET_KEY the check is off and only the honeypot and the per-IP limit apply.
  */
 const VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
@@ -28,7 +28,7 @@ export async function verifyTurnstile(token: string | null | undefined, ip?: str
     if (!result.success) console.warn('[turnstile] Token recusado', result['error-codes']);
     return result.success;
   } catch (error) {
-    // Falha da Cloudflare não pode derrubar a captação: o envio segue com as demais proteções.
+    // A Cloudflare failure must not break lead capture; the submission goes on with the other protections.
     console.error('[turnstile] Falha na verificação; envio liberado', error);
     return true;
   }

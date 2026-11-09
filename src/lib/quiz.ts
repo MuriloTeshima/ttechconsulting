@@ -1,8 +1,8 @@
 import type { ProjectType } from './contact-schema';
 
 /**
- * Formato público do quiz, enviado ao navegador: só perguntas e opções.
- * Pontos, faixas e recomendações ficam no servidor (src/lib/quiz-scoring.ts).
+ * Public quiz shape sent to the browser: questions and options only.
+ * Points, ranges and recommendations stay on the server (src/lib/quiz-scoring.ts).
  */
 
 type QuestionBase = { key: string; question: string; help: string | null; required: boolean };
@@ -44,7 +44,7 @@ export type QuizResult = {
   whatsappMessage: string;
 };
 
-/** Uma resposta está preenchida? (usado no navegador e no servidor) */
+/** Is an answer filled in? (used in the browser and on the server) */
 export function isAnswered(value: QuizAnswerValue | undefined) {
   if (value === undefined || value === null) return false;
   if (Array.isArray(value)) return value.length > 0;

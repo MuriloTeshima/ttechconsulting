@@ -13,7 +13,7 @@ import { breadcrumbSchema, faqSchema, pageMetadata, serviceSchema } from '@/lib/
 
 type Props = { params: Promise<{ servico: string }> };
 
-// Serviços novos criados no CMS abrem sem novo build; slugs inexistentes caem no notFound().
+// New services created in the CMS open without a new build; unknown slugs fall through to notFound().
 export async function generateStaticParams() {
   return (await getServices()).map((service) => ({ servico: service.slug }));
 }

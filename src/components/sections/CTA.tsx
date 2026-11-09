@@ -9,7 +9,7 @@ export function CTA({
 }: {
   title?: string;
   description?: string;
-  /** Tipo de projeto pré-selecionado no formulário. */
+  /** Project type preselected in the form. */
   projectType?: ProjectType;
   label?: string;
 }) {

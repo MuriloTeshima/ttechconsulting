@@ -15,10 +15,10 @@ export type ProjectType = (typeof projectTypes)[number]['value'];
 export const isProjectType = (value: string): value is ProjectType =>
   projectTypes.some((type) => type.value === value);
 
-/** id da seção do formulário; os botões de chamada apontam para ele. */
+/** id of the form section; call-to-action buttons point to it. */
 export const FORM_ID = 'formulario';
 
-/** Evento de janela para um botão pré-selecionar o tipo de projeto no formulário da página. */
+/** Window event that lets a button preselect the project type in the page's form. */
 export const SELECT_PROJECT_EVENT = 'ttech:select-project';
 
 export const contactSchema = z.object({
@@ -47,7 +47,7 @@ export type ContactState = {
   values?: Partial<Record<ContactField, string>>;
 };
 
-/** Contato pedido antes do resultado do quiz. */
+/** Contact details asked before the quiz result. */
 export const quizLeadSchema = z.object({
   name: z.string().trim().min(2, 'Informe seu nome.').max(120, 'Use no máximo 120 caracteres.'),
   email: z.string().trim().toLowerCase().pipe(z.email('Informe um e-mail válido.')),
@@ -59,5 +59,5 @@ export const quizLeadSchema = z.object({
 
 export type QuizLead = z.input<typeof quizLeadSchema>;
 
-/** Estado do formulário antes da validação (a caixa de consentimento começa desmarcada). */
+/** Form state before validation (the consent box starts unchecked). */
 export type QuizLeadInput = Omit<QuizLead, 'consent'> & { consent: boolean };
