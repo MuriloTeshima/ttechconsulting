@@ -5,7 +5,7 @@ import { FormLink } from '../FormLink';
 import { Logo } from '../Logo';
 
 export async function Footer() {
-  // As quatro primeiras soluções, na ordem definida no CMS.
+  // The first four solutions, in the order set in the CMS.
   const footerServices = (await getServices()).slice(0, 4);
   return (
     <footer className="footer">

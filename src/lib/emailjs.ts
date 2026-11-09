@@ -25,9 +25,9 @@ export function isEmailConfigured() {
 export type LeadContext = { pagePath?: string; attribution?: Record<string, string> };
 
 /**
- * Envia o lead pela API REST do EmailJS a partir do servidor, com a chave privada.
- * Exige "Allow EmailJS API for non-browser applications" ativo em Account > Security.
- * As variáveis abaixo precisam existir no template do EmailJS.
+ * Sends the lead through the EmailJS REST API from the server, with the private key.
+ * Requires "Allow EmailJS API for non-browser applications" turned on under Account > Security.
+ * The variables below must exist in the EmailJS template.
  */
 export async function sendLeadEmail(data: ContactData, context: LeadContext) {
   const config = emailjsConfig();
@@ -36,7 +36,7 @@ export async function sendLeadEmail(data: ContactData, context: LeadContext) {
   const projectLabel =
     projectTypes.find((type) => type.value === data.projectType)?.label ?? data.projectType;
   const phoneDigits = data.phone.replace(/\D/g, '');
-  // Até 11 dígitos é DDD + número; acima disso o código do país já veio junto.
+  // Up to 11 digits is area code + number; anything longer already includes the country code.
   const whatsappNumber = phoneDigits.length <= 11 ? `55${phoneDigits}` : phoneDigits;
   const attribution = Object.entries(context.attribution ?? {})
     .map(([key, value]) => `${key}: ${value}`)

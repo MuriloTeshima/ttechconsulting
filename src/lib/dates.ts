@@ -5,7 +5,7 @@ const formatter = new Intl.DateTimeFormat('pt-BR', {
   timeZone: 'America/Sao_Paulo',
 });
 
-/** "12 de outubro de 2026". */
+/** Formats as "12 de outubro de 2026". */
 export function formatDate(iso: string | null | undefined) {
   return iso ? formatter.format(new Date(iso)) : '';
 }

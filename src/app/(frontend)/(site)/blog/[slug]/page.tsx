@@ -15,7 +15,7 @@ import { absoluteUrl, breadcrumbSchema, pageMetadata } from '@/lib/seo';
 
 type Props = { params: Promise<{ slug: string }> };
 
-// Posts novos publicados no CMS abrem sem novo build.
+// New posts published in the CMS open without a new build.
 export async function generateStaticParams() {
   return (await getPosts()).map((post) => ({ slug: post.slug }));
 }

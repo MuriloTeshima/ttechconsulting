@@ -169,7 +169,7 @@ export const Quizzes: CollectionConfig = {
     ...revalidateHooks,
     beforeValidate: [
       ({ data }) => {
-        // Identificadores repetidos misturariam as respostas de perguntas diferentes.
+        // Repeated keys would mix up answers from different questions.
         const keys = (data?.questions ?? []).map((q: { key?: string }) => q.key?.trim());
         const repeated = keys.filter((key: string, i: number) => key && keys.indexOf(key) !== i);
         if (repeated.length) {

@@ -5,7 +5,7 @@ const steps = [
   ['Evoluir', 'a partir do uso real'],
 ] as const;
 
-/** Card do hero com o método de trabalho da TTech. */
+/** Hero card with TTech's way of working. */
 export function MethodCard() {
   return (
     <div className="method-card">

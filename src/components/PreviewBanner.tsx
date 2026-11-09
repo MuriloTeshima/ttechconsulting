@@ -1,4 +1,4 @@
-/** Faixa exibida no modo de pré-visualização de rascunhos do CMS. */
+/** Banner shown in the CMS draft preview mode. */
 export function PreviewBanner({ path }: { path: string }) {
   return (
     <div className="preview-banner" role="status">

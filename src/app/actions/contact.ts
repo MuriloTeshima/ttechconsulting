@@ -31,7 +31,7 @@ function readContext(formData: FormData) {
         .map(([key, value]) => [key.slice(0, 40), String(value).slice(0, 200)]),
     );
   } catch {
-    // Atribuição é opcional.
+    // Attribution is optional.
   }
   return { pagePath: String(formData.get('pagePath') ?? '').slice(0, 200), attribution };
 }
@@ -41,9 +41,9 @@ export async function sendContact(_prev: ContactState, formData: FormData): Prom
     FIELDS.map((field) => [field, String(formData.get(field) ?? '')]),
   ) as ContactState['values'];
 
-  // Anti-spam: campo invisível preenchido ou envio rápido demais indicam robô.
-  // Respondemos sucesso para não dar pistas, mas nada é enviado.
-  // Sem startedAt (JavaScript indisponível), o envio segue: o limite por IP continua valendo.
+  // Anti-spam: a filled hidden field or a submission that's too fast means a bot.
+  // We answer with success so we don't give hints, but nothing is sent.
+  // Without startedAt (no JavaScript), the submission goes through; the per-IP limit still applies.
   const startedAt = Number(formData.get('startedAt'));
   const tooFast = startedAt > 0 && Date.now() - startedAt < MIN_FILL_TIME_MS;
   if (formData.get('website') || tooFast) {
@@ -77,7 +77,7 @@ export async function sendContact(_prev: ContactState, formData: FormData): Prom
     };
   }
 
-  // Só envios válidos contam para o limite, para não punir quem corrige erros de preenchimento.
+  // Only valid submissions count toward the limit, so people fixing form errors aren't penalized.
   if (isRateLimited(ip)) {
     console.warn('[contato] Limite de envios atingido', { ip });
     return {
@@ -91,7 +91,7 @@ export async function sendContact(_prev: ContactState, formData: FormData): Prom
   const { name, email, phone, company, projectType, message } = result.data;
   const cms = await getCms();
 
-  // O contato fica salvo no painel antes do aviso por e-mail: se o EmailJS falhar, nada se perde.
+  // The contact is saved in the panel before the email notification, so nothing is lost if EmailJS fails.
   let leadId: number | undefined;
   try {
     const doc = await cms.create({

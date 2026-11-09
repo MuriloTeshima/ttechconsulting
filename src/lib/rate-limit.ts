@@ -1,9 +1,9 @@
 import 'server-only';
 
-// Limite simples por instância do servidor; em serverless ele reinicia a cada nova instância.
+// Simple per-instance limit; on serverless it resets with every new instance.
 const buckets = new Map<string, number[]>();
 
-/** Registra uma tentativa e informa se a chave passou do limite na janela de tempo. */
+/** Records an attempt and says whether the key went over the limit within the time window. */
 export function isRateLimited(key: string, { max = 5, windowMs = 10 * 60 * 1000 } = {}) {
   const now = Date.now();
   const recent = (buckets.get(key) ?? []).filter((time) => now - time < windowMs);

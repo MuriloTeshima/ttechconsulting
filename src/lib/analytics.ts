@@ -12,16 +12,16 @@ declare global {
 
 export function pushEvent(payload: DataLayerEvent) {
   if (typeof window === 'undefined') return;
-  // Copia antes do push: o gtag.js acrescenta campos internos ao objeto do dataLayer.
+  // Copy before the push: gtag.js adds internal fields to the dataLayer object.
   const { event, ...params } = payload;
   window.dataLayer = window.dataLayer ?? [];
   window.dataLayer.push(payload);
 
-  // GA4 instalado direto não lê eventos do dataLayer no formato do GTM; envia pelo gtag.
+  // GA4 installed directly doesn't read GTM-style dataLayer events, so send through gtag.
   if (site.gaId && window.gtag) window.gtag('event', event, params);
 }
 
-/** Evento principal de conversão: clique em qualquer botão de WhatsApp. */
+/** Main conversion event: a click on any WhatsApp button. */
 export function trackWhatsAppClick({ location, context }: { location: string; context: string }) {
   pushEvent({
     event: 'whatsapp_click',
@@ -32,7 +32,7 @@ export function trackWhatsAppClick({ location, context }: { location: string; co
   });
 }
 
-/** Conversão do formulário de contato. */
+/** Contact form conversion. */
 export function trackFormSubmit({
   location,
   projectType,
@@ -49,7 +49,7 @@ export function trackFormSubmit({
   });
 }
 
-/** Clique em um botão que leva ao formulário de contato. */
+/** Click on a button that leads to the contact form. */
 export function trackCtaClick({
   location,
   projectType,
@@ -66,7 +66,7 @@ export function trackCtaClick({
   });
 }
 
-/** Etapas do quiz: início, cada pergunta respondida e conclusão (lead). */
+/** Quiz steps: start, each answered question and completion (lead). */
 export function trackQuiz(
   event: 'quiz_start' | 'quiz_step' | 'quiz_complete',
   params: Record<string, string | number>,

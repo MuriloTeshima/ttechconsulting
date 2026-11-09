@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 import { getSitemapEntries } from '@/lib/cms';
 import { absoluteUrl } from '@/lib/seo';
 
-// Gerado a cada requisição: na Vercel, a revalidação sob demanda dos hooks do CMS não chega a
-// esta rota, e o conteúdo novo só aparecia depois de até uma hora. São poucas consultas leves.
+// Generated on every request: on Vercel, on-demand revalidation from the CMS hooks doesn't reach
+// this route, and new content took up to an hour to show. It's only a few light queries.
 export const dynamic = 'force-dynamic';
 
 const STATIC_PAGES = [
@@ -19,7 +19,7 @@ const STATIC_PAGES = [
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries = await getSitemapEntries();
-  // Páginas fixas usam a alteração mais recente do conteúdo como referência.
+  // Fixed pages use the most recent content change as their date.
   const latest = entries.reduce(
     (max, entry) => (entry.updatedAt > max ? entry.updatedAt : max),
     '2026-09-28T00:00:00.000Z',

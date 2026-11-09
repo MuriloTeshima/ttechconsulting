@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload';
 import { authenticated } from './shared/access';
 
-/** Dados enviados pelo visitante: só leitura no painel, como registro fiel do diagnóstico. */
+/** Data sent by the visitor: read-only in the panel, as a faithful record of the assessment. */
 const readOnly = { readOnly: true };
 
 export const QuizResponses: CollectionConfig = {
@@ -16,7 +16,7 @@ export const QuizResponses: CollectionConfig = {
     description: 'Leads dos diagnósticos. Atualize o status e anote o andamento de cada contato.',
   },
   access: {
-    // Criadas só pelo servidor, ao concluir o quiz (API local com overrideAccess).
+    // Created only by the server when the quiz is completed (Local API with overrideAccess).
     create: () => false,
     read: authenticated,
     update: authenticated,

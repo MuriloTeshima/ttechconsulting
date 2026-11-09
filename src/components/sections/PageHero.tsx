@@ -16,7 +16,7 @@ export function PageHero({
   eyebrow: string;
   title: string;
   description: string;
-  /** Tipo de projeto pré-selecionado no formulário. */
+  /** Project type preselected in the form. */
   projectType?: ProjectType;
   label?: string;
   secondary?: { href: string; label: string };

@@ -17,15 +17,15 @@ export function pageMetadata({
   description: string;
   path: string;
   index?: boolean;
-  /** Usa o título como está, sem o sufixo " | TTech Consulting" do layout. */
+  /** Uses the title as is, without the layout's " | TTech Consulting" suffix. */
   absoluteTitle?: boolean;
 }): Metadata {
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
     alternates: { canonical: path },
-    // Sem `images` aqui: definir imagens nos metadados sobrescreve o opengraph-image.tsx da rota,
-    // então cada rota tem o seu arquivo.
+    // No `images` here: setting images in the metadata overrides the route's opengraph-image.tsx,
+    // so each route has its own file.
     openGraph: {
       title,
       description,

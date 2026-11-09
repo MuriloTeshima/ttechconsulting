@@ -7,14 +7,14 @@ export const ogContentType = 'image/png';
 
 const root = process.cwd();
 
-// Lidos uma vez por build; as imagens são geradas estaticamente.
+// Read once per build; the images are generated statically.
 const assets = Promise.all([
   readFile(join(root, 'src/assets/fonts/SpaceGrotesk-Medium.woff')),
   readFile(join(root, 'src/assets/fonts/SpaceGrotesk-SemiBold.woff')),
   readFile(join(root, 'public/TTechConsultingLogoWhite.svg')),
 ]);
 
-/** Imagem Open Graph na identidade da marca: navy, logo oficial, Space Grotesk e padrão angular. */
+/** Open Graph image in the brand style: navy, official logo, Space Grotesk and the angular pattern. */
 export async function brandOgImage({ eyebrow, title }: { eyebrow: string; title: string }) {
   const [medium, semiBold, logo] = await assets;
   const logoSrc = `data:image/svg+xml;base64,${logo.toString('base64')}`;

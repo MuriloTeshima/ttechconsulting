@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload';
 import { projectTypes } from '@/lib/contact-schema';
 import { authenticated } from './shared/access';
 
-/** Dados enviados pelo visitante: só leitura no painel, como registro fiel do contato. */
+/** Data sent by the visitor: read-only in the panel, as a faithful record of the contact. */
 const readOnly = { readOnly: true };
 
 export const ContactLeads: CollectionConfig = {
@@ -18,7 +18,7 @@ export const ContactLeads: CollectionConfig = {
       'Mensagens do formulário de contato. Ficam salvas mesmo se o aviso por e-mail falhar.',
   },
   access: {
-    // Criados só pelo servidor, no envio do formulário (API local com overrideAccess).
+    // Created only by the server when the form is submitted (Local API with overrideAccess).
     create: () => false,
     read: authenticated,
     update: authenticated,

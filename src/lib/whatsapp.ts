@@ -1,6 +1,6 @@
 import { site } from '@/config/site';
 
-/** Mensagem padrão (seção 17 do documento de estratégia); landing pages definem a sua no CMS. */
+/** Default message (section 17 of the strategy document); landing pages set their own in the CMS. */
 export const DEFAULT_WHATSAPP_MESSAGE =
   'Olá! Conheci a TTech pelo site e gostaria de conversar sobre um projeto para minha empresa.';
 

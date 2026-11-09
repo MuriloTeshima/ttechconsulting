@@ -7,11 +7,11 @@ import { whatsappHref } from '@/lib/whatsapp';
 
 type WhatsAppLinkProps = Omit<ComponentProps<'a'>, 'href' | 'children'> & {
   children?: ReactNode;
-  /** Mensagem pré-preenchida; sem ela, usa a mensagem padrão do site. */
+  /** Prefilled message; without it, the site's default message is used. */
   message?: string;
-  /** Contexto enviado ao dataLayer como `service` (ex.: tipo de projeto da página). */
+  /** Context sent to the dataLayer as `service` (e.g. the page's project type). */
   context?: string;
-  /** Onde o botão está na página; enviado ao dataLayer como cta_location. */
+  /** Where the button sits on the page; sent to the dataLayer as cta_location. */
   location?: string;
   icon?: boolean;
 };

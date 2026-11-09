@@ -4,6 +4,6 @@ export const anyone: Access = () => true;
 
 export const authenticated: Access = ({ req }) => Boolean(req.user);
 
-/** Visitantes só leem documentos publicados; usuários logados também veem rascunhos. */
+/** Visitors only read published documents; logged-in users also see drafts. */
 export const publishedOrAuthenticated: Access = ({ req }) =>
   req.user ? true : { _status: { equals: 'published' } };

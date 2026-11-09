@@ -11,7 +11,7 @@ import { breadcrumbSchema, pageMetadata } from '@/lib/seo';
 
 type Props = { params: Promise<{ slug: string }> };
 
-// Quizzes novos publicados no CMS abrem sem novo build.
+// New quizzes published in the CMS open without a new build.
 export async function generateStaticParams() {
   return (await getQuizSlugs()).map((slug) => ({ slug }));
 }

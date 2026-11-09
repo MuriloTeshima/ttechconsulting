@@ -1,7 +1,7 @@
 /**
- * Posts iniciais do blog, em Markdown (convertido para o editor do CMS no seed).
- * Capas em `src/seed/images/blog`: fotos do StockSnap, licença CC0 (uso livre, sem atribuição).
- * Sem números, cases ou depoimentos que não possam ser comprovados.
+ * Initial blog posts, in Markdown (converted to the CMS editor format by the seed).
+ * Covers in `src/seed/images/blog`: StockSnap photos, CC0 license (free use, no attribution).
+ * No numbers, case studies or testimonials that can't be backed up.
  */
 export type SeedPost = {
   title: string;

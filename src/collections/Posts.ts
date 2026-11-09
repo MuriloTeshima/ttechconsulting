@@ -24,7 +24,7 @@ export const Posts: CollectionConfig = {
   hooks: {
     ...revalidateHooks,
     beforeChange: [
-      // Data de publicação automática na primeira vez que o post é publicado.
+      // Publish date is set automatically the first time the post is published.
       ({ data }) => {
         if (data._status === 'published' && !data.publishedAt) {
           data.publishedAt = new Date().toISOString();
