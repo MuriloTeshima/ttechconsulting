@@ -1,5 +1,5 @@
-# Postgres local para desenvolvimento do Payload CMS.
-# Em produção o banco é o Neon (Vercel → Storage).
+# Local Postgres for Payload CMS development.
+# In production the database is Neon (Vercel → Storage).
 services:
   postgres:
     image: postgres:17-alpine

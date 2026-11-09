@@ -14,9 +14,9 @@ next-env.d.ts
 .DS_Store
 .vercel
 
-# Arquivos gerados automaticamente pelo next dev
+# Files generated automatically by next dev
 AGENTS.md
 CLAUDE.md
 
-# Uploads locais do Payload (em produção vão para o Vercel Blob)
+# Local Payload uploads (in production they go to Vercel Blob)
 /media

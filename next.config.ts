@@ -10,19 +10,19 @@ const securityHeaders = [
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-  // Sem includeSubDomains/preload até todos os subdomínios usarem HTTPS.
+  // No includeSubDomains/preload until every subdomain uses HTTPS.
   { key: 'Strict-Transport-Security', value: 'max-age=63072000' },
 ];
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
   agentRules: false,
-  // Só afeta o `next dev`: permite testar pelo celular na mesma rede Wi-Fi.
+  // Only affects `next dev`: lets you test from a phone on the same Wi-Fi network.
   allowedDevOrigins: ['192.168.*.*'],
   poweredByHeader: false,
   images: {
     formats: ['image/avif', 'image/webp'],
-    // Imagens do CMS: locais em dev (/api/media/file) e no Vercel Blob em produção.
+    // CMS images: local in dev (/api/media/file) and on Vercel Blob in production.
     localPatterns: [{ pathname: '/api/media/file/**' }, { pathname: '/**' }],
     remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }],
   },
@@ -34,7 +34,7 @@ const nextConfig: NextConfig = {
     root: path.resolve(dirname),
   },
   webpack: (webpackConfig) => {
-    // Os arquivos gerados pelo Payload importam módulos .ts com extensão .js.
+    // Payload's generated files import .ts modules with a .js extension.
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],
       '.js': ['.ts', '.tsx', '.js', '.jsx'],
@@ -45,7 +45,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: '/:path*', headers: securityHeaders },
-      // Painel e API fora dos buscadores, mesmo que algum link chegue até eles.
+      // Keep the panel and API out of search engines, even if some link reaches them.
       {
         source: '/:area(admin|api)/:path*',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
