@@ -16,7 +16,7 @@ export const site = {
   region: 'Ribeirão Preto e região, SP',
   city: 'Ribeirão Preto',
   state: 'SP',
-  email: 'muriloteshimalira@gmail.com',
+  email: 'contato@ttechcs.com.br',
   founder: 'Murilo Teshima Lira',
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '',
   url: resolveSiteUrl(),
