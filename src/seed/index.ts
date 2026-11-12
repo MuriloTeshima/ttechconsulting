@@ -37,6 +37,8 @@ for (const service of services) {
     context: context(),
     data: {
       ...service,
+      // The quiz is linked further down, after the quizzes exist.
+      quiz: undefined,
       generateSlug: false,
       deliverables: list(service.deliverables),
     },
@@ -65,7 +67,8 @@ for (const project of projects) {
   await payload.create({
     collection: 'projects',
     context: context(),
-    data: { ...project, tags: list(project.tags) },
+    // The image is uploaded in the panel; the seed only carries text.
+    data: { ...project, image: undefined, tags: list(project.tags) },
   });
   created++;
 }
@@ -112,7 +115,7 @@ for (const title of ['Automação', 'Sistemas sob medida', 'Produto digital', 'G
   created++;
 }
 
-for (const { quiz: quizData, landingPages: lpSlugs } of quizzes) {
+for (const { quiz: quizData, landingPages: lpSlugs, services: serviceSlugs } of quizzes) {
   let quizId: number;
   const existingQuiz = await payload.find({
     collection: 'quizzes',
@@ -144,6 +147,25 @@ for (const { quiz: quizData, landingPages: lpSlugs } of quizzes) {
     await payload.update({
       collection: 'landing-pages',
       id: page.id,
+      context: context(),
+      data: { quiz: quizId },
+    });
+    created++;
+  }
+
+  // Same for the related service pages.
+  for (const serviceSlug of serviceSlugs) {
+    const { docs } = await payload.find({
+      collection: 'services',
+      where: { slug: { equals: serviceSlug } },
+      depth: 0,
+      limit: 1,
+    });
+    const service = docs[0];
+    if (!service || service.quiz) continue;
+    await payload.update({
+      collection: 'services',
+      id: service.id,
       context: context(),
       data: { quiz: quizId },
     });

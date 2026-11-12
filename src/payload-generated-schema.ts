@@ -207,6 +207,9 @@ export const services = pgTable(
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug').notNull(),
     projectType: enum_services_project_type('project_type').notNull().default('sistema'),
+    quiz: integer('quiz_id').references(() => quizzes.id, {
+      onDelete: 'set null',
+    }),
     icon: enum_services_icon('icon').notNull(),
     lead: varchar('lead').notNull(),
     short: varchar('short').notNull(),
@@ -224,6 +227,7 @@ export const services = pgTable(
   (columns) => [
     index('services__order_idx').on(columns._order),
     uniqueIndex('services_slug_idx').on(columns.slug),
+    index('services_quiz_idx').on(columns.quiz),
     index('services_updated_at_idx').on(columns.updatedAt),
     index('services_created_at_idx').on(columns.createdAt),
   ],
@@ -297,6 +301,13 @@ export const projects = pgTable(
     title: varchar('title').notNull(),
     type: varchar('type').notNull(),
     description: varchar('description').notNull(),
+    problem: varchar('problem'),
+    solution: varchar('solution'),
+    image: integer('image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    demoUrl: varchar('demo_url'),
+    isDemo: boolean('is_demo').default(true),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -306,6 +317,7 @@ export const projects = pgTable(
   },
   (columns) => [
     index('projects__order_idx').on(columns._order),
+    index('projects_image_idx').on(columns.image),
     index('projects_updated_at_idx').on(columns.updatedAt),
     index('projects_created_at_idx').on(columns.createdAt),
   ],
@@ -1904,7 +1916,12 @@ export const relations_services_faq = relations(services_faq, ({ one }) => ({
     relationName: 'faq',
   }),
 }));
-export const relations_services = relations(services, ({ many }) => ({
+export const relations_services = relations(services, ({ one, many }) => ({
+  quiz: one(quizzes, {
+    fields: [services.quiz],
+    references: [quizzes.id],
+    relationName: 'quiz',
+  }),
   deliverables: many(services_deliverables, {
     relationName: 'deliverables',
   }),
@@ -1934,7 +1951,12 @@ export const relations_projects_tags = relations(projects_tags, ({ one }) => ({
     relationName: 'tags',
   }),
 }));
-export const relations_projects = relations(projects, ({ many }) => ({
+export const relations_projects = relations(projects, ({ one, many }) => ({
+  image: one(media, {
+    fields: [projects.image],
+    references: [media.id],
+    relationName: 'image',
+  }),
   tags: many(projects_tags, {
     relationName: 'tags',
   }),

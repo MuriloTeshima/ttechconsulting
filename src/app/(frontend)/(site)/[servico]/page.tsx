@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { JsonLd } from '@/components/analytics/JsonLd';
+import { QuizInviteSection } from '@/components/quiz/QuizInviteSection';
 import { CheckList } from '@/components/sections/Blocks';
 import { CTA } from '@/components/sections/CTA';
 import { FAQ } from '@/components/sections/FAQ';
@@ -62,6 +63,8 @@ export default async function ServicePage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {service.quiz && <QuizInviteSection quiz={service.quiz} />}
 
       <section className="section section-services">
         <div className="container">

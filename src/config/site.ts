@@ -18,6 +18,23 @@ export const site = {
   state: 'SP',
   email: 'contato@ttechcs.com.br',
   founder: 'Murilo Teshima Lira',
+  /** Founder block. Empty values hide the matching element. */
+  founderProfile: {
+    role: 'Fundador da TTech Consulting',
+    /** Photo in /public, e.g. '/murilo-teshima-lira.jpg'. Empty shows the monogram. */
+    photo: '',
+    linkedin: '',
+  },
+  /**
+   * Shown next to the form submit button and in the success message.
+   * Only fill in commitments that are actually kept.
+   */
+  contactPromise: {
+    /** E.g. 'até 1 dia útil'. Empty hides the response time. */
+    responseTime: '',
+    /** True shows "primeira conversa sem custo". */
+    firstCallFree: false,
+  },
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '',
   url: resolveSiteUrl(),
   gtmId: process.env.NEXT_PUBLIC_GTM_ID ?? '',

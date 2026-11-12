@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, ClipboardCheck } from 'lucide-react';
 import type { QuizInvite } from '@/lib/content-types';
 
-/** Invitation to the niche's assessment, shown on landing pages. */
+/** Invitation to the niche's assessment, shown on landing pages and service pages. */
 export function QuizInviteSection({ quiz }: { quiz: QuizInvite }) {
   return (
     <section className="section quiz-invite-section">

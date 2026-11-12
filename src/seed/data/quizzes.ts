@@ -556,7 +556,12 @@ export const quizzes = [
       'app-equipe-externa-erp',
       'paineis-indicadores-erp',
     ],
+    services: ['sistemas-sob-medida'],
   },
-  { quiz: documentsQuiz, landingPages: ['automacao-propostas-documentos'] },
-  { quiz: mvpQuiz, landingPages: [] },
+  {
+    quiz: documentsQuiz,
+    landingPages: ['automacao-propostas-documentos'],
+    services: ['automacoes-integracoes'],
+  },
+  { quiz: mvpQuiz, landingPages: [], services: ['mvp-produtos-digitais'] },
 ];

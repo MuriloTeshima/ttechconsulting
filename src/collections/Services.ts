@@ -20,6 +20,16 @@ export const Services: CollectionConfig = {
     slug(),
     projectTypeField,
     {
+      name: 'quiz',
+      label: 'Quiz relacionado',
+      type: 'relationship',
+      relationTo: 'quizzes',
+      admin: {
+        position: 'sidebar',
+        description: 'Opcional: mostra na página um convite para o diagnóstico.',
+      },
+    },
+    {
       name: 'icon',
       label: 'Ícone',
       type: 'select',

@@ -1,5 +1,6 @@
 import { JsonLd } from '@/components/analytics/JsonLd';
-import { CheckList, TrustStrip } from '@/components/sections/Blocks';
+import { CheckList } from '@/components/sections/Blocks';
+import { FounderSection } from '@/components/sections/FounderSection';
 import { CTA } from '@/components/sections/CTA';
 import { PageHero } from '@/components/sections/PageHero';
 import { SectionIntro } from '@/components/sections/SectionIntro';
@@ -55,11 +56,7 @@ export default async function Sobre() {
           <ServiceCards list={services.slice(0, 3)} />
         </div>
       </section>
-      <section className="section trust-section">
-        <div className="container">
-          <TrustStrip />
-        </div>
-      </section>
+      <FounderSection location="sobre" />
       <CTA />
       <JsonLd data={breadcrumbSchema([{ name: 'Sobre', path: '/sobre' }])} />
     </main>

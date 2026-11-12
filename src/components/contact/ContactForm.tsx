@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useActionState, useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { ArrowUpRight, CircleCheck, LoaderCircle } from 'lucide-react';
 import { sendContact } from '@/app/actions/contact';
+import { site } from '@/config/site';
 import { trackFormSubmit } from '@/lib/analytics';
 import { readAttribution } from '@/lib/attribution';
 import { formatPhone } from '@/lib/phone';
@@ -15,7 +16,10 @@ import {
   type ContactState,
   type ProjectType,
 } from '@/lib/contact-schema';
+import { WhatsAppLink } from '../WhatsAppLink';
 import { Turnstile } from './Turnstile';
+
+const { responseTime, firstCallFree } = site.contactPromise;
 
 type ContactFormProps = {
   /** Where the form sits on the page; sent to the dataLayer as cta_location. */
@@ -86,11 +90,20 @@ function ContactFormBody({
     return (
       <div className="form-success" role="status" tabIndex={-1} ref={successRef}>
         <CircleCheck size={34} strokeWidth={1.6} aria-hidden="true" />
-        <h3>Mensagem enviada.</h3>
-        <p>Obrigado pelo contato. Vamos responder pelo e-mail ou WhatsApp que você informou.</p>
-        <button type="button" className="text-link" onClick={onReset}>
-          Enviar outra mensagem
-        </button>
+        <h3>Mensagem recebida.</h3>
+        <p>
+          Vou ler o contexto que você enviou e responder pelo e-mail ou WhatsApp informado
+          {responseTime ? ` em ${responseTime}` : ''}. O próximo passo é uma conversa rápida para
+          entender o seu processo.
+        </p>
+        <div className="form-success-actions">
+          <WhatsAppLink location={`${location}-success`} className="button button-blue">
+            Adiantar pelo WhatsApp
+          </WhatsAppLink>
+          <button type="button" className="text-link" onClick={onReset}>
+            Enviar outra mensagem
+          </button>
+        </div>
       </div>
     );
   }
@@ -253,6 +266,12 @@ function ContactFormBody({
       <input type="hidden" name="startedAt" />
       <input type="hidden" name="pagePath" />
       <input type="hidden" name="attribution" />
+
+      <p className="form-promise">
+        Quem lê e responde é o Murilo, pessoalmente.
+        {responseTime && ` Resposta em ${responseTime}.`}
+        {firstCallFree && ' A primeira conversa é sem custo.'}
+      </p>
 
       <button type="submit" className="button button-blue form-submit" disabled={pending}>
         {pending ? (

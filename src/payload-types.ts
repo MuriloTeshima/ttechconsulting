@@ -173,6 +173,10 @@ export interface Service {
    * Pré-selecionado no formulário quando o contato vem desta página.
    */
   projectType: 'sistema' | 'automacao' | 'mvp' | 'site' | 'evolucao' | 'outro';
+  /**
+   * Opcional: mostra na página um convite para o diagnóstico.
+   */
+  quiz?: (number | null) | Quiz;
   icon: 'layers' | 'workflow' | 'blocks' | 'monitor' | 'refresh';
   lead: string;
   /**
@@ -204,192 +208,6 @@ export interface Service {
   seoTitle: string;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * Cards da seção "Para quem" na home.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "audiences".
- */
-export interface Audience {
-  id: number;
-  _order?: string | null;
-  title: string;
-  description: string;
-  icon: 'services' | 'health' | 'distribution' | 'product';
-  solutions: {
-    text: string;
-    id?: string | null;
-  }[];
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Publique apenas projetos com autorização e respeito à confidencialidade.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "projects".
- */
-export interface Project {
-  id: number;
-  _order?: string | null;
-  title: string;
-  /**
-   * Ex.: PLATAFORMA WEB, AUTOMAÇÃO.
-   */
-  type: string;
-  description: string;
-  tags?:
-    | {
-        text: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Faixa de logos abaixo do hero. Use SVG na cor #1E1F21.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "client-logos".
- */
-export interface ClientLogo {
-  id: number;
-  _order?: string | null;
-  name: string;
-  logo: number | Media;
-  /**
-   * Equilibra o peso visual entre logos. 1 = altura padrão.
-   */
-  scale?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  /**
-   * Descreve a imagem para leitores de tela e para o Google.
-   */
-  alt: string;
-  prefix?: string | null;
-  _objectKey?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    hero?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
-}
-/**
- * Páginas de tráfego pago, publicadas em /lp/<slug>. Cada uma liga uma dor a uma oferta.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "landing-pages".
- */
-export interface LandingPage {
-  id: number;
-  _order?: string | null;
-  /**
-   * Ex.: Clínicas e saúde. Usado no painel e na imagem de compartilhamento.
-   */
-  segment: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  /**
-   * Pré-selecionado no formulário quando o contato vem desta página.
-   */
-  projectType: 'sistema' | 'automacao' | 'mvp' | 'site' | 'evolucao' | 'outro';
-  index?: boolean | null;
-  /**
-   * Opcional: mostra na página um convite para o diagnóstico.
-   */
-  quiz?: (number | null) | Quiz;
-  /**
-   * Para títulos longos caberem em ~60 caracteres.
-   */
-  shortBrand?: boolean | null;
-  eyebrow: string;
-  title: string;
-  /**
-   * Exibido em ciano. Ex.: "clínica."
-   */
-  highlight: string;
-  description: string;
-  signalsTitle: string;
-  signals: {
-    text: string;
-    id?: string | null;
-  }[];
-  problemTitle: string;
-  problemText: string;
-  pains: {
-    text: string;
-    id?: string | null;
-  }[];
-  solutionTitle: string;
-  solutionText: string;
-  deliverables: {
-    title: string;
-    text: string;
-    id?: string | null;
-  }[];
-  /**
-   * Opcional. Ex.: limites do escopo (clínicas).
-   */
-  note?: string | null;
-  faq?:
-    | {
-        q: string;
-        a: string;
-        id?: string | null;
-      }[]
-    | null;
-  ctaLabel: string;
-  finalTitle: string;
-  finalText: string;
-  /**
-   * Texto que já vem escrito ao abrir a conversa.
-   */
-  whatsappMessage: string;
-  /**
-   * O site acrescenta " | TTech Consulting" (ou " | TTech" com a marca curta). Total ideal: até 60 caracteres.
-   */
-  metaTitle: string;
-  metaDescription: string;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * Diagnósticos interativos publicados em /diagnostico/<slug>.
@@ -558,6 +376,212 @@ export interface Quiz {
   submitLabel: string;
   /**
    * O site acrescenta " | TTech Consulting". Total ideal: até 60.
+   */
+  metaTitle: string;
+  metaDescription: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Cards da seção "Para quem" na home.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audiences".
+ */
+export interface Audience {
+  id: number;
+  _order?: string | null;
+  title: string;
+  description: string;
+  icon: 'services' | 'health' | 'distribution' | 'product';
+  solutions: {
+    text: string;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Publique apenas projetos com autorização e respeito à confidencialidade.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  _order?: string | null;
+  title: string;
+  /**
+   * Ex.: PLATAFORMA WEB, AUTOMAÇÃO.
+   */
+  type: string;
+  description: string;
+  /**
+   * O que acontecia antes. Quando preenchido com a solução, o card mostra o antes e depois.
+   */
+  problem?: string | null;
+  /**
+   * O que foi construído e como funciona, em uma ou duas frases.
+   */
+  solution?: string | null;
+  /**
+   * Captura de tela do projeto (proporção 16:10). Opcional.
+   */
+  image?: (number | null) | Media;
+  /**
+   * Endereço público da demo ou de um vídeo. Opcional.
+   */
+  demoUrl?: string | null;
+  /**
+   * Marca o card como projeto próprio/demonstrativo, e não como cliente.
+   */
+  isDemo?: boolean | null;
+  tags?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Descreve a imagem para leitores de tela e para o Google.
+   */
+  alt: string;
+  prefix?: string | null;
+  _objectKey?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * Faixa de logos abaixo do hero. Use SVG na cor #1E1F21.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "client-logos".
+ */
+export interface ClientLogo {
+  id: number;
+  _order?: string | null;
+  name: string;
+  logo: number | Media;
+  /**
+   * Equilibra o peso visual entre logos. 1 = altura padrão.
+   */
+  scale?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Páginas de tráfego pago, publicadas em /lp/<slug>. Cada uma liga uma dor a uma oferta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "landing-pages".
+ */
+export interface LandingPage {
+  id: number;
+  _order?: string | null;
+  /**
+   * Ex.: Clínicas e saúde. Usado no painel e na imagem de compartilhamento.
+   */
+  segment: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  /**
+   * Pré-selecionado no formulário quando o contato vem desta página.
+   */
+  projectType: 'sistema' | 'automacao' | 'mvp' | 'site' | 'evolucao' | 'outro';
+  index?: boolean | null;
+  /**
+   * Opcional: mostra na página um convite para o diagnóstico.
+   */
+  quiz?: (number | null) | Quiz;
+  /**
+   * Para títulos longos caberem em ~60 caracteres.
+   */
+  shortBrand?: boolean | null;
+  eyebrow: string;
+  title: string;
+  /**
+   * Exibido em ciano. Ex.: "clínica."
+   */
+  highlight: string;
+  description: string;
+  signalsTitle: string;
+  signals: {
+    text: string;
+    id?: string | null;
+  }[];
+  problemTitle: string;
+  problemText: string;
+  pains: {
+    text: string;
+    id?: string | null;
+  }[];
+  solutionTitle: string;
+  solutionText: string;
+  deliverables: {
+    title: string;
+    text: string;
+    id?: string | null;
+  }[];
+  /**
+   * Opcional. Ex.: limites do escopo (clínicas).
+   */
+  note?: string | null;
+  faq?:
+    | {
+        q: string;
+        a: string;
+        id?: string | null;
+      }[]
+    | null;
+  ctaLabel: string;
+  finalTitle: string;
+  finalText: string;
+  /**
+   * Texto que já vem escrito ao abrir a conversa.
+   */
+  whatsappMessage: string;
+  /**
+   * O site acrescenta " | TTech Consulting" (ou " | TTech" com a marca curta). Total ideal: até 60 caracteres.
    */
   metaTitle: string;
   metaDescription: string;
@@ -1015,6 +1039,7 @@ export interface ServicesSelect<T extends boolean = true> {
   generateSlug?: T;
   slug?: T;
   projectType?: T;
+  quiz?: T;
   icon?: T;
   lead?: T;
   short?: T;
@@ -1072,6 +1097,11 @@ export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
   type?: T;
   description?: T;
+  problem?: T;
+  solution?: T;
+  image?: T;
+  demoUrl?: T;
+  isDemo?: T;
   tags?:
     | T
     | {

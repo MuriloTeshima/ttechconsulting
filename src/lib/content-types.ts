@@ -12,6 +12,8 @@ export type TitledText = { title: string; text: string };
 export type ServiceIcon = 'layers' | 'workflow' | 'blocks' | 'monitor' | 'refresh';
 
 export type Service = {
+  /** Assessment invitation shown on the service page. */
+  quiz?: QuizInvite | null;
   slug: string;
   title: string;
   /** Title for the browser tab and Google (the layout appends " | TTech Consulting"). */
@@ -71,7 +73,17 @@ export type QuizInvite = {
   estimatedTime: string | null;
 };
 
-export type Project = { type: string; title: string; description: string; tags: string[] };
+export type Project = {
+  type: string;
+  title: string;
+  description: string;
+  tags: string[];
+  problem?: string | null;
+  solution?: string | null;
+  image?: MediaImage | null;
+  demoUrl?: string | null;
+  isDemo?: boolean;
+};
 
 export type AudienceIcon = 'services' | 'health' | 'distribution' | 'product';
 
