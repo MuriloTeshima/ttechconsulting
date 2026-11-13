@@ -2460,6 +2460,89 @@ button:focus-visible {
   }
 }
 
+/* Faixa de logos (carrossel contínuo) */
+.logo-section {
+  padding-block: 2.6rem;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+.logo-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: center;
+}
+.logo-title {
+  margin: 0;
+  font: 600 0.95rem/1.4 var(--font-heading);
+  letter-spacing: -0.01em;
+  color: #52697d;
+}
+.logo-marquee {
+  container-type: inline-size;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.logo-track {
+  display: flex;
+  width: max-content;
+  animation: logo-scroll var(--marquee-duration, 32s) linear infinite;
+}
+.logo-marquee:hover .logo-track {
+  animation-play-state: paused;
+}
+.logo-set {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-around;
+  gap: clamp(3rem, 6vw, 5.5rem);
+  min-width: 100cqw;
+  margin: 0;
+  padding: 0 clamp(1.5rem, 3vw, 2.75rem);
+  list-style: none;
+}
+.logo-set li {
+  flex: none;
+  display: flex;
+}
+.logo-set img {
+  display: block;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.logo-set img:hover {
+  opacity: 1;
+}
+@keyframes logo-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-track {
+    animation: none;
+    width: 100%;
+  }
+  .logo-set {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 1.5rem;
+  }
+  .logo-set[aria-hidden] {
+    display: none;
+  }
+}
+@media (max-width: 920px) {
+  .logo-layout {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+  .logo-title {
+    text-align: center;
+  }
+}
+
 /* Bloco do fundador (home, landing pages e Sobre) */
 .founder-section {
   padding-bottom: clamp(3.5rem, 6vw, 5rem);
@@ -2545,48 +2628,11 @@ button:focus-visible {
   gap: 1rem 1.8rem;
   margin-top: 2.2rem;
 }
-.founder-track {
-  display: grid;
-  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
-  gap: 1.5rem 3rem;
-  align-items: center;
-  margin-top: clamp(3.5rem, 6vw, 5rem);
-  padding-top: 2rem;
-  border-top: 1px solid var(--line);
-}
-.founder-track p {
-  margin: 0;
-  font: 600 0.95rem/1.4 var(--font-heading);
-  letter-spacing: -0.01em;
-  color: #52697d;
-}
-.founder-track ul {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1.5rem clamp(2rem, 4vw, 3.5rem);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.founder-track img {
-  display: block;
-  opacity: 0.6;
-  filter: grayscale(1);
-  transition:
-    opacity 0.2s,
-    filter 0.2s;
-}
-.founder-track li:hover img {
-  opacity: 1;
-  filter: none;
-}
 .founder-section .trust-strip {
-  margin-top: 2rem;
+  margin-top: clamp(3.5rem, 6vw, 5rem);
 }
 @media (max-width: 920px) {
-  .founder-layout,
-  .founder-track {
+  .founder-layout {
     grid-template-columns: 1fr;
   }
   .founder-portrait {

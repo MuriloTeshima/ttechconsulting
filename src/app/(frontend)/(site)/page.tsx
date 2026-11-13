@@ -10,6 +10,7 @@ import { ProjectCards } from '@/components/sections/Blocks';
 import { CTA } from '@/components/sections/CTA';
 import { FAQ } from '@/components/sections/FAQ';
 import { FounderSection } from '@/components/sections/FounderSection';
+import { LogoMarquee } from '@/components/sections/LogoMarquee';
 import { MethodCard } from '@/components/sections/MethodCard';
 import { Process } from '@/components/sections/Process';
 import { SectionIntro } from '@/components/sections/SectionIntro';
@@ -63,6 +64,8 @@ export default async function Home() {
           <span className="hero-trust-line" />
         </div>
       </section>
+
+      <LogoMarquee />
 
       <section className="section section-problem">
         <div className="container problem-grid">

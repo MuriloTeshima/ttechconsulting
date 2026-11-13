@@ -9,6 +9,7 @@ import { CampaignFooter, CampaignHeader } from '@/components/layout/CampaignShel
 import { CTA } from '@/components/sections/CTA';
 import { FAQ } from '@/components/sections/FAQ';
 import { FounderSection } from '@/components/sections/FounderSection';
+import { LogoMarquee } from '@/components/sections/LogoMarquee';
 import { Process } from '@/components/sections/Process';
 import { SectionIntro } from '@/components/sections/SectionIntro';
 import { PreviewBanner } from '@/components/PreviewBanner';
@@ -78,6 +79,8 @@ export default async function LandingPage({ params }: Props) {
             </div>
           </div>
         </section>
+
+        <LogoMarquee />
 
         <section className="section section-problem">
           <div className="container problem-grid">

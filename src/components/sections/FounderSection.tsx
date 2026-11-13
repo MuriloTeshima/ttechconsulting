@@ -1,11 +1,8 @@
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { site } from '@/config/site';
-import { getClientLogos } from '@/lib/cms';
 import { WhatsAppLink } from '../WhatsAppLink';
 import { TrustStrip } from './Blocks';
-
-const LOGO_HEIGHT = 30;
 
 function Portrait() {
   const { photo } = site.founderProfile;
@@ -29,9 +26,8 @@ function Portrait() {
   );
 }
 
-/** Founder block: replaces the old "Sobre a TTech" text with a person, a voice and track record. */
+/** Founder block: replaces the old "Sobre a TTech" text with a person and a voice. */
 export async function FounderSection({ location }: { location: string }) {
-  const logos = await getClientLogos();
   const { role, linkedin } = site.founderProfile;
 
   return (
@@ -69,29 +65,6 @@ export async function FounderSection({ location }: { location: string }) {
             </div>
           </div>
         </div>
-
-        {logos.length > 0 && (
-          <div className="founder-track">
-            <p>Experiência construída em empresas como</p>
-            <ul>
-              {logos.map((logo) => {
-                const height = Math.round(LOGO_HEIGHT * (logo.scale ?? 1));
-                return (
-                  <li key={logo.src}>
-                    <Image
-                      src={logo.src}
-                      alt={logo.name}
-                      width={Math.round(height * logo.ratio)}
-                      height={height}
-                      style={{ width: 'auto', height }}
-                      unoptimized
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        )}
 
         <TrustStrip />
       </div>
