@@ -172,7 +172,7 @@ export function QuizRunner({ quiz }: { quiz: PublicQuiz }) {
           aria-valuemax={100}
           aria-valuenow={Math.round(progress * 100)}
         >
-          <span style={{ width: `${progress * 100}%` }} />
+          <span style={{ transform: `scaleX(${progress})` }} />
         </div>
       )}
 

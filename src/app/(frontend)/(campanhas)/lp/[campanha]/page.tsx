@@ -6,9 +6,9 @@ import { JsonLd } from '@/components/analytics/JsonLd';
 import { ContactSection } from '@/components/contact/ContactSection';
 import { FormLink } from '@/components/FormLink';
 import { CampaignFooter, CampaignHeader } from '@/components/layout/CampaignShell';
-import { TrustStrip } from '@/components/sections/Blocks';
 import { CTA } from '@/components/sections/CTA';
 import { FAQ } from '@/components/sections/FAQ';
+import { FounderSection } from '@/components/sections/FounderSection';
 import { LogoMarquee } from '@/components/sections/LogoMarquee';
 import { Process } from '@/components/sections/Process';
 import { SectionIntro } from '@/components/sections/SectionIntro';
@@ -136,16 +136,7 @@ export default async function LandingPage({ params }: Props) {
           </div>
         </section>
 
-        <section className="section trust-section">
-          <div className="container">
-            <SectionIntro
-              eyebrow="QUEM CONDUZ"
-              title="Visão de negócio com capacidade de execução técnica."
-              description="A TTech Consulting é conduzida por Murilo Teshima Lira e combina experiência em desenvolvimento de software, integrações, infraestrutura e produtos digitais. Cada projeto começa pela compreensão da operação e segue com comunicação clara e acompanhamento próximo."
-            />
-            <TrustStrip />
-          </div>
-        </section>
+        <FounderSection location="lp" />
 
         <section className="section faq-section">
           <div className="container">

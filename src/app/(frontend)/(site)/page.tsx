@@ -1,12 +1,15 @@
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { JsonLd } from '@/components/analytics/JsonLd';
 import { ContactSection } from '@/components/contact/ContactSection';
 import { FormLink } from '@/components/FormLink';
+import { WhatsAppLink } from '@/components/WhatsAppLink';
+import { DiagnosticPicker } from '@/components/quiz/DiagnosticPicker';
 import { AudienceCards } from '@/components/sections/AudienceCards';
-import { ProjectCards, TrustStrip } from '@/components/sections/Blocks';
+import { ProjectCards } from '@/components/sections/Blocks';
 import { CTA } from '@/components/sections/CTA';
 import { FAQ } from '@/components/sections/FAQ';
+import { FounderSection } from '@/components/sections/FounderSection';
 import { LogoMarquee } from '@/components/sections/LogoMarquee';
 import { MethodCard } from '@/components/sections/MethodCard';
 import { Process } from '@/components/sections/Process';
@@ -48,9 +51,9 @@ export default async function Home() {
             </p>
             <div className="hero-actions">
               <FormLink location="hero">Conversar sobre meu projeto</FormLink>
-              <Link className="link-underline light" href="/solucoes">
-                Conhecer as soluções <ArrowRight size={18} />
-              </Link>
+              <WhatsAppLink location="hero" className="link-underline light">
+                Chamar no WhatsApp
+              </WhatsAppLink>
             </div>
           </div>
           <MethodCard />
@@ -85,6 +88,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <DiagnosticPicker />
 
       <section className="section section-services" id="solucoes">
         <div className="container">
@@ -141,16 +146,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="section trust-section">
-        <div className="container">
-          <SectionIntro
-            eyebrow="SOBRE A TTECH"
-            title="Visão de negócio com capacidade de execução técnica."
-            description="A TTech Consulting é conduzida por Murilo Teshima Lira e combina experiência em desenvolvimento de software, integrações, infraestrutura e produtos digitais. Cada projeto começa pela compreensão da operação e segue com comunicação clara e acompanhamento próximo."
-          />
-          <TrustStrip />
-        </div>
-      </section>
+      <FounderSection location="home" />
 
       <section className="section faq-section">
         <div className="container">

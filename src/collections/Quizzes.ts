@@ -151,6 +151,8 @@ const blocks: Block[] = [
 export const Quizzes: CollectionConfig = {
   slug: 'quizzes',
   labels: { singular: 'Quiz', plural: 'Quizzes' },
+  // Drag-and-drop order in the panel is the order of the home page list.
+  orderable: true,
   versions: { drafts: true },
   admin: {
     group: 'Captação',
@@ -198,6 +200,16 @@ export const Quizzes: CollectionConfig = {
       type: 'checkbox',
       defaultValue: true,
       admin: { position: 'sidebar' },
+    },
+    {
+      name: 'showOnHome',
+      label: 'Mostrar na home',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Entra na lista "Não sabe por onde começar?" da home (até 4, na ordem do painel).',
+      },
     },
     {
       type: 'tabs',

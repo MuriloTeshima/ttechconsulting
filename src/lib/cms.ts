@@ -62,6 +62,7 @@ function toService(doc: P.Service): Service {
     cta: doc.cta,
     examples: titled(doc.examples),
     faq: faqs(doc.faq),
+    quiz: toQuizInvite(doc.quiz),
   };
 }
 
@@ -71,7 +72,8 @@ export const getServices = cache(async (): Promise<Service[]> => {
   ).find({
     collection: 'services',
     sort: '_order',
-    depth: 0,
+    // depth 1 brings the related quiz for the service page invitation.
+    depth: 1,
     limit: 100,
   });
   return docs.map(toService);
@@ -114,7 +116,7 @@ function toLandingPage(doc: P.LandingPage): LandingPage {
   };
 }
 
-function toQuizInvite(quiz: P.LandingPage['quiz']): QuizInvite | null {
+function toQuizInvite(quiz: P.LandingPage['quiz'] | P.Quiz): QuizInvite | null {
   if (!quiz || typeof quiz === 'number' || quiz._status !== 'published') return null;
   return {
     slug: quiz.slug,
@@ -162,7 +164,7 @@ export const getProjects = cache(async (): Promise<Project[]> => {
   ).find({
     collection: 'projects',
     sort: '_order',
-    depth: 0,
+    depth: 1,
     limit: 100,
   });
   return docs.map((doc) => ({
@@ -170,6 +172,11 @@ export const getProjects = cache(async (): Promise<Project[]> => {
     title: doc.title,
     description: doc.description,
     tags: texts(doc.tags),
+    problem: doc.problem ?? null,
+    solution: doc.solution ?? null,
+    image: toImage(doc.image),
+    demoUrl: doc.demoUrl ?? null,
+    isDemo: doc.isDemo ?? true,
   }));
 });
 
@@ -286,6 +293,22 @@ export async function getQuiz(slug: string, draft = false): Promise<PublicQuiz |
   const doc = await getQuizDoc(slug, draft);
   return doc ? toPublicQuiz(doc) : null;
 }
+
+/** Home page picker: published assessments marked "Mostrar na home", in panel order. */
+export const HOME_QUIZ_LIMIT = 4;
+
+export const getQuizInvites = cache(async (): Promise<QuizInvite[]> => {
+  const { docs } = await (
+    await getCms()
+  ).find({
+    collection: 'quizzes',
+    where: { and: [PUBLISHED, { showOnHome: { equals: true } }] },
+    sort: '_order',
+    depth: 0,
+    limit: HOME_QUIZ_LIMIT,
+  });
+  return docs.map(toQuizInvite).filter((quiz): quiz is QuizInvite => quiz !== null);
+});
 
 export const getQuizSlugs = cache(async () => {
   const { docs } = await (

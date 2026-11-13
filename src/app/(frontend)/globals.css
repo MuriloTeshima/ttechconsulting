@@ -521,9 +521,6 @@ button:focus-visible {
   color: #006aaf;
   border-radius: 100%;
 }
-.trust-section {
-  padding-bottom: 4rem;
-}
 .trust-strip {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1133,28 +1130,34 @@ button:focus-visible {
   gap: 1rem;
 }
 .project-card {
-  min-height: 350px;
-  padding: 1.8rem;
-  background: #fff;
-  border: 1px solid #e1e8ee;
   display: flex;
   flex-direction: column;
-  transition:
-    transform 0.2s,
-    border-color 0.2s,
-    box-shadow 0.2s;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e1e8ee;
   border-radius: var(--radius-lg);
 }
-.project-card:hover {
-  transform: translateY(-4px);
-  border-color: #74c4ff;
-  box-shadow: 0 15px 28px #071b330d;
+.project-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+  border-bottom: 1px solid #e1e8ee;
+}
+.project-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1.8rem;
 }
 .project-index {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
   padding-bottom: 1.2rem;
   border-bottom: 1px solid var(--line);
 }
@@ -1163,25 +1166,53 @@ button:focus-visible {
   letter-spacing: 0.14em;
   color: #0074bf;
 }
-.project-index strong {
-  font: 600 0.7rem/1 var(--font-body);
+.project-index em {
+  font: 600 0.72rem/1 var(--font-body);
+  font-style: normal;
   color: #587089;
 }
 .project-card h3 {
   font-size: 1.55rem;
-  margin: 2rem 0 0.8rem;
+  margin: 1.6rem 0 0.9rem;
+  text-wrap: balance;
 }
 .project-card p {
   color: #52697d;
   font-size: 0.94rem;
   line-height: 1.62;
 }
+.project-story {
+  display: grid;
+  gap: 1.1rem;
+  margin: 0;
+}
+.project-story dt {
+  margin-bottom: 0.3rem;
+  font: 700 0.74rem/1.3 var(--font-body);
+  color: #0074bf;
+}
+.project-story div:first-child dt {
+  color: #6a7f92;
+}
+.project-story dd {
+  margin: 0;
+  color: #3d566b;
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+.project-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.6rem;
+}
 .project-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
-  margin-top: auto;
-  padding-top: 1.4rem;
 }
 .project-tags span {
   border: 1px solid #cfe0ed;
@@ -1625,88 +1656,6 @@ button:focus-visible {
   }
 }
 
-/* Faixa de logos (carrossel contínuo) */
-.logo-section {
-  padding-block: 2.6rem;
-  background: #fff;
-  border-bottom: 1px solid var(--line);
-}
-.logo-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
-  gap: 3rem;
-  align-items: center;
-}
-.logo-title {
-  margin: 0;
-  font: 600 0.95rem/1.4 var(--font-heading);
-  letter-spacing: -0.01em;
-  color: #52697d;
-}
-.logo-marquee {
-  container-type: inline-size;
-  overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-}
-.logo-track {
-  display: flex;
-  width: max-content;
-  animation: logo-scroll var(--marquee-duration, 32s) linear infinite;
-}
-.logo-marquee:hover .logo-track {
-  animation-play-state: paused;
-}
-.logo-set {
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: space-around;
-  gap: clamp(3rem, 6vw, 5.5rem);
-  min-width: 100cqw;
-  margin: 0;
-  padding: 0 clamp(1.5rem, 3vw, 2.75rem);
-  list-style: none;
-}
-.logo-set li {
-  flex: none;
-  display: flex;
-}
-.logo-set img {
-  display: block;
-  opacity: 0.6;
-  transition: opacity 0.2s;
-}
-.logo-set img:hover {
-  opacity: 1;
-}
-@keyframes logo-scroll {
-  to {
-    transform: translateX(-50%);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .logo-track {
-    animation: none;
-    width: 100%;
-  }
-  .logo-set {
-    flex-wrap: wrap;
-    justify-content: center;
-    row-gap: 1.5rem;
-  }
-  .logo-set[aria-hidden] {
-    display: none;
-  }
-}
-@media (max-width: 920px) {
-  .logo-layout {
-    grid-template-columns: 1fr;
-    gap: 1.4rem;
-  }
-  .logo-title {
-    text-align: center;
-  }
-}
 
 /* Formulário de contato */
 .contact-section {
@@ -2171,8 +2120,8 @@ button:focus-visible {
   display: block;
   height: 100%;
   background: linear-gradient(90deg, var(--blue), var(--cyan));
-  border-radius: 0 999px 999px 0;
-  transition: width 0.35s ease;
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .quiz-step {
   padding: clamp(1.6rem, 5vw, 3rem);
@@ -2509,4 +2458,295 @@ button:focus-visible {
   .quiz-nav .button {
     flex: 1;
   }
+}
+
+/* Faixa de logos (carrossel contínuo) */
+.logo-section {
+  padding-block: 2.6rem;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+.logo-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: center;
+}
+.logo-title {
+  margin: 0;
+  font: 600 0.95rem/1.4 var(--font-heading);
+  letter-spacing: -0.01em;
+  color: #52697d;
+}
+.logo-marquee {
+  container-type: inline-size;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.logo-track {
+  display: flex;
+  width: max-content;
+  animation: logo-scroll var(--marquee-duration, 32s) linear infinite;
+}
+.logo-marquee:hover .logo-track {
+  animation-play-state: paused;
+}
+.logo-set {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-around;
+  gap: clamp(3rem, 6vw, 5.5rem);
+  min-width: 100cqw;
+  margin: 0;
+  padding: 0 clamp(1.5rem, 3vw, 2.75rem);
+  list-style: none;
+}
+.logo-set li {
+  flex: none;
+  display: flex;
+}
+.logo-set img {
+  display: block;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.logo-set img:hover {
+  opacity: 1;
+}
+@keyframes logo-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-track {
+    animation: none;
+    width: 100%;
+  }
+  .logo-set {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 1.5rem;
+  }
+  .logo-set[aria-hidden] {
+    display: none;
+  }
+}
+@media (max-width: 920px) {
+  .logo-layout {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+  .logo-title {
+    text-align: center;
+  }
+}
+
+/* Bloco do fundador (home, landing pages e Sobre) */
+.founder-section {
+  padding-bottom: clamp(3.5rem, 6vw, 5rem);
+}
+.founder-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(2.5rem, 7vw, 7rem);
+  align-items: center;
+}
+.founder-portrait {
+  margin: 0;
+  max-width: 440px;
+}
+.founder-photo,
+.founder-monogram {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  /* Corte angular do monograma TT no canto superior direito. */
+  clip-path: polygon(0 0, 78% 0, 100% 16%, 100% 100%, 0 100%);
+}
+.founder-monogram {
+  position: relative;
+  display: grid;
+  place-items: end start;
+  padding: 2rem;
+  background:
+    linear-gradient(155deg, transparent 58%, #119cff26 58%, #119cff26 72%, transparent 72%),
+    linear-gradient(160deg, var(--navy-2), var(--navy) 65%);
+}
+.founder-monogram span {
+  font: 600 clamp(4.5rem, 9vw, 7.5rem) / 0.9 var(--font-heading);
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+.founder-monogram::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 22%;
+  height: 16%;
+  background: linear-gradient(to bottom left, var(--cyan) 50%, transparent 50%);
+}
+.founder-portrait figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 1.1rem;
+}
+.founder-portrait figcaption strong {
+  font: 600 1.1rem/1.3 var(--font-heading);
+  letter-spacing: -0.02em;
+}
+.founder-portrait figcaption span {
+  color: #52697d;
+  font-size: 0.9rem;
+}
+.founder-copy h2 {
+  max-width: 14ch;
+  margin-bottom: 1.8rem;
+  text-wrap: balance;
+}
+.founder-copy p {
+  max-width: 62ch;
+  color: #4c6173;
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+.founder-copy .founder-lead {
+  color: var(--navy);
+  font: 500 clamp(1.2rem, 1.7vw, 1.4rem) / 1.55 var(--font-heading);
+  letter-spacing: -0.015em;
+}
+.founder-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 1.8rem;
+  margin-top: 2.2rem;
+}
+.founder-section .trust-strip {
+  margin-top: clamp(3.5rem, 6vw, 5rem);
+}
+@media (max-width: 920px) {
+  .founder-layout {
+    grid-template-columns: 1fr;
+  }
+  .founder-portrait {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    align-items: end;
+    gap: 1.2rem;
+    max-width: none;
+  }
+  .founder-portrait figcaption {
+    margin: 0;
+  }
+  .founder-monogram {
+    padding: 0.9rem;
+  }
+  .founder-monogram span {
+    font-size: 2.6rem;
+  }
+}
+
+/* Escolha de diagnóstico na home */
+.diagnostic-section {
+  padding-top: 0;
+}
+.diagnostic-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  padding: clamp(1.8rem, 4.5vw, 3.5rem);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, #0b2747, var(--navy) 70%);
+  color: #fff;
+}
+.diagnostic-intro h2 {
+  margin-bottom: 1rem;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  color: #fff;
+}
+.diagnostic-intro p {
+  margin: 0;
+  max-width: 44ch;
+  color: #c2d2e2;
+  line-height: 1.7;
+}
+.diagnostic-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid #ffffff26;
+}
+.diagnostic-list li {
+  border-bottom: 1px solid #ffffff26;
+}
+.diagnostic-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.35rem 0.25rem;
+  font: 600 clamp(1.02rem, 1.4vw, 1.2rem) / 1.35 var(--font-heading);
+  letter-spacing: -0.015em;
+  transition:
+    color 0.2s,
+    padding 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.diagnostic-list svg {
+  flex: none;
+  color: var(--cyan);
+}
+.diagnostic-list a:hover {
+  color: var(--cyan);
+  padding-left: 0.75rem;
+}
+@media (max-width: 920px) {
+  .diagnostic-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* WhatsApp no topo, só no celular (no desktop o topo tem o botão do formulário) */
+.header-whatsapp {
+  display: none;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.6rem;
+  margin-right: 0.9rem;
+  padding: 0 0.95rem;
+  border-radius: var(--radius-sm);
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.header-whatsapp svg {
+  color: var(--cyan);
+}
+@media (max-width: 920px) {
+  .header-whatsapp {
+    display: inline-flex;
+  }
+}
+
+/* Reasseguração do formulário */
+.form-promise {
+  margin: 0.4rem 0 1rem;
+  color: #4d6378;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+.form-success-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 1.6rem;
+  margin-top: 0.4rem;
 }
