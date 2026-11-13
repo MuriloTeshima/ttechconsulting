@@ -129,7 +129,7 @@ export default async function LandingPage({ params }: Props) {
             <SectionIntro
               eyebrow="COMO TRABALHAMOS"
               title="Não começamos pelo código. Começamos pelo processo."
-              description="Cada etapa aproxima a solução do que a operação realmente precisa."
+              description="Quatro etapas, da primeira conversa ao acompanhamento depois da entrega."
               light
             />
             <Process />

@@ -21,19 +21,19 @@ export default async function Sobre() {
     <main id="conteudo">
       <PageHero
         eyebrow="SOBRE A TTECH"
-        title="Tecnologia com direção, clareza e responsabilidade."
-        description="A TTech Consulting é uma empresa de desenvolvimento conduzida por Murilo Teshima Lira, em Ribeirão Preto. Unimos visão de produto, engenharia e proximidade para construir soluções compatíveis com a realidade de cada negócio."
+        title="Software sob medida, feito com quem conhece a operação."
+        description="A TTech Consulting é uma empresa de desenvolvimento conduzida por Murilo Teshima Lira, em Ribeirão Preto. Cada projeto junta visão de produto e engenharia, e é construído junto com quem conhece o dia a dia do negócio."
       />
       <section className="section">
         <div className="container detail-grid">
           <SectionIntro
             eyebrow="NOSSA FORMA DE PENSAR"
             title="Antes de desenvolver, precisamos entender."
-            description="Começamos pelo processo, pelas pessoas e pelo resultado esperado. A tecnologia entra como meio para organizar a operação, reduzir esforço e abrir novas possibilidades."
+            description="Primeiro entendemos o processo, quem participa dele e o resultado que a empresa espera. A tecnologia vem depois, para organizar a operação e reduzir o trabalho manual."
           />
           <div className="detail-deliveries">
             <span className="eyebrow">O QUE NOS ORIENTA</span>
-            <h2>Uma parceria construída para evoluir.</h2>
+            <h2>O que você pode esperar de nós.</h2>
             <CheckList
               items={[
                 'Clareza nas decisões e prioridades',
@@ -51,7 +51,7 @@ export default async function Sobre() {
           <SectionIntro
             eyebrow="ATUAÇÃO"
             title="Software, integrações e produtos digitais."
-            description="Nossa experiência combina aplicações web, automações, infraestrutura e evolução de produtos para enxergar o projeto de ponta a ponta."
+            description="A experiência com aplicações web, automações e infraestrutura permite cuidar do projeto inteiro, do desenvolvimento à publicação e à evolução."
           />
           <ServiceCards list={services.slice(0, 3)} />
         </div>

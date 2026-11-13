@@ -49,9 +49,8 @@ export async function FounderSection({ location }: { location: string }) {
               entender como sua equipe trabalha hoje, onde está o retrabalho e o que precisa mudar.
             </p>
             <p>
-              Do primeiro diagnóstico à entrega, você conversa comigo, sem intermediários. Depois do
-              lançamento, sigo acompanhando o uso e planejando a evolução junto com quem conhece a
-              operação.
+              Você conversa comigo do primeiro diagnóstico até a entrega. Depois do lançamento, sigo
+              acompanhando o uso e planejando a evolução junto com quem conhece a operação.
             </p>
             <div className="founder-actions">
               <WhatsAppLink location={`${location}-founder`} className="button button-dark">
