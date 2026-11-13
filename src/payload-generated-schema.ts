@@ -867,12 +867,14 @@ export const quizzes = pgTable(
   'quizzes',
   {
     id: serial('id').primaryKey(),
+    _order: varchar('_order'),
     title: varchar('title'),
     generateSlug: boolean('generate_slug').default(true),
     slug: varchar('slug'),
     segment: varchar('segment'),
     projectType: enum_quizzes_project_type('project_type').default('sistema'),
     index: boolean('index').default(true),
+    showOnHome: boolean('show_on_home').default(false),
     eyebrow: varchar('eyebrow'),
     headline: varchar('headline'),
     description: varchar('description'),
@@ -897,6 +899,7 @@ export const quizzes = pgTable(
     _status: enum_quizzes_status('_status').default('draft'),
   },
   (columns) => [
+    index('quizzes__order_idx').on(columns._order),
     uniqueIndex('quizzes_slug_idx').on(columns.slug),
     index('quizzes_updated_at_idx').on(columns.updatedAt),
     index('quizzes_created_at_idx').on(columns.createdAt),
@@ -1159,6 +1162,7 @@ export const _quizzes_v = pgTable(
     parent: integer('parent_id').references(() => quizzes.id, {
       onDelete: 'set null',
     }),
+    version__order: varchar('version__order'),
     version_title: varchar('version_title'),
     version_generateSlug: boolean('version_generate_slug').default(true),
     version_slug: varchar('version_slug'),
@@ -1166,6 +1170,7 @@ export const _quizzes_v = pgTable(
     version_projectType:
       enum__quizzes_v_version_project_type('version_project_type').default('sistema'),
     version_index: boolean('version_index').default(true),
+    version_showOnHome: boolean('version_show_on_home').default(false),
     version_eyebrow: varchar('version_eyebrow'),
     version_headline: varchar('version_headline'),
     version_description: varchar('version_description'),
@@ -1202,6 +1207,7 @@ export const _quizzes_v = pgTable(
   },
   (columns) => [
     index('_quizzes_v_parent_idx').on(columns.parent),
+    index('_quizzes_v_version_version__order_idx').on(columns.version__order),
     index('_quizzes_v_version_version_slug_idx').on(columns.version_slug),
     index('_quizzes_v_version_version_updated_at_idx').on(columns.version_updatedAt),
     index('_quizzes_v_version_version_created_at_idx').on(columns.version_createdAt),

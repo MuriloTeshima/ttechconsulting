@@ -217,6 +217,7 @@ export interface Service {
  */
 export interface Quiz {
   id: number;
+  _order?: string | null;
   title: string;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
@@ -232,6 +233,10 @@ export interface Quiz {
    */
   projectType: 'sistema' | 'automacao' | 'mvp' | 'site' | 'evolucao' | 'outro';
   index?: boolean | null;
+  /**
+   * Entra na lista "Não sabe por onde começar?" da home (até 4, na ordem do painel).
+   */
+  showOnHome?: boolean | null;
   eyebrow: string;
   headline: string;
   description: string;
@@ -1187,12 +1192,14 @@ export interface LandingPagesSelect<T extends boolean = true> {
  * via the `definition` "quizzes_select".
  */
 export interface QuizzesSelect<T extends boolean = true> {
+  _order?: T;
   title?: T;
   generateSlug?: T;
   slug?: T;
   segment?: T;
   projectType?: T;
   index?: T;
+  showOnHome?: T;
   eyebrow?: T;
   headline?: T;
   description?: T;

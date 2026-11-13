@@ -6,6 +6,7 @@ type QuizData = RequiredDataFromCollectionSlug<'quizzes'>;
 export const erpQuiz: Omit<QuizData, 'generateSlug'> = {
   title: 'Diagnóstico de operação fora do ERP',
   slug: 'operacao-fora-do-erp',
+  showOnHome: true,
   segment: 'Empresas com ERP',
   projectType: 'sistema',
   index: true,
@@ -210,6 +211,7 @@ export const erpQuiz: Omit<QuizData, 'generateSlug'> = {
 export const documentsQuiz: Omit<QuizData, 'generateSlug'> = {
   title: 'Diagnóstico de automação de documentos',
   slug: 'automacao-documentos',
+  showOnHome: true,
   segment: 'Serviços B2B',
   projectType: 'automacao',
   index: true,
@@ -381,6 +383,7 @@ export const documentsQuiz: Omit<QuizData, 'generateSlug'> = {
 export const mvpQuiz: Omit<QuizData, 'generateSlug'> = {
   title: 'Teste de prontidão para MVP',
   slug: 'prontidao-mvp',
+  showOnHome: true,
   segment: 'Novos produtos digitais',
   projectType: 'mvp',
   index: true,

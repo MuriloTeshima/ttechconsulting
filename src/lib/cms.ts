@@ -294,15 +294,18 @@ export async function getQuiz(slug: string, draft = false): Promise<PublicQuiz |
   return doc ? toPublicQuiz(doc) : null;
 }
 
-/** Published assessments as invitations (home page picker). */
+/** Home page picker: published assessments marked "Mostrar na home", in panel order. */
+export const HOME_QUIZ_LIMIT = 4;
+
 export const getQuizInvites = cache(async (): Promise<QuizInvite[]> => {
   const { docs } = await (
     await getCms()
   ).find({
     collection: 'quizzes',
-    where: PUBLISHED,
+    where: { and: [PUBLISHED, { showOnHome: { equals: true } }] },
+    sort: '_order',
     depth: 0,
-    limit: 10,
+    limit: HOME_QUIZ_LIMIT,
   });
   return docs.map(toQuizInvite).filter((quiz): quiz is QuizInvite => quiz !== null);
 });

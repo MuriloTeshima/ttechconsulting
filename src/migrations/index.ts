@@ -3,6 +3,7 @@ import * as migration_20261001_174316_blob_storage_fields from './20261001_17431
 import * as migration_20261005_174954_quizzes from './20261005_174954_quizzes';
 import * as migration_20261009_173837_protecao_e_leads from './20261009_173837_protecao_e_leads';
 import * as migration_20261112_235120_confianca_e_provas from './20261112_235120_confianca_e_provas';
+import * as migration_20261113_000504_quiz_na_home from './20261113_000504_quiz_na_home';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20261112_235120_confianca_e_provas.up,
     down: migration_20261112_235120_confianca_e_provas.down,
-    name: '20261112_235120_confianca_e_provas'
+    name: '20261112_235120_confianca_e_provas',
+  },
+  {
+    up: migration_20261113_000504_quiz_na_home.up,
+    down: migration_20261113_000504_quiz_na_home.down,
+    name: '20261113_000504_quiz_na_home'
   },
 ];
