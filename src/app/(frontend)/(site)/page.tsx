@@ -59,8 +59,8 @@ export default async function Home() {
           <MethodCard />
         </div>
         <div className="container hero-trust">
-          <span>TECNOLOGIA COM DIREÇÃO</span>
-          <span>Estratégia, produto, engenharia e proximidade.</span>
+          <span>RIBEIRÃO PRETO E REMOTO</span>
+          <span>Sistemas web, automações e integrações para pequenas e médias empresas.</span>
           <span className="hero-trust-line" />
         </div>
       </section>
@@ -112,7 +112,7 @@ export default async function Home() {
           <SectionIntro
             eyebrow="COMO TRABALHAMOS"
             title="Não começamos pelo código. Começamos pelo processo."
-            description="Cada etapa aproxima a solução do que a operação realmente precisa."
+            description="Quatro etapas, da primeira conversa ao acompanhamento depois da entrega."
             light
           />
           <Process />
@@ -123,7 +123,7 @@ export default async function Home() {
         <div className="container audience-layout">
           <SectionIntro
             eyebrow="PARA QUEM"
-            title="Tecnologia para operações que precisam avançar."
+            title="Para quem trabalhamos."
             description="Trabalhamos com empresas que precisam digitalizar processos, conectar ferramentas ou criar um novo produto."
           />
           <AudienceCards />
@@ -136,7 +136,7 @@ export default async function Home() {
             <SectionIntro
               eyebrow="PROJETOS E CAPACIDADE"
               title="Produtos digitais construídos para problemas concretos."
-              description="Exemplos de aplicações, automações e experiências digitais que demonstram nossa forma de transformar necessidades em software."
+              description="Projetos próprios que mostram, na prática, como um processo vira software."
             />
             <Link className="text-link" href="/projetos">
               Conhecer projetos <ArrowUpRight size={18} />

@@ -8,7 +8,7 @@ import { breadcrumbSchema, pageMetadata } from '@/lib/seo';
 export const metadata = pageMetadata({
   title: 'Projetos de sistemas e automações',
   description:
-    'Projetos e soluções que mostram como a TTech transforma processos, ideias e jornadas em produtos digitais.',
+    'Projetos próprios e demonstrativos que mostram como a TTech transforma processos e ideias em produtos digitais.',
   path: '/projetos',
 });
 
@@ -18,14 +18,14 @@ export default function Projetos() {
       <PageHero
         eyebrow="PROJETOS"
         title="Experiências digitais construídas para problemas concretos."
-        description="Projetos próprios e soluções demonstrativas que mostram como transformamos processos, ideias e jornadas em produtos digitais."
+        description="Projetos próprios e demonstrativos que mostram como transformamos um processo ou uma ideia em produto digital."
       />
       <section className="section projects-page">
         <div className="container">
           <SectionIntro
             eyebrow="CAPACIDADE EM PRÁTICA"
-            title="Do fluxo operacional à experiência do usuário."
-            description="Cada projeto exige decisões diferentes. O ponto em comum é construir uma solução coerente com o problema e preparada para evoluir."
+            title="Cada projeto parte de um problema diferente."
+            description="As decisões mudam de um projeto para outro, mas todos começam pelo problema e continuam evoluindo depois da entrega."
           />
           <ProjectCards />
           <p className="scoped-note">
