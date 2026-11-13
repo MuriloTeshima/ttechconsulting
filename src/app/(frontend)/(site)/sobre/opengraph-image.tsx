@@ -7,6 +7,6 @@ export const contentType = ogContentType;
 export default function Image() {
   return brandOgImage({
     eyebrow: 'Sobre a TTech',
-    title: 'Tecnologia com direção, clareza e responsabilidade.',
+    title: 'Software sob medida, feito com quem conhece a operação.',
   });
 }
