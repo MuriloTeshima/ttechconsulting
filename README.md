@@ -189,3 +189,7 @@ Campaign parameters are captured on the first visit of the session and stay with
 - Set the official WhatsApp number, the domain and the GTM ID.
 - Configure the tags and conversions in GTM and test them with Tag Assistant.
 - Don't publish case studies, numbers or testimonials without proof and permission.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
