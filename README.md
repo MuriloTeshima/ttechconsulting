@@ -96,6 +96,7 @@ Copy `.env.example` to `.env.local`.
 | `CONTACT_TO` | Who receives contact messages. Default: the email in `src/config/site.ts`. |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile on the contact form and quizzes. Without them, verification is off. |
 | `RESEND_API_KEY`, `EMAIL_FROM` | Admin panel emails (password reset) through Resend. Without the key, the email only shows in the console. |
+| `IDEALTRACK_WEBHOOK_API_KEY`, `IDEALTRACK_WEBHOOK_SECRET` | IdealTrack webhook authentication. Without both, the endpoint answers 503. |
 
 ## Contact form
 
@@ -118,6 +119,18 @@ Call-to-action buttons (header, hero, final CTA, footer, landing pages) use `For
    - **Reply To:** `{{email}}`
    - **Subject:** `Novo contato: {{project_type}} — {{name}}`
    - **Content:** use the variables `{{name}}`, `{{email}}`, `{{phone}}`, `{{whatsapp_link}}`, `{{company}}`, `{{project_type}}`, `{{message}}`, `{{page}}` and `{{attribution}}`.
+
+## IdealTrack webhook
+
+`POST /api/webhooks/idealtrack` receives IdealTrack deliveries (`src/app/(payload)/api/webhooks/idealtrack/route.ts`, helpers in `src/lib/idealtrack.ts`).
+
+- Checks the `api-key` header, the `X-IdealTrack-Signature` HMAC-SHA256 of `<timestamp>.<raw body>` and refuses timestamps more than 5 minutes off.
+- Every event is logged in *Captação → Eventos IdealTrack*. The `eventId` is unique, so a repeated delivery answers 200 and is ignored.
+- `content.generated` (Markdown) becomes a **draft** in *Blog → Posts*: the leading H1 is dropped (it becomes the title), the excerpt comes from the first paragraph and the references go into a "Referências" section. Nothing is published automatically. Other formats are only logged.
+- Other events (metrics, competitors, reports) are only logged.
+- Answers: 200 processed or duplicate, 400 invalid body, 401 bad key or signature, 503 not configured, 500 processing failure (IdealTrack retries up to 6 times in about an hour).
+
+Setup: set `IDEALTRACK_WEBHOOK_API_KEY` (a value you create, e.g. `openssl rand -hex 32`) and `IDEALTRACK_WEBHOOK_SECRET` (the signing secret IdealTrack generates) on Vercel, redeploy, then register `https://ttechcs.com.br/api/webhooks/idealtrack` with the same API key in IdealTrack.
 
 ## Admin security
 

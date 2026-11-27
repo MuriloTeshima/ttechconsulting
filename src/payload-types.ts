@@ -75,6 +75,7 @@ export interface Config {
     quizzes: Quiz;
     'quiz-responses': QuizResponse;
     'contact-leads': ContactLead;
+    'idealtrack-events': IdealtrackEvent;
     posts: Post;
     categories: Category;
     media: Media;
@@ -97,6 +98,7 @@ export interface Config {
     quizzes: QuizzesSelect<false> | QuizzesSelect<true>;
     'quiz-responses': QuizResponsesSelect<false> | QuizResponsesSelect<true>;
     'contact-leads': ContactLeadsSelect<false> | ContactLeadsSelect<true>;
+    'idealtrack-events': IdealtrackEventsSelect<false> | IdealtrackEventsSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -665,6 +667,35 @@ export interface ContactLead {
   createdAt: string;
 }
 /**
+ * Envios do webhook do IdealTrack. "Conteúdo gerado" vira um rascunho em Blog → Posts; os demais eventos ficam só registrados aqui.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "idealtrack-events".
+ */
+export interface IdealtrackEvent {
+  id: number;
+  result: 'post-criado' | 'registrado' | 'formato-nao-suportado';
+  post?: (number | null) | Post;
+  notes?: string | null;
+  summary: string;
+  event: string;
+  eventId: string;
+  project?: string | null;
+  prompt?: string | null;
+  occurredAt?: string | null;
+  payload:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
  */
@@ -975,6 +1006,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'contact-leads';
         value: number | ContactLead;
+      } | null)
+    | ({
+        relationTo: 'idealtrack-events';
+        value: number | IdealtrackEvent;
       } | null)
     | ({
         relationTo: 'posts';
@@ -1369,6 +1404,24 @@ export interface ContactLeadsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "idealtrack-events_select".
+ */
+export interface IdealtrackEventsSelect<T extends boolean = true> {
+  result?: T;
+  post?: T;
+  notes?: T;
+  summary?: T;
+  event?: T;
+  eventId?: T;
+  project?: T;
+  prompt?: T;
+  occurredAt?: T;
+  payload?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
@@ -1658,6 +1711,7 @@ export interface TaskCreateCollectionExport {
       | 'quizzes'
       | 'quiz-responses'
       | 'contact-leads'
+      | 'idealtrack-events'
       | 'posts'
       | 'categories'
       | 'media'

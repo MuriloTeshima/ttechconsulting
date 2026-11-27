@@ -12,6 +12,7 @@ import { Audiences } from './collections/Audiences';
 import { Categories } from './collections/Categories';
 import { ClientLogos } from './collections/ClientLogos';
 import { ContactLeads } from './collections/ContactLeads';
+import { IdealTrackEvents } from './collections/IdealTrackEvents';
 import { LandingPages } from './collections/LandingPages';
 import { Media } from './collections/Media';
 import { Posts } from './collections/Posts';
@@ -40,6 +41,7 @@ export default buildConfig({
     Quizzes,
     QuizResponses,
     ContactLeads,
+    IdealTrackEvents,
     Posts,
     Categories,
     Media,
