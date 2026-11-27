@@ -105,6 +105,11 @@ export const enum_contact_leads_project_type = pgEnum('enum_contact_leads_projec
   'evolucao',
   'outro',
 ]);
+export const enum_idealtrack_events_result = pgEnum('enum_idealtrack_events_result', [
+  'post-criado',
+  'registrado',
+  'formato-nao-suportado',
+]);
 export const enum_posts_status = pgEnum('enum_posts_status', ['draft', 'published']);
 export const enum__posts_v_version_status = pgEnum('enum__posts_v_version_status', [
   'draft',
@@ -1300,6 +1305,37 @@ export const contact_leads = pgTable(
   ],
 );
 
+export const idealtrack_events = pgTable(
+  'idealtrack_events',
+  {
+    id: serial('id').primaryKey(),
+    result: enum_idealtrack_events_result('result').notNull(),
+    post: integer('post_id').references(() => posts.id, {
+      onDelete: 'set null',
+    }),
+    notes: varchar('notes'),
+    summary: varchar('summary').notNull(),
+    event: varchar('event').notNull(),
+    eventId: varchar('event_id').notNull(),
+    project: varchar('project'),
+    prompt: varchar('prompt'),
+    occurredAt: timestamp('occurred_at', { mode: 'string', withTimezone: true, precision: 3 }),
+    payload: jsonb('payload').notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('idealtrack_events_post_idx').on(columns.post),
+    uniqueIndex('idealtrack_events_event_id_idx').on(columns.eventId),
+    index('idealtrack_events_updated_at_idx').on(columns.updatedAt),
+    index('idealtrack_events_created_at_idx').on(columns.createdAt),
+  ],
+);
+
 export const posts = pgTable(
   'posts',
   {
@@ -1720,6 +1756,7 @@ export const payload_locked_documents_rels = pgTable(
     quizzesID: integer('quizzes_id'),
     'quiz-responsesID': integer('quiz_responses_id'),
     'contact-leadsID': integer('contact_leads_id'),
+    'idealtrack-eventsID': integer('idealtrack_events_id'),
     postsID: integer('posts_id'),
     categoriesID: integer('categories_id'),
     mediaID: integer('media_id'),
@@ -1737,6 +1774,9 @@ export const payload_locked_documents_rels = pgTable(
     index('payload_locked_documents_rels_quizzes_id_idx').on(columns.quizzesID),
     index('payload_locked_documents_rels_quiz_responses_id_idx').on(columns['quiz-responsesID']),
     index('payload_locked_documents_rels_contact_leads_id_idx').on(columns['contact-leadsID']),
+    index('payload_locked_documents_rels_idealtrack_events_id_idx').on(
+      columns['idealtrack-eventsID'],
+    ),
     index('payload_locked_documents_rels_posts_id_idx').on(columns.postsID),
     index('payload_locked_documents_rels_categories_id_idx').on(columns.categoriesID),
     index('payload_locked_documents_rels_media_id_idx').on(columns.mediaID),
@@ -1785,6 +1825,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns['contact-leadsID']],
       foreignColumns: [contact_leads.id],
       name: 'payload_locked_documents_rels_contact_leads_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['idealtrack-eventsID']],
+      foreignColumns: [idealtrack_events.id],
+      name: 'payload_locked_documents_rels_idealtrack_events_fk',
     }).onDelete('cascade'),
     foreignKey({
       columns: [columns['postsID']],
@@ -2357,6 +2402,13 @@ export const relations_quiz_responses = relations(quiz_responses, ({ one, many }
   }),
 }));
 export const relations_contact_leads = relations(contact_leads, () => ({}));
+export const relations_idealtrack_events = relations(idealtrack_events, ({ one }) => ({
+  post: one(posts, {
+    fields: [idealtrack_events.post],
+    references: [posts.id],
+    relationName: 'post',
+  }),
+}));
 export const relations_posts = relations(posts, ({ one }) => ({
   category: one(categories, {
     fields: [posts.category],
@@ -2474,6 +2526,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [contact_leads.id],
       relationName: 'contact-leads',
     }),
+    'idealtrack-eventsID': one(idealtrack_events, {
+      fields: [payload_locked_documents_rels['idealtrack-eventsID']],
+      references: [idealtrack_events.id],
+      relationName: 'idealtrack-events',
+    }),
     postsID: one(posts, {
       fields: [payload_locked_documents_rels.postsID],
       references: [posts.id],
@@ -2553,6 +2610,7 @@ type DatabaseSchema = {
   enum_quiz_responses_status: typeof enum_quiz_responses_status;
   enum_contact_leads_status: typeof enum_contact_leads_status;
   enum_contact_leads_project_type: typeof enum_contact_leads_project_type;
+  enum_idealtrack_events_result: typeof enum_idealtrack_events_result;
   enum_posts_status: typeof enum_posts_status;
   enum__posts_v_version_status: typeof enum__posts_v_version_status;
   enum_exports_format: typeof enum_exports_format;
@@ -2607,6 +2665,7 @@ type DatabaseSchema = {
   quiz_responses_answers: typeof quiz_responses_answers;
   quiz_responses: typeof quiz_responses;
   contact_leads: typeof contact_leads;
+  idealtrack_events: typeof idealtrack_events;
   posts: typeof posts;
   _posts_v: typeof _posts_v;
   categories: typeof categories;
@@ -2670,6 +2729,7 @@ type DatabaseSchema = {
   relations_quiz_responses_answers: typeof relations_quiz_responses_answers;
   relations_quiz_responses: typeof relations_quiz_responses;
   relations_contact_leads: typeof relations_contact_leads;
+  relations_idealtrack_events: typeof relations_idealtrack_events;
   relations_posts: typeof relations_posts;
   relations__posts_v: typeof relations__posts_v;
   relations_categories: typeof relations_categories;

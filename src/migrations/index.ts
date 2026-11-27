@@ -4,6 +4,7 @@ import * as migration_20261005_174954_quizzes from './20261005_174954_quizzes';
 import * as migration_20261009_173837_protecao_e_leads from './20261009_173837_protecao_e_leads';
 import * as migration_20261112_235120_confianca_e_provas from './20261112_235120_confianca_e_provas';
 import * as migration_20261113_000504_quiz_na_home from './20261113_000504_quiz_na_home';
+import * as migration_20261127_163917_webhook_idealtrack from './20261127_163917_webhook_idealtrack';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20261113_000504_quiz_na_home.up,
     down: migration_20261113_000504_quiz_na_home.down,
-    name: '20261113_000504_quiz_na_home'
+    name: '20261113_000504_quiz_na_home',
+  },
+  {
+    up: migration_20261127_163917_webhook_idealtrack.up,
+    down: migration_20261127_163917_webhook_idealtrack.down,
+    name: '20261127_163917_webhook_idealtrack'
   },
 ];
